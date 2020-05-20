@@ -1,0 +1,48 @@
+{ "public":{
+    "home":"Domicile",
+    "account":"Note explicative",
+    "password":"Mot de passe",
+    "offline":"Passer en mode hors ligne",
+    "language":"Langue",
+    "me":"Moi",
+    "task":"Ma tâche",
+    "calender":"calendrier",
+    "inbox":"boîte de réception"
+    },
+    "account":{
+        "name":"Nom",
+        "company":"compagnie",
+        "email":"email",
+        "language":"la langue",
+        "lasttimelogout":"se déconnecter",
+        "activatedon":"activé"
+    },
+    "offline":{
+        "title":"Le mode hors ligne prend en charge les fonctionnalités suivantes:",
+        "content":"Relever de nouvelles formes",
+        "content2":"Voir et éditer les brouillons sauvegardés",
+        "content3":"Afficher et modifier des formulaires marqués d'un signet",
+        "name":"Passer en mode hors ligne"
+    },
+    "setting":{
+        "account":"Mon compte",
+        "language":"La langue",
+        "offline":"Passer en mode hors ligne",
+        "logout":"Se déconnecter"
+    },
+    "readAction":{
+        "ParentDocument":"Document père",
+        "ActionTitle":"Titre de l'action",
+        "EmployeeAssigned":"Personnel affecté",
+        "Description":"Note",
+        "Priotity":"Priorité",
+        "DueDate":"Date d 'expiration",
+        "ActionTaken":"Mesures prises",
+        "Attachment":"Annexe",
+        "AduitTrail":"Le sentier aduit."
+    },
+    "tips":{
+        "Cancel":"Annuler",
+        "Done":"Dorne."
+    }
+}

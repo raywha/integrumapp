@@ -1,0 +1,24 @@
+<ion-list *ngIf="type=='setup'">
+  <ion-item lines="full" (click)="getLink(1)">
+    <ion-icon slot="start" name="person"></ion-icon>
+    <ion-label>{{setting.account}}</ion-label>
+  </ion-item>
+  <ion-item lines="full" (click)="getLink(2)">
+    <ion-icon slot="start" name="hourglass"></ion-icon>
+    <ion-label>{{setting.language}}</ion-label>
+  </ion-item>
+  <ion-item lines="full" (click)="getLink(3)">
+    <ion-icon slot="start" name="color-wand"></ion-icon>
+    <ion-label>{{setting.offline}}</ion-label>
+  </ion-item>
+  <ion-item lines="none" (click)="getLink(4)">
+    <ion-icon slot="start" name="power"></ion-icon>
+    <ion-label>{{setting.logout}}</ion-label>
+  </ion-item>
+</ion-list>
+<ion-list *ngIf="type=='portal'&&portalList.length>0">
+  <ion-item *ngFor="let item of portalList" lines="full" (click)="getPortalLink(item.TemplateID,item.Title)">
+    <ion-label>{{item.Title}}</ion-label>
+  </ion-item>
+
+</ion-list>

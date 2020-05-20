@@ -1,0 +1,19 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="tabs/tab1"  (click)="goBack()" text="" color="dark"></ion-back-button>
+    </ion-buttons>
+    <ion-title>subformlist</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list>
+    <ion-item *ngFor="let item of atitle;let index=index;" (click)="newSubForm(index)">
+      <ion-label>{{ item }}</ion-label>
+    </ion-item>
+    <ion-item *ngIf="atitle.length==0">
+      <ion-label>Not find subformlist!</ion-label>
+    </ion-item>
+  </ion-list>
+</ion-content>

@@ -1,0 +1,114 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="tabs/tab1" text="" color="dark"></ion-back-button>
+    </ion-buttons>
+    <ion-title>New Action</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="getBtnPopover()">
+        <ion-icon name="ios-more"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<ul  class="btnHead-box" *ngIf="isShowBtn">
+    <img src="../../../assets/icon/down.svg" alt="">
+    <li  (click)="getSwitchBtn(item)" *ngFor="let item of headBtn">{{item.text}}</li>
+</ul>
+<ion-content>
+  <div>
+    <!-- <ion-item lines="none" color="favorite">
+          <ion-label color="light">Parent Document</ion-label>
+          <ion-note color="light"> 11 </ion-note>
+        </ion-item> -->
+    <ion-item lines="none">
+      <ion-label position="stacked" color="action" class="titleLabel">{{'readAction.EmployeeAssigned'| translate}}: <ion-text color="danger">*</ion-text></ion-label>
+      <ion-icon slot="end" name="arrow-forward" mode="ios" (click)="getName()"></ion-icon>
+      <ion-text>
+        <h6>{{action.actAssignee}}</h6>
+      </ion-text>
+    </ion-item>
+    <ion-item-divider></ion-item-divider>
+    <ion-item lines="none">
+      <ion-label position="stacked" color="action" class="titleLabel">{{'readAction.ActionTitle'| translate}}:  <ion-text color="danger">*</ion-text></ion-label>
+      <ion-input type="text" [(ngModel)]="action.actTitle"> </ion-input>
+    </ion-item>
+    <ion-item-divider></ion-item-divider>
+    <div class="textarea-box">
+      <p class="head">{{'readAction.Description'| translate}}:  <ion-text color="danger">*</ion-text></p>
+      <textarea name="" id="" rows="3" placeholder="Enter textarea" class="textareaS" [(ngModel)]="action.actDesc"></textarea>
+    </div>
+    <ion-item-divider></ion-item-divider>
+    <ion-item  [(ngModel)]="action.actPriority" ngDefaultControl lines="none">
+        <ion-label color="action" class="titleLabel">{{'readAction.Priotity'| translate}}:
+          <ion-text color="danger">*</ion-text>
+        </ion-label>
+        <ion-select interface="action-sheet" cancelText="{{'tips.Cancel' | translate}}">
+          <div *ngFor="let k of optionData">
+            <ion-select-option value="{{k}}" *ngIf="k.value!=''" mode="ios">{{k}}</ion-select-option>
+          </div>
+        </ion-select>
+      </ion-item>
+    <!-- <ion-item lines="none" [(ngModel)]="action.priority">
+      <ion-label color="action">Priority</ion-label>
+      <ion-select placeholder="Select One"  interface="action-sheet">
+        <ion-select-option value="item.value" *ngFor="let item of optionData">{{item.text}}</ion-select-option>
+      </ion-select>
+    </ion-item> -->
+    <ion-item-divider></ion-item-divider>
+    <ion-item lines="none">
+      <ion-label color="action" class="titleLabel">{{'readAction.DueDate'| translate}}: <ion-text color="danger">*</ion-text></ion-label>
+      <ion-datetime displayFormat="DD/MM/YYYY" value="dueDate" [(ngModel)]="action.actDueDate" cancelText="{{'tips.Cancel' | translate}}" doneText="{{'tips.Done' | translate}}" mode="ios"></ion-datetime>
+      <span class="down">
+        <ion-icon slot="end" name="calendar" mode="md"></ion-icon>
+      </span>
+    </ion-item>
+    <ion-item-divider></ion-item-divider>
+    <div class="attachment-box">
+      <p  class="title">{{'readAction.Attachment'| translate}}:</p>
+      <ul class="content">
+        <li (click)="doCamea()">
+          <img src="../../../../assets/icon/attachment/camera.png" alt="">
+          <p>{{'readAction.take_a_photo' | translate}}</p>
+        </li>
+        <li (click)="chooseImg()">
+            <img src="../../../../assets/icon/attachment/photo.png" alt="">
+            <p>{{'readAction.select_a_photo' | translate}}</p>
+        </li>
+        <li (click)="setLocation()">
+          <img src="../../../../assets/icon/attachment/photo.png" alt="">
+          <p>Geolocation{{address.latitude}}{{address.longitude}}</p>
+      </li>
+      <li [routerLink]="['/sanner']" routerLinkActive="router-link-active" >
+        <img src="../../../../assets/icon/attachment/photo.png" alt="">
+        <p>scan it</p>
+    </li>
+      </ul>
+      
+      <div class="attachmentImg-box" *ngIf="imgSrc.length>0">
+        <div class="imgList" *ngFor="let item of imgSrc;let index=index">
+          <div class="img-box">
+              <p class="head">Photo:</p>
+              <img [src]="item" alt="">
+          </div>
+          <div class="att-content">
+              <p class="head">Comments:</p>
+              <p>565655656565556</p>
+          </div>
+         
+          <img src="../../../assets/icon/attachment/delete.png" alt="" class="positionImg" (click)="imgDelect(index)">
+        </div>
+          <!-- <img [src]="item" *ngFor="let item of imgSrc"/> -->
+        <!-- <p>565655656565556</p> -->
+      </div>
+    </div>
+    
+    <ion-item-divider></ion-item-divider>
+    <ion-item color="favorite" lines="none" *ngIf="trailBox">
+      <ion-label color="light">{{'readAction.AduitTrail'| translate}}</ion-label>
+      <ion-icon slot="end" color="light" name="arrow-forward" mode="ios" (click)="showTrail=true" *ngIf="!showTrail"></ion-icon>
+      <ion-icon slot="end" color="light" name="arrow-down" mode="ios" (click)="showTrail=false" *ngIf="showTrail" ></ion-icon>
+    </ion-item>
+    <div *ngIf="showTrail" class="trail-box">{{action.AuditTrail}}</div>
+  </div>
+</ion-content>

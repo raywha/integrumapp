@@ -1,0 +1,22 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="tabs/tab1" text="" color="dark"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{'public.language' | translate}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="account-box">
+    <div class="radioBox">
+      <ion-radio-group name="auto" [(ngModel)]="lan" allow-empty-selection>
+        <ion-item *ngFor="let item of langularArr" slot="start">
+          <ion-label *ngIf="lan!=item.SelectedLanguages">{{item.NativeNames}}</ion-label>
+          <ion-label *ngIf="lan==item.SelectedLanguages" color="favorite" class="active">{{item.NativeNames}}</ion-label>
+          <ion-radio [value]="item.SelectedLanguages" (click)="radioCheck(item)" color="favorite" slot="end" mode="ios"></ion-radio>
+        </ion-item>
+      </ion-radio-group>
+    </div>    
+  </div>
+</ion-content>

@@ -1,0 +1,141 @@
+<ion-content  [fullscreen]="false" class="firstLogin" hide-nav-bar="true" >
+  <form  ioc-form  [formGroup]="authform" (ngSubmit)="SendEmail()">
+    <ion-grid class="grid" >
+        <ion-row>
+              <ion-col></ion-col>
+              <ion-col>
+                <div> <ion-img  [src]="'/assets/icon/INTEGRUM_logo.png'" ></ion-img></div>
+              </ion-col> 
+              <ion-col></ion-col>
+        </ion-row>
+        <ion-row>
+            <ion-col class="ion-align-self-center">
+                <div>  
+                  <ion-text class="top_textOne">
+                  {{'login.welcom1' | translate}}
+                  </ion-text>
+                </div>
+            </ion-col> 
+        </ion-row>
+        <ion-row>
+          <ion-col>
+              <div>  
+                <ion-text class="top_textTwo">
+                    {{'login.welcom2' | translate}}          
+                </ion-text>
+              </div>
+              <div>  
+                <ion-text class="top_textTwo">
+                  {{'login.welcom3' | translate}}          
+                </ion-text>
+              </div>
+          </ion-col> 
+        </ion-row>
+        <ion-row>
+            <ion-col> </ion-col>
+            <ion-col  size="9">
+              <ion-item class="email" *ngIf="fase">
+                <ion-thumbnail class="emailthumbnail">
+                    <ion-img class="emailpng" [src]="'/assets/icon/email.png'"></ion-img>
+                </ion-thumbnail>
+                <ion-text>|&nbsp;&nbsp;</ion-text>
+                <ion-input class="autinput"  [formControl]="email"   placeholder="{{'login.email' | translate}} "></ion-input>
+              </ion-item> 
+              <ion-item class="email" >
+                  <ion-thumbnail class="auththumbnail">
+                        <ion-img class="atuhpng" [src]="'/assets/icon/auth.png'"></ion-img>
+                  </ion-thumbnail>
+                  <ion-text>|&nbsp;&nbsp;</ion-text>
+                  <ion-input  (ionChange)="onchange()"  formControlName="code" [readonly]="sso"  placeholder="{{'login.authcode' | translate}} "></ion-input>
+              </ion-item>
+              <ion-item class="email" [hidden]="sso">
+                <ion-thumbnail class="emailthumbnail">
+                  <ion-img class="emailpng" [src]="'/assets/icon/email.png'"></ion-img>
+                </ion-thumbnail>
+                <ion-text>|&nbsp;&nbsp;</ion-text>
+                <ion-input   [formControl]="name"   placeholder="{{'login.email' | translate}} "></ion-input>
+                </ion-item>
+                <ion-item class="email" [hidden]="sso">
+                  <ion-thumbnail class="auththumbnail">
+                        <ion-img class="atuhpng" [src]="'/assets/icon/password.png'"></ion-img>
+                  </ion-thumbnail>
+                  <ion-text>|&nbsp;&nbsp;</ion-text>
+                  <ion-input type="password" [formControl]="password" placeholder="{{'login.password' | translate}} "></ion-input>
+              </ion-item>
+              <ion-item class="email">
+                <ion-label>Enable SSO:</ion-label>
+                <ion-toggle [(ngModel)]="sso" [ngModelOptions]="{standalone:true}" color="danger" checked="false" [disabled]="authform.value.code==''" (ionChange)="ssoToggle()"></ion-toggle>
+              </ion-item>
+              <ion-item class="email" [hidden]="!sso">
+                <ion-label color="basic">SSO Provider:</ion-label>
+              </ion-item>
+              <ion-item class="email" [hidden]="!sso">
+                <ion-select [(ngModel)]="ssoserver" [ngModelOptions]="{standalone:true}">
+                  <ion-select-option *ngFor="let ssoser of ssoserverlist">{{ssoser}}</ion-select-option>
+                </ion-select>
+              </ion-item>
+            </ion-col> 
+            <ion-col></ion-col>
+        </ion-row>
+        <ion-row>
+            <ion-col></ion-col>
+            <ion-col  size="9">
+              <ion-button  class="emailSend" *ngIf="sendStat" [disabled]="btnValid()" ion-button type="submit"   expand="block">{{'login.login' | translate}}</ion-button>
+            </ion-col> 
+            <ion-col></ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col></ion-col>
+        </ion-row>
+        <ion-row class="bottomText">
+            <ion-col></ion-col>
+            <ion-col  size="9">
+                <ion-text class="">
+                      <div class="list1"></div>
+                      <div class="list2"></div>
+                      <div> {{'login.explain1' | translate}}</div>
+                </ion-text>
+            </ion-col> 
+            <ion-col></ion-col>
+        </ion-row>
+        <ion-row class="bottomText">
+            <ion-col></ion-col>
+            <ion-col  size="9">
+                <ion-text class="">
+                      <div class="list1"></div>
+                      <div class="list2"></div>
+                      <div>{{'login.explain2' | translate}}&nbsp; &nbsp; &nbsp; &nbsp; </div>
+                      
+                </ion-text>
+            </ion-col> 
+            <ion-col></ion-col>
+        </ion-row>
+        <ion-row class="bottomText">
+            <ion-col></ion-col>
+            <ion-col  size="9">
+                <ion-text class="">
+                      <div class="list1"></div>
+                      <div class="list2"></div>
+                      <div>
+                          {{'login.explain3' | translate}}
+                          {{'login.explain4' | translate}} 
+                      </div>
+                    
+                </ion-text>
+            </ion-col> 
+            <ion-col></ion-col>
+        </ion-row>
+        <ion-row class="bottomCopy"  style="flex-grow: 1;">
+          <ion-col></ion-col>
+          <ion-col  class="ion-align-self-center" size="9">
+              <ion-text class="">
+                    <div>
+                    -  {{'login.copyright' | translate}} {{year}} -
+                    </div>
+              </ion-text>
+          </ion-col> 
+          <ion-col></ion-col>
+      </ion-row>                        
+    </ion-grid>
+</form>
+</ion-content>

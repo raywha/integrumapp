@@ -1,0 +1,20 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>sanner</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [ngClass]="{'qrscanner':isShow}">
+  <div [ngClass]="{'qrscanner-area':isShow}">
+  </div>
+  <div [ngClass]="{'through-line':isShow}">
+  </div>
+  <div class="button-bottom">
+    <ion-button (click)="toggleLight()" class="icon-camera">
+      <ion-icon name="flash"></ion-icon>
+    </ion-button>
+    <ion-button (click)="toggleCamera()" class="icon-camera">
+      <ion-icon name="reverse-camera"></ion-icon>
+    </ion-button>
+  </div>
+</ion-content>

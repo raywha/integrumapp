@@ -1,0 +1,82 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="tabs/tab1" (click)="goBack()" text="" color="dark"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{vtitle}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+<div class="searchTop">
+  <div class="search-box">
+    <img src="../../../assets/icon/search.png" alt="">
+    <ion-input type="text" placeholder="Search" (ionChange)=getItems($event) ></ion-input>
+  </div>
+  <!-- <div class="searchRight">
+    <ion-icon ios="ios-funnel" md="md-funnel"></ion-icon>
+  </div> -->
+</div>
+<ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+  <ion-list *ngIf="stype==='formlist'">
+    <ion-item *ngFor="let item of data">
+      <div class="contentIcon">
+        <ion-icon *ngIf="item.WFStatus=='Completed'" name="checkmark-circle" style="color: #b2b6b2;"></ion-icon>
+        <ion-icon *ngIf="item.WFStatus=='Open'" name="time" style="color: #06bb0c;"></ion-icon>
+        <ion-icon *ngIf="item.WFStatus=='Draft'" name="save" style="color: #FF9900;"></ion-icon>
+        <ion-icon *ngIf="item.WFStatus=='In Review'" name="repeat" style="color: rgb(9, 54, 255);"></ion-icon>
+        <ion-icon *ngIf="item.WFStatus=='Rejected'" name="alert" style="color: rgb(247, 6, 6);"></ion-icon>
+        <ion-icon *ngIf="item.WFStatus!='In Review' && item.WFStatus!='Completed' && item.WFStatus!='Open' && item.WFStatus!='Draft' && item.WFStatus!='Rejected'" name="leaf" style="color: rgba(104, 194, 230, 0.568);"></ion-icon>
+      </div>
+      <div class="contentLeft">
+        <div class="title">
+          <span *ngIf="item.title!=''">
+            <a [routerLink]="['/new-form']" [ngStyle]="{'color':cbgcolor}" [queryParams]="{unid:item.unid,aid:formid,title:item.DocRefNumber,stat:item.WFStatus,type:'open',cururl:cururl}"> {{item.title}}</a>
+          </span>
+          <span *ngIf="item.title===''||!item.title">
+              <a [routerLink]="['/new-form']" [ngStyle]="{'color':cbgcolor}" [queryParams]="{unid:item.unid,aid:formid,title:item.DocRefNumber,stat:item.WFStatus,type:'open',cururl:cururl}">  {{item.DocRefNumber}}</a>
+          </span>
+        </div>
+        <div class="action">
+          <ion-label>{{item.WFStatus}}</ion-label>
+          <ion-label>{{item.formMR}}&nbsp;</ion-label>
+          <!-- <ion-label>{{item.calendarDate | date:'dd/MM/yyyy'}}</ion-label> -->
+          <ion-label>{{item.calendarDate}}</ion-label>
+        </div>
+      </div>
+      <div class="contentright" *ngIf="item.hasResponse=='yes'">
+        <ion-icon [routerLink]="['/form-list']" [queryParams]="{vid:item.unid,type:'formlistAss'}" mode="ios" slot="end"
+          name="arrow-forward"></ion-icon>
+      </div>
+    </ion-item>
+  </ion-list>
+  <ion-list *ngIf="stype==='formlistAss'">
+    <ion-item *ngFor="let item of data">
+      <div class="contentIcon">
+        <ion-icon *ngIf="item.WFStatus=='Completed'" name="checkmark-circle"></ion-icon>
+        <ion-icon *ngIf="item.WFStatus=='Open'" name="checkmark-circle-outline"></ion-icon>
+        <ion-icon *ngIf="item.WFStatus=='Draft'" name="close-circle"></ion-icon>
+      </div>
+      <div class="contentLeft">
+        <div class="title">
+          <span>{{item.ActionTitle}}</span>
+        </div>
+        <div class="action">
+          <ion-label>{{item.WFStatus}}</ion-label>
+          <ion-label>{{item.actAssignee}}</ion-label>
+          <!-- <ion-label>{{item.ActDueforCompletion | date:'dd/MM/yyyy' }}</ion-label> -->
+          <ion-label>{{item.ActDueforCompletion}}</ion-label>
+        </div>
+      </div>
+      <div class="contentright" *ngIf="item.hasResponse=='yes'">
+        <ion-icon [routerLink]="['/form-list']" [queryParams]="{vid:item.unid,type:'formlistAss'}" mode="ios" slot="end"
+          name="arrow-forward"></ion-icon>
+      </div>
+    </ion-item>
+  </ion-list>
+  <ion-infinite-scroll threshold="100px" (ionInfinite)="loadData($event)">
+    <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="Loading more data...">
+    </ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+</ion-content>

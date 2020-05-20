@@ -1,0 +1,102 @@
+.searchTop{
+    display: flex;
+    line-height: 4rem;
+    height: 4rem;
+    margin: 1.5rem;
+    border-radius: 2px;
+    border-bottom: 1px solid #eeeeee;
+    position: relative;
+   .search-box{
+    background: #ededed;
+       width: 100%;
+       padding-left: 1rem;
+       line-height: 48px;
+       display: flex;
+       border-radius:2px;
+       ion-input{
+        --padding-top: 1px;
+        --padding-end: 8px;
+        --padding-bottom: 1px;
+        --padding-start: 5px;
+       }
+       input{
+           border:none;
+           background: none;
+           padding-left: 1rem;
+           width: 90%;
+       }
+      img{
+          width: 1.2rem;
+          height: 1.2rem;
+          margin-top: 1.5rem;
+        
+      }
+      .delect{
+          float:right;
+          cursor: pointer;
+      }
+   }
+   .searchRight{
+        background-color: #B81321;
+        border-radius:2px;
+        width: 12%;
+        margin-left: 4px;
+        .selectName{
+            line-height: 4rem;
+            width: 80%;
+        }
+        ion-icon{
+            font-size: 2rem;
+            margin: 0.8rem;
+            color: white;
+        }
+   }
+    
+    
+}
+ion-item {
+    margin: 0.5rem;
+    .contentIcon{
+        float: left;
+        margin-right: 1rem;
+        ion-icon{
+            color:#00bcd4
+        }
+    }
+    .contentLeft{
+        width: 99%;
+        div{
+            margin-bottom: 1rem;
+        }
+        .title{
+            font-family:PingFang SC;
+            font-weight:bold;
+            color:rgba(34,34,34,1);
+            a{
+                /*color:#B81321;*/
+            }
+        }
+        .action{
+            font-family:PingFang SC;
+            font-weight:400;
+            color:rgba(85,85,85,1);
+            ion-label:nth-child(1){
+                float: left;
+                margin: 0px;
+                width: 25%;
+            }
+            ion-label:nth-child(2){
+                float: left;
+                margin: 0px;
+                width: 40%;
+            }
+            ion-label:nth-child(3){
+                float: left;
+                margin: 0px;
+                width: 33%;
+            }
+        }
+    }
+
+   
+}

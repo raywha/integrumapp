@@ -1,0 +1,25 @@
+<ion-header>
+  <ion-toolbar>
+      <ion-buttons slot="start">
+          <ion-back-button defaultHref="tabs/tab1" text="" color="dark"></ion-back-button>
+        </ion-buttons>
+    <ion-title>{{'public.offline' | translate}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="account-box">
+    <ion-item lines="none">
+      <ion-label>{{'offline.name' | translate}}</ion-label>
+      <ion-toggle [(ngModel)]="offlineFlag" mode="ios"></ion-toggle>
+    </ion-item>
+    <div class="description">
+      <p class="title">{{'offline.title' | translate}}:</p>
+      <ul>
+        <li>{{'offline.content' | translate}}</li>
+        <li>{{'offline.content2' | translate}}</li>
+        <li>{{'offline.content3' | translate}}</li>
+      </ul>
+    </div>
+  </div>
+</ion-content>

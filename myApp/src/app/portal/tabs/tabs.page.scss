@@ -1,0 +1,13 @@
+
+.bar-home-on {
+    background: url(../../../assets/icon/home.png) no-repeat center top
+   }
+.bar-home-off {
+    background: url("../../../assets/icon/task.png") no-repeat center top
+}
+.ion-md-myIcon:before { 
+    content: url("../../../assets/icon/home.png");
+}
+.ion-md-myIcon-outline:before { 
+    content: url("../../../assets/icon/task.png"); 
+}

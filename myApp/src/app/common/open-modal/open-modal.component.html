@@ -1,0 +1,21 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-icon name="arrow-back" (click)="dismiss('back')" mode="ios" color="dark"></ion-icon>
+    </ion-buttons>
+    <ion-title>{{title}}</ion-title>
+    <ion-buttons slot="end">
+      <ion-text color="dark" (click)="dismiss('ok')">
+        <h6>OK</h6>
+      </ion-text>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <div>
+    <ion-item>
+      <ion-label position="floating">Description</ion-label>
+      <ion-textarea [(ngModel)]="reason"></ion-textarea>
+    </ion-item>
+  </div>
+</ion-content>

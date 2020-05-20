@@ -1,0 +1,57 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="tabs/tab1" text="" color="dark"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{'public.account' | translate}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="account-box">
+    <ul>
+      <li>
+        <div class="account_title">
+            <img src="../../../assets/icon/account/name.png" alt="">
+            <label>{{'account.name' | translate}}</label>
+        </div>
+        <p class="account_content">{{accountData.name}}</p>
+      </li>
+      <li>
+          <div class="account_title">
+              <img src="../../../assets/icon/account/company.png" alt="">
+              <label>{{'account.company' | translate}}</label>
+          </div>
+          <p class="account_content">{{accountData.company}}</p>
+      </li>
+      <li>
+          <div class="account_title">
+              <img src="../../../assets/icon/account/email.png" alt="">
+              <label>{{'account.email' | translate}}</label>
+          </div>
+          <p class="account_content">{{accountData.email}}</p>
+      </li>
+      <li>
+          <div class="account_title">
+              <img src="../../../assets/icon/account/lan.png" alt="">
+              <label>{{'account.language' | translate}}</label>
+          </div>
+          <p class="account_content">{{accountData.language}}</p>
+      </li>
+      <li>
+          <div class="account_title">
+              <img src="../../../assets/icon/account/lastTime.png" alt="">
+              <label>{{'account.lasttimelogout' | translate}}</label>
+          </div>
+          <p class="account_content">{{accountData.lasttimelogout}}</p>
+      </li>
+      <li>
+          <div class="account_title">
+              <img src="../../../assets/icon/account/activation.png" alt="">
+              <label>{{'account.activatedon' | translate}}</label>
+          </div>
+          <p class="account_content">{{accountData.activatedon}}</p>
+      </li>
+    </ul>
+  </div>
+</ion-content>

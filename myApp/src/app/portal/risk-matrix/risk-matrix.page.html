@@ -1,0 +1,83 @@
+
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="tabs/tab1"  (click)="goBack()" text="" color="dark"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{riskMatrix?.TemplateTitle}}</ion-title>
+    <ion-buttons slot="end" *ngIf="type=='edit'">
+      <ion-button (click)="btnok()">
+        OK
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tbody>
+
+      <tr>
+        <td>{{riskMatrix?.XAxisLabel}}:</td>
+        <td>
+          <ion-item>
+            <ion-select [(ngModel)]='Consequence' interface="popover">
+              <ion-select-option  *ngFor="let option of XAxisOptions">{{option.value}}</ion-select-option >
+            </ion-select>
+          </ion-item>
+        </td>
+      </tr>
+      <tr>
+        <td>{{riskMatrix?.YAxisLabel}}:</td>
+        <td>
+          <ion-item>
+            <ion-select [(ngModel)]='Likelihood' interface="popover">
+              <ion-select-option  *ngFor="let option of YAxisOptions">{{option.value}}</ion-select-option >
+            </ion-select>
+          </ion-item>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <br />
+  <table width="100%">
+    <tr>
+      <td><button ion-button color="basic" (click)="calculate()">Calculate</button></td>
+      <td [ngStyle]="{ 'background-color': levelColor }"><b
+          [ngStyle]="{ 'color':detectTdCellBg()?'white':'black' }">Score: {{seletedScore}} ({{riskLevel}}):
+          {{levelDes}}</b></td>
+    </tr>
+  </table>
+  <br />
+  <table class="rm-table" width="100%" border="1">
+    <tbody>
+      <tr>
+        <td></td>
+        <td colspan="6" bgcolor="#E1E1E1">CONSEQUENCE</td>
+      </tr>
+      <tr>
+        <td width="1%" bgcolor="#C2EFFF"><b>LIKELIHOOD</b></td>
+        <td [width]='rmtableTdWidth' *ngFor="let option of XAxisOptions">{{option.value}}</td>
+      </tr>
+      <tr width="1%" bgcolor="#E0FFFF" *ngFor="let option of YAxisOptions; let i = index">
+        <td>{{option.value}}</td>
+        <td *ngFor="let option of getRows(i)" [ngStyle]="{ 'background-color': option.Color }"
+          (click)="selectedTableCell(option)">
+          <div *ngIf="option.display" [ngStyle]="{ 'color': detectTdCellBg()?'white':'black' }">X</div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <br />
+  <b>
+    <font color="#008000" face="Arial">Legend</font>
+  </b>
+  <table class="legend-table" width="100%" border="1" cellspacing="0" cellpadding="0">
+    <tbody>
+      <tr *ngFor="let option of riskMatrix?.RankLegend; let i = index">
+        <td [ngStyle]="{ 'background-color': option.Color }" width="69">{{option.Rank}}</td>
+        <td width="409">{{option.Des}}</td>
+      </tr>
+    </tbody>
+  </table>
+</ion-content>

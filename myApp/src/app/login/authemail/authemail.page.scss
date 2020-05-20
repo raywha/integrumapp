@@ -1,0 +1,107 @@
+.firstLogin {
+    --background: url('/assets/icon/firstLogin.png') no-repeat center center / cover;
+}
+ion-grid{
+    padding-top: 60px;
+}
+ion-row {
+ text-align: center ;
+ min-height: 30px;
+}
+.bottomText{
+    text-align: left;
+    font-family:PingFang SC;
+    font-weight:400;
+    color:rgba(255,255,255,1);
+}
+.top_textOne{ 
+    font-size:18px;
+    font-family:PingFang SC;
+    font-weight:500;
+    color:rgba(17,17,17,1);
+    background:linear-gradient(0deg,rgba(169,41,41,1) 0%, rgba(216,39,32,1) 100%);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+}
+.top_textTwo{
+    font-size:12px;
+    font-family:PingFang SC;
+    font-weight:400;
+    color:rgba(17,17,17,1);
+    line-height:28px;
+    background:linear-gradient(0deg,rgba(169,41,41,1) 0%, rgba(216,39,32,1) 100%);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+}
+.top_textThree{
+    margin:20px 0 0 30%;
+    font-size:12px;
+    font-family:PingFang SC;
+    font-weight:400;
+    color:rgba(17,17,17,1);
+    line-height:28px;
+    background:linear-gradient(0deg,rgba(169,41,41,1) 0%, rgba(216,39,32,1) 100%);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+}
+.email{
+    background:rgba(255,255,255,1);
+    opacity:0.8;
+    border-radius:6px;
+    margin-top: 10px;
+    border: 0px 
+}
+div.item-inner{
+    border: 0px !important;
+}
+.emailSend{
+    --background:linear-gradient(0deg,rgba(169,41,41,1),rgba(216,39,32,1));
+    border-radius:9px;
+}
+.list1{
+    width:12px;
+    height:12px;
+    background:rgba(216,39,32,1);
+    border-radius:2px;
+    position: absolute;
+    z-index: 10;
+}
+.list2{
+    width:12px;
+    height:12px;
+    background:rgba(255,255,255,1);
+    border-radius:2px;
+    float: left;
+    margin: 3px;
+}
+.emailpng{
+   width: 23px;
+   height: 17px;
+   margin-top: 5px;
+}
+.emailthumbnail{
+    width: 35px;
+    height: 23px;
+}
+.auththumbnail{
+    width: 35px;
+    height: 22px;
+}
+.atuhpng{
+    width: 19px;
+    height: 22px;
+    margin-top: 2px;
+ }
+ .grid{
+    height: 100%;
+     display: flex; 
+     flex-flow: column;  
+ }
+ .bottomCopy{
+    font-family:PingFang SC;
+    font-weight:400;
+    color:rgba(255,255,255,1);
+}
+ion-select{
+    max-width: 100%;
+}

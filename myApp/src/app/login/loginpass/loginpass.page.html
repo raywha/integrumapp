@@ -1,0 +1,77 @@
+<ion-content id="test" [fullscreen]="false" hide-nav-bar="true">
+    <div [ngStyle]="{'background-image': 'url(' + logPic.background + ')','background-size': 'cover','height':'100%'}">
+        <ion-grid>
+            <ion-row class="logo">
+                <ion-col></ion-col>
+                <ion-col>
+                    <div>
+                        <ion-img [src]="logPic.log"></ion-img>
+                    </div>
+                </ion-col>
+                <ion-col></ion-col>
+            </ion-row>
+            <ion-row>
+                <ion-col></ion-col>
+                <ion-col size="9">
+                    <div class="text-center">
+                        <ion-text class="userName">
+                            {{user}}
+                        </ion-text>
+                    </div>
+                </ion-col>
+                <ion-col></ion-col>
+            </ion-row>
+            <ion-row>
+                <ion-col></ion-col>
+                <ion-col size="9">
+
+                    <ion-input required [(ngModel)]="pass" type="password" class="pass"
+                        placeholder="{{'login.password'|translate}}"></ion-input>
+
+                </ion-col>
+                <ion-col></ion-col>
+            </ion-row>
+            <ion-row>
+                <ion-col></ion-col>
+                <ion-col class="ion-align-self-center colRemPass" size="9">
+                    <ion-text class="text">
+                        {{'login.rememberpass' | translate}}
+                    </ion-text>
+                    <ion-checkbox color="light" class="Rcheck" checked="true"></ion-checkbox>
+                </ion-col>
+                <ion-col></ion-col>
+            </ion-row>
+            <ion-row>
+                <ion-col></ion-col>
+                <ion-col size="9">
+                    <ion-button class="btnloginpass" expand="block" (click)="Login()">
+                        <ion-text class="btnText">
+                            {{'login.login' | translate}}
+                        </ion-text>
+                    </ion-button>
+                </ion-col>
+                <ion-col></ion-col>
+            </ion-row>
+            <ion-row>
+                <ion-col></ion-col>
+                <ion-col size="9">
+                    <ion-text class="text">
+                        {{'login.or' | translate}}
+                    </ion-text>
+                </ion-col>
+                <ion-col></ion-col>
+            </ion-row>
+            <ion-row>
+                <ion-col></ion-col>
+                <ion-col size="9">
+                    <ion-button class="btnloginsso" expand="block" (click)="ssoLogin()">
+                        <ion-text class="btnTextsso">
+                            {{'login.ssologin' | translate}}
+                        </ion-text>
+                    </ion-button>
+                </ion-col>
+                <ion-col></ion-col>
+            </ion-row>
+        </ion-grid>
+    </div>
+</ion-content>

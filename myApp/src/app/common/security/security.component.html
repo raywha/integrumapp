@@ -1,0 +1,64 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+        <ion-icon name="arrow-back" (click)="dismiss()" mode="ios" color="dark"></ion-icon>
+    </ion-buttons>
+    <ion-title>{{title}}</ion-title>
+    <ion-buttons slot="end">
+      <ion-text color="dark" (click)="clean()">
+        <h6>Clear</h6>
+      </ion-text>
+  </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <div class="searchTop">
+   <div class="search-box">
+    
+      <img src="../../../../../assets/icon/search.png" alt="">
+      <ion-input type="text" placeholder="Type to search"  (ionChange)=getItems()  [(ngModel)]="searchkey"></ion-input>
+      <!-- <input type="text" placeholder="Search" [(ngModel)]="searchName" (keyup)="getSearch()" placeholder=""> -->
+      <img src="../../../../../assets/icon/delect.png" class="delect" (click)="delectSelect()" *ngIf="isDelect">
+   </div>
+   | 
+    <div class="searchRight">
+        <p class="selectName">{{selectText}}</p>
+        <ion-icon name="arrow-down" (click)="getSelectlist()"></ion-icon>
+        <button *ngIf="plen>limitlen" (click)="fnSearch()">search</button>
+        <!-- <img src="../../../../../assets/icon/down.png" alt="" class="down" (click)="getSelectlist()"> -->
+    </div>
+    <ul class="selectList" *ngIf="isSelectList">
+        <li *ngFor="let item of listSlect;let index=index"  [ngClass]="{'active': index==selectIndex}" (click)="select(item,index)">{{item.person}}</li>
+    </ul>
+  </div>
+  <ion-list *ngIf="stype=='single'">
+    <ion-item *ngFor="let item of listData" (click)="setManager(item)">
+      <ion-label>{{item.EMPFullName}}</ion-label>
+    </ion-item>
+  </ion-list>
+  <ion-list *ngIf="stype=='multi'">
+    <ion-item *ngFor="let item of listData">
+      <ion-label>{{item.EMPFullName}}</ion-label>
+      <ion-checkbox slot="end" [(ngModel)]="item.checked" (ionChange)=addCheckedItems(item.checked,item.EMPFullName)></ion-checkbox>
+      </ion-item>
+  </ion-list>
+  <ion-infinite-scroll threshold="100px" (ionInfinite)="doInfinite($event)">
+    <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="Loading more data...">
+    </ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+</ion-content>
+<ion-footer *ngIf="stype=='multi'">
+  <div [ngStyle]="{ 'background-color': cbgcolor,'color':'white'}">
+    <div class="button-wrapper">
+    
+    <button [ngStyle]="{ 'background-color': cbgcolor,'color':'white'}" ion-button clear item-right icon-left (click)="dismiss()" align="center">
+      Close
+    </button>
+   
+    <button [ngStyle]="{ 'background-color': cbgcolor,'color':'white'}" ion-button clear item-right icon-left (click)="saveChoice()" align="center">
+      Save
+    </button>
+   
+  </div>
+   </div>
+</ion-footer>

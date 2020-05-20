@@ -1,0 +1,80 @@
+
+{
+    "public":{
+        "home":"首页",
+        "account":"基础信息",
+        "password":"密码",
+        "offline":"脱机模式",
+        "language":"语言",
+        "bi":"商业智能报告",
+        "task":" 我的任务",
+        "calender":"日历",
+        "inbox":"收件箱"
+    },
+    "account":{
+        "name":"名称",
+        "company":"公司",
+        "email":"邮件",
+        "language":"语言",
+        "lasttimelogout":"上次登录",
+        "activatedon":"激活",
+        "accountLan":"Englist"
+    },
+    "offline":{
+        "title":"离线模式支持以下功能:",
+        "content":"提出新表单",
+        "content2":"查看和编辑已保存的草稿表单",
+        "content3":"查看和编辑已保存的已加书签表单",
+        "name":"切换至离线模式"
+       
+    },
+    "login":{
+        "email":"邮箱",
+        "password":"密碼",
+        "authcode":"验证码",
+        "welcom1":"欢迎来到integrumNow（v2）",
+        "welcom2":"最全面的业务优化风险和",
+        "welcom3":"合规平台。",
+        "submit":"提交",
+        "next":"下一步",
+        "explain1":"正确输入您的电子邮件和验证码",
+        "explain2":"单击提交按钮。",
+        "explain3":"系统将很快向您发送带有验证码的",  
+        "explain4":"简短地址，带有验证链接",
+        "copyright":"版权 ",
+        "rememberpass":"记住密码",
+        "or":"或",
+        "login":"登录",
+        "ssologin":"SSO登录",
+        "authmailerr":"邮箱或者验证码错误，请重新输入！",
+        "authpasserr":"密码错误!"
+    },
+    "setting":{
+        "account":"我的账户",
+        "language":"语言",
+        "offline":"切换至脱机模式",
+        "logout":"退出登录"
+    },
+    "alert":{
+        "title":"提示",
+        "btn":"确定"
+    },
+    "readAction":{
+        "ParentDocument":"父文档",
+        "ActionTitle":"标题",
+        "EmployeeAssigned":"分配的员工",
+        "Description":"说明",
+        "Priotity":"优先权",
+        "DueDate":"到期日期",
+        "ActionTaken":"采取行动",
+        "Attachment":"附件",
+        "AduitTrail":"审核踪迹",
+        "take_a_photo":"拍照上传",
+        "select_a_photo":"选择一张照片"
+    },
+    "tips":{
+        "Cancel":"取消",
+        "Done":"完成"
+    }
+   
+}

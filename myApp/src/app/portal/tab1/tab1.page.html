@@ -1,0 +1,51 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="presentPopover($event)">
+        <ion-icon slot="start" name="settings" color="dark"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title class="welcome-card">
+        <ion-img [src]="titlelog"></ion-img>
+    </ion-title>
+  
+     
+   
+    <ion-buttons slot="end">
+      <ion-button (click)="logout()">
+        <ion-icon slot="start" name="power" color="dark"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="portal-box">
+    <div class="portal-title" [ngStyle]="{'background-color':cbgcolor}">
+      <span>{{portalTile}}</span>
+      <ion-icon name="list" (click)="presentPopoverPortal($event)"></ion-icon>
+    </div>
+    <ion-list class="portal-list">
+      <ion-item *ngFor="let item of data">
+        <ion-row>
+          <ion-col>
+            <span>
+                <img  src="{{sdomain}}/{{folder}}/{{item.LinkImage}}" alt="">
+            </span>
+          </ion-col>
+          <ion-col size="9">
+            <div>
+              <ion-text>
+                <a [routerLink]="['/form-list']" [queryParams]="{vid:item.SFMView,vtitle:item.LinkTitle,type:'formlist',formid:item.SFMForm,temptitle:portalTile}">
+                  {{item.LinkTitle}} </a>
+              </ion-text>
+            </div>
+          </ion-col>
+          <ion-col><span> <a [routerLink]="['/new-form']" [queryParams]="{aTitle:item.LinkTitle,aid:item.SFMForm,temptitle:portalTile}"><img
+                  src="../../../assets/icon/add.png" alt=""></a></span></ion-col> 
+        </ion-row>
+      </ion-item>
+    </ion-list>
+  </div>
+
+</ion-content> 

@@ -1,0 +1,100 @@
+ion-title ion-img{
+  height: 40px;
+}
+.portal-box{
+  padding: 1.5rem;
+  .portal-title{
+    /*background-color:#B81321 ;*/
+    border-radius: 5px;
+    color:#fff;
+    height: 3.5rem;
+    line-height: 3.5rm;
+    text-align: center;
+    span{
+      line-height: 3.5rem;
+      font-size: 1.7rem;
+    }
+    ion-icon{
+      font-size: 3rem;
+      float: right;
+      color: #fff;
+      padding: 0.2rem 1.5rem 0.2rem 0;
+      cursor: pointer;
+    }
+  }
+  .portal-list{
+    
+    ion-item{
+    
+      div{
+        text-align: center;
+      }
+      ion-row {
+        width: 100%;
+        a{
+          color:rgba(51,51,51,1);
+        }
+      }
+    } 
+    
+  
+    
+    
+  }
+
+  ion-list{
+    margin-top: 1rem !important;
+  }
+  .padList{
+    border-radius: 5px;
+    margin-bottom: 0.5rem;
+    max-height: 110px;
+    --background: url("../../../assets/icon/pad1.png") no-repeat center center / cover;
+    div{
+      width: 100%;
+      text-align: center;
+    }
+    div:last-child{
+      width: 100%;
+      text-align: right;
+    }
+  }
+
+  .padList2{
+    border-radius: 5px;
+    margin-bottom: 0.5rem;
+    max-height: 110px;
+    --background: url("../../../assets/icon/pad2.png") no-repeat center center / cover;
+    div{
+      width: 100%;
+      text-align: center;
+    }
+    div:last-child{
+      width: 100%;
+      text-align: right;
+    }
+  }
+  
+}
+
+.portal-pad  {
+
+   
+  
+
+
+}
+
+
+
+
+
+
+
+  .commonIcon {
+    background-size: contain;
+    width: 20px;
+    height: 20px;
+
+}
+

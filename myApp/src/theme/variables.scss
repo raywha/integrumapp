@@ -1,0 +1,206 @@
+// Ionic Variables and Theming. For more info, please see:
+// http://ionicframework.com/docs/theming/
+
+/** Ionic CSS Variables **/
+:root {
+  /** primary **/
+  --ion-color-primary: #3880ff;
+  --ion-color-primary-rgb: 56, 128, 255;
+  --ion-color-primary-contrast: #ffffff;
+  --ion-color-primary-contrast-rgb: 255, 255, 255;
+  --ion-color-primary-shade: #E03024;
+  --ion-color-primary-tint: #E03024;
+
+  /** secondary **/
+  --ion-color-secondary: #0cd1e8;
+  --ion-color-secondary-rgb: 12, 209, 232;
+  --ion-color-secondary-contrast: #ffffff;
+  --ion-color-secondary-contrast-rgb: 255, 255, 255;
+  --ion-color-secondary-shade: #0bb8cc;
+  --ion-color-secondary-tint: #24d6ea;
+
+  /** tertiary **/
+  --ion-color-tertiary: #7044ff;
+  --ion-color-tertiary-rgb: 112, 68, 255;
+  --ion-color-tertiary-contrast: #ffffff;
+  --ion-color-tertiary-contrast-rgb: 255, 255, 255;
+  --ion-color-tertiary-shade: #633ce0;
+  --ion-color-tertiary-tint: #7e57ff;
+
+  /** success **/
+  --ion-color-success: #10dc60;
+  --ion-color-success-rgb: 16, 220, 96;
+  --ion-color-success-contrast: #ffffff;
+  --ion-color-success-contrast-rgb: 255, 255, 255;
+  --ion-color-success-shade: #0ec254;
+  --ion-color-success-tint: #28e070;
+
+  /** warning **/
+  --ion-color-warning: #ffce00;
+  --ion-color-warning-rgb: 255, 206, 0;
+  --ion-color-warning-contrast: #ffffff;
+  --ion-color-warning-contrast-rgb: 255, 255, 255;
+  --ion-color-warning-shade: #e0b500;
+  --ion-color-warning-tint: #ffd31a;
+
+  /** danger **/
+  --ion-color-danger: #f04141;
+  --ion-color-danger-rgb: 245, 61, 61;
+  --ion-color-danger-contrast: #ffffff;
+  --ion-color-danger-contrast-rgb: 255, 255, 255;
+  --ion-color-danger-shade: #d33939;
+  --ion-color-danger-tint: #f25454;
+
+  /** dark **/
+  --ion-color-dark: #222428;
+  --ion-color-dark-rgb: 34, 34, 34;
+  --ion-color-dark-contrast: #ffffff;
+  --ion-color-dark-contrast-rgb: 255, 255, 255;
+  --ion-color-dark-shade: #1e2023;
+  --ion-color-dark-tint: #383a3e;
+
+  /** medium **/
+  --ion-color-medium: #989aa2;
+  --ion-color-medium-rgb: 152, 154, 162;
+  --ion-color-medium-contrast: #ffffff;
+  --ion-color-medium-contrast-rgb: 255, 255, 255;
+  --ion-color-medium-shade: #86888f;
+  --ion-color-medium-tint: #a2a4ab;
+
+  /** light **/
+  --ion-color-light: #f4f5f8;
+  --ion-color-light-rgb: 244, 244, 244;
+  --ion-color-light-contrast: #000000;
+  --ion-color-light-contrast-rgb: 0, 0, 0;
+  --ion-color-light-shade: #d7d8da;
+  --ion-color-light-tint: #f5f6f9;
+}
+//新增内置主题颜色
+.ion-color-favorite {
+  --ion-color-base: #b81321;
+  --ion-color-base-rgb: 105,187,123;
+  --ion-color-base-contrast: #ffffff;
+  --ion-color-base-contrast-rgb: 255,255,255;
+  --ion-color-base-shade: #b81321;
+  --ion-color-base-tint: #b81321;
+}
+//新增Action颜色
+.ion-color-action {
+  --ion-color-base: rgba(37, 75, 107, 1);
+  --ion-color-base-rgb: 105,187,123;
+  --ion-color-base-contrast: #ffffff;
+  --ion-color-base-contrast-rgb: 255,255,255;
+  --ion-color-base-shade: rgba(37, 75, 107, 1);
+  --ion-color-base-tint: rgba(37, 75, 107, 1);
+}
+ion-toolbar{
+  -moz-box-shadow:0px 0px 10px rgba(184,207,227,0.5); -webkit-box-shadow:0px 0px 10px rgba(184,207,227,0.5); box-shadow:0px 00px 10px rgba(184,207,227,0.5);
+}
+ion-item{
+  --border-color:#e0e0e0;
+}
+a, article, aside, b, body, button, dd, div, dl, dt, figcaption, figure, footer, h1, h2, h3, h4, h5, h6, header, i, input, li, nav, p, section, select, span, textarea, ul {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  font-style: normal;
+  text-decoration: none;
+  border: none;
+  outline: none;
+  font-weight: 400;
+ // font-family: Microsoft Yahei;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-font-smoothing: antialiased;
+}
+
+html {
+font-size: 14px;
+}
+
+.clear:after {
+content: '';
+display: block;
+clear: both;
+}
+
+@keyframes backOpacity{
+ 0%   { opacity: 1 }
+ 25%  { opacity: .5 }
+ 50%  { opacity: 1 }
+ 75%  { opacity: .5 }
+ 100% { opacity: 1 }
+}
+
+.animation_opactiy{
+animation: backOpacity 2s ease-in-out infinite;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+box-shadow:0 0 0 60px #fff inset !important;
+-webkit-text-fill-color: #666 !important;
+}
+
+.ellipsis {
+overflow: hidden;
+text-overflow: ellipsis;
+white-space: nowrap;
+}
+
+ul,ol{
+  list-style-type: none;
+}
+ion-toolbar{
+  min-height: 4rem;
+  line-height: 4rem;
+}
+select,option{
+  //清除select的边框样式
+  border: none;
+  //清除select聚焦时候的边框颜色
+  outline: none;
+  //将select的宽高等于div的宽高
+  width: 100%;
+  //隐藏select的下拉图标
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background: #eeeeee;
+  //通过padding-left的值让文字居中
+  // padding-left: 60px;
+}
+/*清除ie的默认选择框样式清除，隐藏下拉箭头*/
+select::-ms-expand {display: none;}
+
+.action-sheet-group.sc-ion-action-sheet-ios{
+  color: #f53d3d;
+  overflow: scroll;
+  max-height: 520px;
+}
+
+.custom-popover {
+   .popover-content{
+    width: 60% !important;
+   }
+}
+
+.popover-content.sc-ion-popover-ios,.popover-content.sc-ion-popover-md  {
+  width: 100%;
+}
+ion-radio-group {
+  .item .sc-ion-label-md-h, .item .sc-ion-label-ios-h{
+    white-space: normal;
+    word-break: break-all;
+  }
+}
+.alert-wrapper.sc-ion-alert-md{
+  width:100%;
+  max-width: 100% !important;
+  .alert-checkbox-label{
+    white-space: normal;
+    word-break: break-all;
+    line-height: 18px;
+  }
+}

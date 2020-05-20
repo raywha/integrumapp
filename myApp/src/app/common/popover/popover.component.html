@@ -1,0 +1,5 @@
+<ion-list >
+  <ion-item #btnlist lines="full" *ngFor="let item of actions" (click)="dismiss(item.btnType)">
+    <ion-label>{{item.btnLabel}}</ion-label>
+  </ion-item>
+</ion-list>

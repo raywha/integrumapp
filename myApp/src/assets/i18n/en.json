@@ -1,0 +1,81 @@
+
+{
+    "public":{
+        "home":"Home",
+        "account":"My account",
+        "password":"Password",
+        "offline":"Switch to offline mode",
+        "language":"language",
+        "bi":"BI Report",
+        "task":"My Task",
+        "calender":"Calender",
+        "inbox":"Inbox"
+    },
+    "account":{
+        "name":"Name",
+        "company":"Company",
+        "email":"Email",
+        "language":"Language",
+        "lasttimelogout":"Last Time Logout",
+        "activatedon":"Activated on",
+        "accountLan":"Englist"
+    },
+    "offline":{
+        "title":"The following functionalities are supported by offline mode:",
+        "content":"Raising new forms",
+        "content2":"View and edit saved draft forms",
+        "content3":"View and edit bookmarked forms",
+        "name":"Switch to offline mode"
+       
+    },
+    "login":{
+        "email":"Email",
+        "password":"Password",
+        "authcode":"Authentication Code",
+        "welcom1":"Welcome to integrumNow (v2)",
+        "welcom2":"The most comprehensive business optimisation risk and",
+        "welcom3":"compliance platform.",
+        "submit":"SUBMIT",
+        "next":"NEXT",
+        "explain1":"Enter your E-mail and Authentication Code correctly",
+        "explain2":"Click SUBMIT button.",
+        "explain3":"The system will send you email to above",
+        "explain4":"address shortly with verification link ",
+        "copyright":"Copyright (c) ",
+        "rememberpass":"Remember password",
+        "or":"or",
+        "login":"Log In",
+        "ssologin":"SSO Log In",
+        "authmailerr":"Please enter correct authentication code!",
+        "authpasserr":"Incorrect password. Please be aware that password is case sensitive."
+    },
+    "setting":{
+        "account":"My account",
+        "language":"Language",
+        "offline":"Switch to offline mode",
+        "logout":"Log out"
+    },
+    "alert":{
+        "title":"",
+        "btn":"ok"
+    },
+    "readAction":{
+        "ParentDocument":"Parent Document",
+        "ActionTitle":"Action Title",
+        "EmployeeAssigned":"Employee Assigned",
+        "Description":"Description",
+        "Priotity":"Priotity",
+        "DueDate":"Due Date",
+        "ActionTaken":"Action Taken",
+        "Attachment":"Attachment",
+        "AduitTrail":"Aduit Trail",
+        "take_a_photo":"Take a Photo",
+        "select_a_photo":"Select a Photo" 
+    },
+    "tips":{
+        "Cancel":"Cancel",
+        "Done":"Done"
+    }
+    
+    
+}

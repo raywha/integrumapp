@@ -1,0 +1,60 @@
+.Loginpass{
+    --background: url('/assets/icon/loginpass.png') no-repeat center center / cover;
+}
+.logo{
+    margin-top: 40px;
+}
+.userName {
+    width:244px;
+    height:36px;
+    font-size:48px;
+    font-family:PingFang SC;
+    font-weight:400;
+    color:rgba(255,255,255,1);
+}
+.text{
+    font-family:PingFang SC;
+    font-weight:400;
+    color:rgba(255,255,255,1);
+}
+.text-center{
+    text-align: center;
+    min-height: 120px;
+}
+.pass{
+
+    background:rgba(255,255,255,0);
+    border:1px solid rgba(255,255,255,1);
+    box-shadow:0px 4px 16px 0px rgba(255,255,255,0.5) inset;
+    border-radius:43px;
+    text-align: center;
+    color: white;
+}
+.btnloginpass{
+    --background:rgba(255,255,255,1);
+    --box-shadow:0px 4px 15px 0px rgba(255,255,255,0.2);
+    --border-radius:43px;
+}
+.btnText,.btnTextsso{
+    font-size:16px;
+    font-family:PingFang SC;
+    font-weight:400;
+    color:#b81321;
+}
+.btnloginsso{
+    --background:white;
+    --border-radius:43px;
+}
+.Rcheck{
+    width: 13px;
+    height: 13px;
+    margin: 5px 0px -2px 5px;
+    --background:white;
+}
+ion-row {
+    min-height: 40px;
+
+}
+.colRemPass{
+    text-align: right;
+}
