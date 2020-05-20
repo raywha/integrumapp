@@ -321,6 +321,10 @@ export class NewFormPage implements OnInit {
                 if(this.type != 'edit'){
                   if(data.value!='') data.value = moment(`${data.value}`,'YYYY-MM-DD').format('DD/MM/YYYY');
                 }
+              }else if(data.xtype == 'time'){
+                if(this.type != 'edit'){
+                  if(data.value!='') data.value = moment(`${data.value}`,'YYYY-MM-DD hh:mm:ss').format('hh:mm:ss');
+                }
               }
                 this.fields.push(data) //
                 // this.selectScore(data,data.value,this.selecttemplat.template.secs[i].title)
