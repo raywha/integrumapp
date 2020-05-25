@@ -68,6 +68,42 @@ export class AuthemailPage implements OnInit {
       this.name= this.authform.controls['name'];
       this.password= this.authform.controls['password'];
 
+      Plugins.Browser.addListener("browserPageLoaded", (e:any)=>{
+        console.log("-------in pageload-------");
+        console.log("-----e------",e);
+        this.key1 = "";
+        this.key2 = "";
+        if (e && e.url)
+          if (e.url.includes('key1')) {
+  
+            let newURL = e.url.split('?');
+            let newkey = newURL[1].split('&');
+  
+            this.key1 = newkey[0].split('=');
+            this.key2 = newkey[1].split('=');
+            console.log('------key1------',this.key1);
+            console.log('------key2------',this.key2);
+          }
+          else {
+            console.log("no key FOUND");
+          }
+      });
+      Plugins.Browser.addListener("browserFinished", data=>{
+        {
+          console.log("-------in pagefinished-------");
+          if (this.key1[1]) {
+            Plugins.Browser.close();
+            // let postData={key1:data[0].key1,key2:data[0].key2};
+            let postData = { key1: this.key1[1], key2: this.key2[1] };
+            console.log("POSTDATA>>>", postData);
+            this.Login();
+            
+          }
+          else {
+            console.log("SSO LOGIN ISSUE CHECK else condition ");
+          }
+        }
+      });
      }
 
   ngOnInit() {
@@ -154,6 +190,8 @@ export class AuthemailPage implements OnInit {
                   localStorage.setItem('EmpCurrentPortal',EmpCurrentPortal)
                   console.log('userlan:',data.lan);
                   localStorage.setItem('lan',data.lan);
+                  this.translate.setDefaultLang(data.lan);
+                  this.translate.use(data.lan);
                   this.storage.set("loginDetails",this.loginDetails)
                 }
               )
@@ -179,6 +217,7 @@ export class AuthemailPage implements OnInit {
                 }
               )
               this.getallforms.getAllForms(this.loginDetails).pipe(first()).subscribe(data => {
+                this.commonCtrl.processHide();
                 const otime = new Date();
                   console.log('getAllForms--otime.toLocaleTimeString:',otime.toLocaleTimeString(),'-->starttime:',curtime.toLocaleTimeString());
                 data = JSON.parse(data.data);
@@ -186,6 +225,7 @@ export class AuthemailPage implements OnInit {
               })
               this.commonCtrl.processHide();
               this.ngZone.run(()=>{
+                
                 this.router.navigate(['tabs/tab1'])
               })  
             } else {
@@ -287,19 +327,25 @@ export class AuthemailPage implements OnInit {
     const ssofolder:string = this.ssofolderlist[index];
     localStorage.setItem('ssoserver',this.ssoserver);
     localStorage.setItem('ssofolder',ssofolder);
-    let browserURL = this.ssoserver + '/' + ssofolder + '/' + 'integrumws.nsf/ssord.xsp';
+    //let browserURL = this.ssoserver + '/' + ssofolder + '/' + 'integrumws.nsf/ssord.xsp';
+    let browserURL = this.ssoserver + '/' + ssofolder + '/' + 'azure.nsf/OAuth?openpage';
     console.log('browserURL:',browserURL)
     //let browserURL = this.ssoserver + '/' + 'integrumws.nsf/ssord.xsp';
 
     //const browser = this.iab.create(browserURL, '_blank', 'location=yes,toolbar=yes');
     const { Browser } = Plugins;
-    let codes="if(typeof getCodes == 'function') {getCodes()};";
-    this.SSOExcuteScript(codes,Browser,browserURL); //end of sso code
+    //let codes="if(typeof getCodes == 'function') {getCodes()};";
+    Plugins.Browser.open({
+      url: browserURL,
+      toolbarColor: "#5A5DF5"
+    });
+    //this.SSOExcuteScript(codes,Browser,browserURL); //end of sso code
   }
   async SSOExcuteScript(codes, Browser,browserURL) {
     await Browser.open({ url: browserURL });
-    Browser.addListener("browserPageLoaded", e=>{
+    Browser.addListener("browserPageLoaded", (e:any)=>{
       console.log("-------in pageload-------");
+      console.log("-----e------",e);
       this.key1 = "";
       this.key2 = "";
       if (e && e.url)

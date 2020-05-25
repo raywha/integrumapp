@@ -17,6 +17,8 @@ import { Geolocation } from '@ionic-native/geolocation/ngx';
 import * as moment from 'moment';
 import {OpenModalComponent} from "../../common/open-modal/open-modal.component";
 import { ElementRef,ViewChildren} from '@angular/core';
+import { Plugins, CameraResultType, CameraSource } from '@capacitor/core';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 @Component({
   selector: 'app-new-form',
   templateUrl: './new-form.page.html',
@@ -108,6 +110,7 @@ export class NewFormPage implements OnInit {
   public txtfontcolor = "favorite";
   public skipMandatory:string = "0";
   public mandatoryWhenApprove: string = "0";
+  photo: SafeResourceUrl;
   constructor(
     private storage: Storage,
     public modal: ModalController,
@@ -123,7 +126,8 @@ export class NewFormPage implements OnInit {
     public platform: Platform,
     private diagnostic: Diagnostic,
     private camera: Camera,
-    private geolocation: Geolocation
+    private geolocation: Geolocation,
+    private sanitizer: DomSanitizer
   ) {
     if(localStorage.getItem("bgcolor")){
       console.log('localStorage-->bgcolor:',localStorage.getItem('bgcolor'))
@@ -171,6 +175,10 @@ export class NewFormPage implements OnInit {
         } else {
           this.title = res.title
         }
+        
+        this.list = [
+          { "show": false }
+        ];
 
         this.commonCtrl.show()
         this.getFormData(res.unid, res.type).then((data: any) => {
@@ -1647,18 +1655,7 @@ export class NewFormPage implements OnInit {
           //role: 'destructive',
           handler: () => {
             this.platform.ready().then((readySource) => {
-              this.diagnostic.isLocationEnabled().then((enabled) => {
-                if (enabled) {
-                  this.addLatlonToImage(name,field);
-
-                }
-                else {
-                  this.GPSerror("Location service not enabled!<br/>");
-                }
-
-              }).catch((error) => {
-                this.GPSerror(error);
-              });
+              this.addLatlonToImage(name,field);
             });
           }
         },
@@ -1666,34 +1663,17 @@ export class NewFormPage implements OnInit {
           text: 'Select a Photo',
           handler: () => {
             this.platform.ready().then((readySource) => {
-              this.diagnostic.isLocationEnabled().then((enabled) => {
-                if (enabled) {
-                  this.selecPicture(name,field);
-                  //   this.diagnostic.isLocationAuthorized().then((enable)=>{
-                  //    if(enable){this.selecPicture(name);}
-                  //    else{this.GPSerror("Location access not allow to SmartCAP app!<br/>");}
-                  //   }).catch((error)=>{
-                  //    this.GPSerror(error);
-                  //  });
-                }
-                else {
-                  this.GPSerror("Location service not enabled!<br/>");
-                }
-
-              }).catch((error) => {
-                this.GPSerror(error);
-              });
+              this.selecPicture(name,field);
             });
           }
         },
         {
           text: 'Remove a Photo',
           handler: () => {
-            console.log(att)
-            this.attLists= this.attLists.filter(function(obj){
-                return obj!=att   
+            this.attLists= field.value.filter(function(obj){
+              return obj!=att;
             })
-            field.value= this.attLists
+            field.value= this.attLists;
           }
         },
         {
@@ -1709,66 +1689,29 @@ export class NewFormPage implements OnInit {
 
   };
   
-  addLatlonToImage(name,field) {
-    this.camera.getPicture({
+  async addLatlonToImage(name,field) {
+    console.log("------------in addLatlonToImage------");
+    const image = await Plugins.Camera.getPhoto({
       quality: 50,
-      destinationType: this.camera.DestinationType.FILE_URI,
-      targetHeight: 500,
-      targetWidth: 500,
-      encodingType: this.camera.EncodingType.JPEG,
-      mediaType: this.camera.MediaType.PICTURE
-    }).then((imageData) => {
-
-      // imageData is a base64 encoded string DATA_URL FILE_URI 'lat: '+lat+', lon: '+lon,
-      //let base64Image = "data:image/jpeg;base64," + imageData;
-      //this.geolocation.getCurrentPosition().then((resp) => {
-        //let lat = resp.coords.latitude;
-       // let lon = resp.coords.longitude;
-       // this.lat = lat;
-       // this.lon = lon;
-       /*
-        let d = new Date();
-        let draftSavedTime = d.toString().substr(4, 11);
-        let canvas = document.createElement('canvas');
-        let context = canvas.getContext('2d');
-        let newImg = new Image();
-        newImg.src = this.webview.convertFileSrc(imageData); // imageData;
-        newImg.onload = () => {
-
-          canvas.setAttribute("width", "400");
-          canvas.setAttribute("height", "500");
-          // context.drawImage(newImg, 0, 0);
-          context.drawImage(newImg, 0, 0, newImg.width, newImg.height);
-          // context.font = "15px impact";
-          context.font = "bold 13px Arial";
-          // context.textAlign = 'center';
-          context.fillStyle = 'red';
-          context.fillText(draftSavedTime, 20, 20);
-          // context.fillText('Lat: '+lat+'     Lon: '+lon, canvas.width / 2, canvas.height * 0.9);
-         // context.fillText('Lat: ' + lat, canvas.width * 0.1, canvas.height * 0.8);
-         // context.fillText('Lon: ' + lon, canvas.width * 0.1, canvas.height * 0.9);
-          // context.fillText('Lon: '+lon, canvas.width / 2, canvas.height * 0.8);
-          let image = canvas.toDataURL();
-          field.src =image // this.webview.convertFileSrc(imageData);
-          //field.value =image // this.webview.convertFileSrc(imageData);
-          this.attLists.push({
-            type:'image',
-            value:image
-          })
-          field.value= this.attLists;
-          //this.setValue(name, image);
-        };
-
-     // }).catch((error) => {
-     //   console.log('Error getting location', error);
-    //  });
-
-
-*/
-
-    }, (err) => {
-      console.log(err);
+      allowEditing: true,
+      resultType: CameraResultType.Base64,
+      source: CameraSource.Camera
     });
+    //this.photo = this.sanitizer.bypassSecurityTrustResourceUrl(image && (image.webPath));
+    const imgsrc:string = `data:image/${image.format};base64,${image.base64String}`;
+    //this.photo = this.sanitizer.bypassSecurityTrustResourceUrl(imgsrc);
+    //this.photo = `data:image/${image.format};base64,${image.base64String}`;
+    this.attLists=[];
+    this.attLists.push({
+      type:'image',
+      value:imgsrc
+    })
+    if(field.value){
+      field.value = field.value.concat( this.attLists);
+    } else{
+      field.value = this.attLists;
+    }
+   
   };
   setValue(name, data) {
 
@@ -1790,75 +1733,27 @@ export class NewFormPage implements OnInit {
     });
     await alertGPSError.present();
   };
-  selecPicture(name,field) {
-    this.camera.getPicture({
+  async selecPicture(name,field) {
+    console.log("------------in select picture------");
+    const image = await Plugins.Camera.getPhoto({
       quality: 50,
-      destinationType: this.camera.DestinationType.FILE_URI,
-      targetHeight: 500,
-      targetWidth: 500,
-      encodingType: this.camera.EncodingType.JPEG,
-      mediaType: this.camera.MediaType.PICTURE,
-      sourceType: this.camera.PictureSourceType.PHOTOLIBRARY
-    }).then((imageData) => {
-      
-      
-      //alert(imageData);
-      // imageData is a base64 encoded string DATA_URL FILE_URI 'lat: '+lat+', lon: '+lon,
-      //let base64Image = "data:image/jpeg;base64," + imageData;
-     // this.geolocation.getCurrentPosition().then((resp) => {
-      //  let lat = resp.coords.latitude;
-       // let lon = resp.coords.longitude;
-     //   this.lat = lat;
-      //  this.lon = lon;
-      /*
-        let d = new Date();
-        let draftSavedTime = d.toString().substr(4, 11);
-        let canvas = document.createElement('canvas'); //this.canvasRef.nativeElement;
-        let context = canvas.getContext('2d');
-        let newImg = new Image();
-        newImg.src = this.webview.convertFileSrc(imageData); // imageData;
-        this.attLists=[]
-        newImg.onload = () => {
-
-          canvas.setAttribute("width", "400");
-          canvas.setAttribute("height","500");
-          // context.drawImage(newImg, 0, 0);
-          context.drawImage(newImg, 0, 0, newImg.width, newImg.height);
-          // context.font = "15px impact";
-          context.font = "bold 13px Arial";
-          // context.textAlign = 'center';
-          context.fillStyle = 'red';
-          context.fillText(draftSavedTime, 20, 20);
-          // context.fillText('Lat: '+lat+'     Lon: '+lon, canvas.width / 2, canvas.height * 0.9);
-         // context.fillText('Lat: ' + lat, canvas.width * 0.1, canvas.height * 0.8);
-         // context.fillText('Lon: ' + lon, canvas.width * 0.1, canvas.height * 0.9);
-          // context.fillText('Lon: '+lon, canvas.width / 2, canvas.height * 0.8);
-          let image = canvas.toDataURL();
-          //console.log(image)
-          field.src =image // this.webview.convertFileSrc(imageData);
-          //field.value =image // this.webview.convertFileSrc(imageData);
-          this.attLists.push({
-            type:'image',
-            value:image
-          })
-          if(field.value){
-            field.value=  field.value.concat( this.attLists)
-          } else{
-            field.value=  this.attLists;
-          }
-          
-          this.attachedImages.push(image);
-          //this.setValue(name, image);
-        };
-     // }).catch((error) => {
-       // console.log('Error getting location', error);
-      //});
-
-*/
-
-    }, (err) => {
-      console.log(err);
+      allowEditing: true,
+      resultType: CameraResultType.Base64,
+      source: CameraSource.Photos
     });
+    const imgsrc:string = `data:image/${image.format};base64,${image.base64String}`;
+    //this.photo = `data:image/${image.format};base64,${image.base64String}`;
+    this.attLists=[];
+    this.attLists.push({
+      type:'image',
+      value:imgsrc
+    })
+    if(field.value){
+      field.value = field.value.concat( this.attLists);
+    } else{
+      field.value = this.attLists;
+    }
+    
   }
   async presentModal(stype:string) {
     const modal = await this.modal.create({

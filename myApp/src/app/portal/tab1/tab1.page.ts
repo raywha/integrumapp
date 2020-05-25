@@ -61,7 +61,6 @@ export class Tab1Page {
     this.sdomain = AppConfig.domain;
     this.folder = AppConfig.folder;
     this.show()
-    console.log('---------------------ffff----');
     this.storage.get("loginDetails").then(data => {
       let lan = this.translate.getDefaultLang();
       if(localStorage.getItem('lan')){
