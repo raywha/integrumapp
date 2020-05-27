@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, NgZone } from '@angular/core';
 
 import { Platform } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
@@ -6,6 +6,8 @@ import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { Router } from '@angular/router';
 //
 import { TranslateService } from '@ngx-translate/core';
+import { Plugins } from '@capacitor/core';
+const { App } = Plugins;
 
 @Component({
   selector: 'app-root',
@@ -19,7 +21,8 @@ export class AppComponent {
     private splashScreen: SplashScreen,
     private statusBar: StatusBar,
     private router:Router,
-    private translate:TranslateService
+    private translate:TranslateService,
+     private zone: NgZone
   ) {
     let hasLogged=localStorage.getItem('hasLogged');
     console.log("hasLogged="+hasLogged)
@@ -30,15 +33,29 @@ export class AppComponent {
     this.initializeApp();
     this.initTranslate();
     this.isUserAgent();
+    this.deeplinkMethod();
   }
 
   initializeApp() {
     this.platform.ready().then(() => {
       this.statusBar.styleDefault();
       this.splashScreen.hide();
+     // this.deeplinkMethod();
     });
   }
-  initTranslate(){
+  deeplinkMethod(){
+    App.addListener('appUrlOpen', (data: any) => {
+      console.log('backfrombrowser', data)
+      this.zone.run(() => {
+       
+          const slug = data.url.split(".app").pop();
+          if (slug) {
+              this.router.navigateByUrl(slug);
+          }
+      });
+  });
+  }
+  initTranslate(){``
     //设置默认语言，一般在无法匹配的时候使用
     this.translate.setDefaultLang('en');
     //获取当前浏览器的语言
