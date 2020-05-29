@@ -110,7 +110,8 @@ export class NewFormPage implements OnInit {
   public txtfontcolor = "favorite";
   public skipMandatory:string = "0";
   public mandatoryWhenApprove: string = "0";
-  photo: SafeResourceUrl;
+  //photo: SafeResourceUrl;
+  public cameraTips:string = 'Tap image to see more options';
   constructor(
     private storage: Storage,
     public modal: ModalController,

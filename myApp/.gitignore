@@ -23,6 +23,7 @@ www/
 dist/
 node_modules/
 ios/
+android/
 tmp/
 temp/
 platforms/

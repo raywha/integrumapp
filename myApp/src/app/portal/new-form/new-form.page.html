@@ -324,6 +324,7 @@
                   <div *ngFor="let att of field.value"  (click)="takePicture(field.name,field,att)">
                     <div *ngIf="att.type==='image'">
                       <img [src]="att.value" />
+                      {{cameraTips}}
                     </div>
                     <div *ngIf="att.type!=='image'">
                       <ion-text  [color]="txtfontcolor">
