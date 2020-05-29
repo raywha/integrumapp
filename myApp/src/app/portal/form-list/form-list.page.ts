@@ -144,12 +144,12 @@ export class FormListPage implements OnInit {
     this.searchkey.start=1
     this.activeRoute.queryParams.subscribe(res => {
       console.log(res);
-      this.commonCtrl.show()
+      this.commonCtrl.processShow('loading....')
       if (res) {
         this.stype = res.type
         this.formid=res.formid
         if (this.stype === "formlist") {
-          this.vid = res.vid.split("/")[1].split("?")[0]
+          if(res.vid && res.vid!='') this.vid = res.vid.split("/")[1].split("?")[0]
           this.vtitle = res.vtitle
         
           this.storage.get("loginDetails").then(data => {
@@ -171,6 +171,7 @@ export class FormListPage implements OnInit {
                 });
                 this.data = data.data
                 this.databak =this.data
+                this.commonCtrl.processHide();
               })
           })
         }else{
@@ -196,10 +197,11 @@ export class FormListPage implements OnInit {
                 });
                 this.data = data.actDocs
                 this.databak =this.data
+                this.commonCtrl.processHide();
               })
           })
         }
-        this.commonCtrl.hide()
+        //this.commonCtrl.hide()
       }
     })
   }

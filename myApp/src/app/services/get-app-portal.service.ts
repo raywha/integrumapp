@@ -48,7 +48,9 @@ export class GetAppPortalService {
     let count=para.count
     let curpage=para.curpage
     let params:string = `${logindetail.server}/${logindetail.folder}/integrumws.nsf/xp_App.xsp/getViewData?viewid=${encodeURIComponent(key)}&countperpage=${encodeURIComponent(count)}&curpage=${encodeURIComponent(curpage)}`;
-    if(key.startsWith('my_')) params = `${logindetail.server}/${logindetail.folder}/integrumws.nsf/xp_App.xsp/getViewData?viewid=${encodeURIComponent(key)}&countperpage=${encodeURIComponent(count)}&curpage=${encodeURIComponent(curpage)}&uname=${encodeURIComponent(logindetail.username)}`;
+    if(key && key != ''){
+      if(key.startsWith('my_')) params = `${logindetail.server}/${logindetail.folder}/integrumws.nsf/xp_App.xsp/getViewData?viewid=${encodeURIComponent(key)}&countperpage=${encodeURIComponent(count)}&curpage=${encodeURIComponent(curpage)}&uname=${encodeURIComponent(logindetail.username)}`;
+    }
     if(logindetail.username && logindetail.password){
       let auth='Basic '+btoa(logindetail.username+':'+logindetail.password);
     

@@ -1,4 +1,3 @@
-
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot="start">
@@ -20,20 +19,26 @@
       <tr>
         <td>{{riskMatrix?.XAxisLabel}}:</td>
         <td>
-          <ion-item>
+          <ion-item *ngIf="type=='edit'">
             <ion-select [(ngModel)]='Consequence' interface="popover">
               <ion-select-option  *ngFor="let option of XAxisOptions">{{option.value}}</ion-select-option >
             </ion-select>
+          </ion-item>
+          <ion-item *ngIf="type!='edit'">
+            {{Consequence}}
           </ion-item>
         </td>
       </tr>
       <tr>
         <td>{{riskMatrix?.YAxisLabel}}:</td>
         <td>
-          <ion-item>
+          <ion-item *ngIf="type=='edit'">
             <ion-select [(ngModel)]='Likelihood' interface="popover">
               <ion-select-option  *ngFor="let option of YAxisOptions">{{option.value}}</ion-select-option >
             </ion-select>
+          </ion-item>
+          <ion-item *ngIf="type!='edit'">
+            {{Likelihood}}
           </ion-item>
         </td>
       </tr>
@@ -42,14 +47,14 @@
   <br />
   <table width="100%">
     <tr>
-      <td><button ion-button color="basic" (click)="calculate()">Calculate</button></td>
+      <td *ngIf="type=='edit'"><button ion-button color="basic" (click)="calculate()">Calculate</button></td>
       <td [ngStyle]="{ 'background-color': levelColor }"><b
           [ngStyle]="{ 'color':detectTdCellBg()?'white':'black' }">Score: {{seletedScore}} ({{riskLevel}}):
           {{levelDes}}</b></td>
     </tr>
   </table>
   <br />
-  <table class="rm-table" width="100%" border="1">
+  <table class="rm-table" width="100%" border="1" *ngIf="type=='edit'">
     <tbody>
       <tr>
         <td></td>
@@ -63,6 +68,24 @@
         <td>{{option.value}}</td>
         <td *ngFor="let option of getRows(i)" [ngStyle]="{ 'background-color': option.Color }"
           (click)="selectedTableCell(option)">
+          <div *ngIf="option.display" [ngStyle]="{ 'color': detectTdCellBg()?'white':'black' }">X</div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <table class="rm-table" width="100%" border="1" *ngIf="type!='edit'">
+    <tbody>
+      <tr>
+        <td></td>
+        <td colspan="6" bgcolor="#E1E1E1">CONSEQUENCE</td>
+      </tr>
+      <tr>
+        <td width="1%" bgcolor="#C2EFFF"><b>LIKELIHOOD</b></td>
+        <td [width]='rmtableTdWidth' *ngFor="let option of XAxisOptions">{{option.value}}</td>
+      </tr>
+      <tr width="1%" bgcolor="#E0FFFF" *ngFor="let option of YAxisOptions; let i = index">
+        <td>{{option.value}}</td>
+        <td *ngFor="let option of getRows(i)" [ngStyle]="{ 'background-color': option.Color }">
           <div *ngIf="option.display" [ngStyle]="{ 'color': detectTdCellBg()?'white':'black' }">X</div>
         </td>
       </tr>
