@@ -9,6 +9,7 @@ import { GetpersoninfoService } from "../../services/getpersoninfo.service";
 import { TranslateService } from '@ngx-translate/core';
 import { GetallformsService } from "../../services/getallforms.service";
 import { commonCtrl } from "../../common/common";
+import { Plugins } from '@capacitor/core';
 
 @Component({
   selector: 'app-loginpass',
@@ -54,7 +55,6 @@ export class LoginpassPage implements OnInit {
   ) {
     this.ssoserver = localStorage.getItem('ssoserver');
     this.ssofolder = localStorage.getItem('ssofolder');
-
   }
 
 
@@ -114,11 +114,19 @@ export class LoginpassPage implements OnInit {
                   this.loginDetails.OUCategory = data.OUCategory;
                   const EmpCurrentPortal = data.EmpCurrentPortal;
                   this.loginDetails.empgroup = EmpCurrentPortal;
-                  console.log('updateUserInfo---->this.loginDetails:',this.loginDetails)
-                  localStorage.setItem('EmpCurrentPortal',EmpCurrentPortal)
-                  this.storage.set("loginDetails",this.loginDetails)
+                  console.log('updateUserInfo---->this.loginDetails:', this.loginDetails)
+                  localStorage.setItem('OUCategory', data.OUCategory)
+                  localStorage.setItem('EmpCurrentPortal', EmpCurrentPortal)
+                  console.log('userlan:', data.lan);
+                  localStorage.setItem('lan', data.lan);
+                  this.translate.setDefaultLang(data.lan);
+                  this.translate.use(data.lan);
+                  this.storage.set("loginDetails", this.loginDetails)
                 }
               )
+              localStorage.setItem('hasLogged', 'true');
+              localStorage.setItem('user', this.user);
+              localStorage.setItem('OUCategory', result.user.oucategory)
               this.getou.getous(this.user, this.pass, this.server, this.folder).pipe(first()).subscribe(
                 data => {
                   data = JSON.parse(data.data);
@@ -146,7 +154,7 @@ export class LoginpassPage implements OnInit {
               this.commonCtrl.processHide();
               //this.presentAlert("密码错误！");
               this.translate.get('login').subscribe((res: any) => {
-                this.resmsg = res.authpasserr;
+                this.resmsg = res.authpasserr
               }).add(this.translate.get('alert').subscribe((res: any) => {
                 this.presentAlert(this.resmsg, res.title, res.btn);
               }));
@@ -178,69 +186,12 @@ export class LoginpassPage implements OnInit {
   ssoLogin(){
     
     
-    let browserURL = this.ssoserver + '/' + this.ssofolder + '/' + 'integrumws.nsf/ssord.xsp';
+    let browserURL = this.ssoserver + '/' + this.ssofolder + '/' + 'integrumws.nsf/ssordnew.xsp';
     console.log('browserURL:',browserURL)
-    //let browserURL = this.ssoserver + '/' + 'integrumws.nsf/ssord.xsp';
-    //const browser = this.iab.create(browserURL, '_blank', 'location=yes,toolbar=yes');
-    //let codes="if(typeof getCodes == 'function') {getCodes()};";
-    //this.SSOExcuteScript(codes,browser); //end of sso code
+    Plugins.Browser.open({
+      url: browserURL
+    });
   }
-  SSOExcuteScript(codes, browser) {
-
-    //if (browser.on('loadstart').subscribe)
-    browser.on('loadstart').subscribe(e => {
-      this.key1 = "";
-      this.key2 = "";
-      if (e && e.url)
-
-        if (e.url.includes('key1')) {
-
-          let newURL = e.url.split('?');
-          let newkey = newURL[1].split('&');
-
-          this.key1 = newkey[0].split('=');
-          this.key2 = newkey[1].split('=');
-
-        }
-        else {
-          console.log("no key FOUND");
-        }
-    });
-
-    browser.on("loadstop").subscribe(r => {
-      browser.executeScript({ code: codes }).then(data => {
-        if (this.key1[1]) {
-          browser.close();
-          // let postData={key1:data[0].key1,key2:data[0].key2};
-          let postData = { key1: this.key1[1], key2: this.key2[1] };
-          console.log("POSTDATA>>>", postData);
-          
-          this.auth.ssoData(this.ssoserver, this.ssofolder, postData).subscribe(d => {
-            d = JSON.parse(d.data)
-            if (d.result == "false") {
-              this.presentAlert( 'Login Failed!<br/>Please contact your administrator.','integrumNOW Error','OK');
-              browser.close();
-            }
-            else {
-              console.log('success....',d);
-              this.Login();
-              //this.saveLoginDetails(loginDetails);p@ssw0rd
-            }
-
-
-          },
-            error => {
-              // browser.close();
-              this.presentAlert( 'Login Failed 123!','integrumNOW Error','OK');
-
-            });
-        }
-        else {
-          console.log("SSO LOGIN ISSUE CHECK else condition ");
-        }
-      });
-
-    });
-
-  };
+  
+  
 }
