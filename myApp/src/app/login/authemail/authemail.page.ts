@@ -47,6 +47,7 @@ export class AuthemailPage implements OnInit {
   }
   public key1: string = "";
   public key2: string = "";
+  public options:string = "";
   constructor(public alertController: AlertController, private auth: AuthenticationService, private router: Router
     , private storage: Storage,
     private formBuilder: FormBuilder,
@@ -224,13 +225,15 @@ export class AuthemailPage implements OnInit {
       );
   }
   // 
-  async presentAlert(msg: string, header: string, btn: string) {
-
+  async presentAlert(msg: string, header: string, btn: any) {
+    if(typeof(btn)=="string"){
+      btn=[btn];
+    }
     const alert = await this.alertController.create({
       header: header,
       subHeader: '',
       message: msg,
-      buttons: [btn]
+      buttons: btn
     });
 
     await alert.present();
@@ -269,6 +272,24 @@ export class AuthemailPage implements OnInit {
               this.loginDetails.code = this.authform.value.code
 
               this.storage.set("loginDetails", this.loginDetails)
+              this.options="";
+              for(var i=0;i<this.ssoserverlist.length;i++){
+                this.options+='<ion-item><ion-label>'+this.ssoserverlist[i]+'</ion-label><ion-radio slot="end" value='+this.ssoserverlist[i]+'></ion-radio></ion-item>';
+              }
+              this.presentAlert( '<ion-radio-group>'+this.options+'</ion-radio-group>',"",[
+                {text:'Cancel',role:'Cancel',handler:()=>{console.log("----cancel----");}},
+                {
+                  text:'OK',handler:()=>{
+                    let dom = document.querySelector(".radio-checked");
+                    if(dom){
+                      let label = dom.parentNode.children[0];
+                      this.ssoserver = label.textContent;
+                      console.log("----------ssosever----:",this.ssoserver);
+                      this.ssologin();
+                    }                  
+                  }
+                }
+              ]);
             } else {
               this.translate.get('login').subscribe((res: any) => {
                 this.resmsg = res.authmailerr;
