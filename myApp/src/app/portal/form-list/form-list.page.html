@@ -22,12 +22,12 @@
   <ion-list *ngIf="stype==='formlist'">
     <ion-item *ngFor="let item of data">
       <div class="contentIcon">
-        <ion-icon *ngIf="item.WFStatus=='Completed'" name="checkmark-circle" style="color: #b2b6b2;"></ion-icon>
-        <ion-icon *ngIf="item.WFStatus=='Open'" name="time" style="color: #06bb0c;"></ion-icon>
-        <ion-icon *ngIf="item.WFStatus=='Draft'" name="save" style="color: #FF9900;"></ion-icon>
-        <ion-icon *ngIf="item.WFStatus=='In Review'" name="repeat" style="color: rgb(9, 54, 255);"></ion-icon>
-        <ion-icon *ngIf="item.WFStatus=='Rejected'" name="alert" style="color: rgb(247, 6, 6);"></ion-icon>
-        <ion-icon *ngIf="item.WFStatus!='In Review' && item.WFStatus!='Completed' && item.WFStatus!='Open' && item.WFStatus!='Draft' && item.WFStatus!='Rejected'" name="leaf" style="color: rgba(104, 194, 230, 0.568);"></ion-icon>
+        <ion-icon *ngIf="item.status=='ka_Completed'" name="checkmark-circle" style="color: #b2b6b2;"></ion-icon>
+        <ion-icon *ngIf="item.status=='ka_Open'" name="time" style="color: #06bb0c;"></ion-icon>
+        <ion-icon *ngIf="item.status=='ka_Draft'" name="save" style="color: #FF9900;"></ion-icon>
+        <ion-icon *ngIf="item.status=='ka_INRW'" name="repeat" style="color: rgb(9, 54, 255);"></ion-icon>
+        <ion-icon *ngIf="item.status=='ka_Rejected'" name="alert" style="color: rgb(247, 6, 6);"></ion-icon>
+        <ion-icon *ngIf="item.status!='ka_INRW' && item.status!='ka_Completed' && item.status!='ka_Open' && item.status!='ka_Draft' && item.status!='ka_Rejected'" name="leaf" style="color: rgba(104, 194, 230, 0.568);"></ion-icon>
       </div>
       <div class="contentLeft">
         <div class="title">
@@ -54,9 +54,9 @@
   <ion-list *ngIf="stype==='formlistAss'">
     <ion-item *ngFor="let item of data">
       <div class="contentIcon">
-        <ion-icon *ngIf="item.WFStatus=='Completed'" name="checkmark-circle"></ion-icon>
-        <ion-icon *ngIf="item.WFStatus=='Open'" name="checkmark-circle-outline"></ion-icon>
-        <ion-icon *ngIf="item.WFStatus=='Draft'" name="close-circle"></ion-icon>
+        <ion-icon *ngIf="item.status=='ka_Completed'" name="checkmark-circle"></ion-icon>
+        <ion-icon *ngIf="item.status=='ka_Open'" name="checkmark-circle-outline"></ion-icon>
+        <ion-icon *ngIf="item.status=='ka_Draft'" name="close-circle"></ion-icon>
       </div>
       <div class="contentLeft">
         <div class="title">

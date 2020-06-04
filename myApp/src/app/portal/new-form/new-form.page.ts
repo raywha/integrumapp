@@ -328,11 +328,11 @@ export class NewFormPage implements OnInit {
                 }
               }else if(data.xtype == 'date'){
                 if(this.type != 'edit'){
-                  if(data.value!='') data.value = moment(`${data.value}`,'YYYY-MM-DD').format('DD/MM/YYYY');
+                  if(data.value && data.value!='') data.value = moment(`${data.value}`,'YYYY-MM-DD').format('DD/MM/YYYY');
                 }
               }else if(data.xtype == 'time'){
                 //if(this.type != 'edit'){
-                  if(data.value!='') data.value = moment(`${data.value}`,'YYYY-MM-DD hh:mm:ss').format('HH:mm:ss');
+                  if(data.value && data.value!='') data.value = moment(`${data.value}`,'YYYY-MM-DD hh:mm:ss').format('HH:mm:ss');
                 //}
               }
                 this.fields.push(data) //
