@@ -16,6 +16,8 @@ import { Geolocation } from '@ionic-native/geolocation/ngx';
 //import { WebView } from '@ionic-native/ionic-webview/ngx';
 import * as moment from 'moment';
 import {OpenModalComponent} from "../../common/open-modal/open-modal.component";
+import { RiskmatrixComponent } from "../../common/riskmatrix/riskmatrix.component";
+
 import { ElementRef,ViewChildren} from '@angular/core';
 import { Plugins, CameraResultType, CameraSource } from '@capacitor/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
@@ -112,6 +114,8 @@ export class NewFormPage implements OnInit {
   public mandatoryWhenApprove: string = "0";
   //photo: SafeResourceUrl;
   public cameraTips:string = 'Tap image to see more options';
+  public inheritMap:any;
+  public atitle;
   constructor(
     private storage: Storage,
     public modal: ModalController,
@@ -136,16 +140,7 @@ export class NewFormPage implements OnInit {
     }
     let strnow = new Date();
     this.curDate = `${strnow.getFullYear()}-${(strnow.getMonth() + 1).toString().padStart(2, '0')}-${strnow.getDate().toString().padStart(2, '0')}`;
-    this.ulrs.url = this.router.url
-    this.ulrs.unid = this.getQueryVariable(this.ulrs.url, "unid")
-    this.ulrs.aid = decodeURIComponent(this.getQueryVariable(this.ulrs.url, "aid"))
-    this.ulrs.title = decodeURIComponent(this.getQueryVariable(this.ulrs.url, "title"))
-    this.ulrs.stat = decodeURIComponent(this.getQueryVariable(this.ulrs.url, "stat"))
-
-    this.riskname = this.getQueryVariable(this.ulrs.url, "riskName")
-    if (this.riskname) {
-      this.riskmatrixvalue = JSON.parse(decodeURIComponent(this.getQueryVariable(this.ulrs.url, "value")));
-    }
+    
     this.storage.get('ous').then(data => {
       this.ous = data
     })
@@ -160,10 +155,21 @@ export class NewFormPage implements OnInit {
     this.activeRoute.queryParams.subscribe(res => {
       console.log(res);
       console.log("进")
+      this.ulrs.url = this.router.url
+    this.ulrs.unid = this.getQueryVariable(this.ulrs.url, "unid")
+    this.ulrs.aid = decodeURIComponent(this.getQueryVariable(this.ulrs.url, "aid"))
+    this.ulrs.title = decodeURIComponent(this.getQueryVariable(this.ulrs.url, "title"))
+    this.ulrs.stat = decodeURIComponent(this.getQueryVariable(this.ulrs.url, "stat"))
+
+    this.riskname = this.getQueryVariable(this.ulrs.url, "riskName")
+    if (this.riskname) {
+      this.riskmatrixvalue = JSON.parse(decodeURIComponent(this.getQueryVariable(this.ulrs.url, "value")));
+    }
       this.sections = []
       this.sectionsold = []
       this.portaltitle = res.temptitle
       this.subformflag = res.subform
+      this.atitle = res.aTitle;
       this.mainunid = res.mainunid
       if (res.unid) {
         this.lasturl = res.cururl
@@ -171,7 +177,7 @@ export class NewFormPage implements OnInit {
         this.formID = res.unid
         console.log("旧文档")
         this.type = res.type
-        if (res.stat) {
+        if (res.stat && res.stat!='false') {
           this.title = res.title + " (" + res.stat + ")"
         } else {
           this.title = res.title
@@ -361,125 +367,144 @@ export class NewFormPage implements OnInit {
           //})
         })
       } else {
-        this.lasturl = "/tabs/tab1?title=" + this.portaltitle
+        if(res.subform && res.subform == 'true'){
+          this.lasturl = res.cururl;
+        }else{
+          this.lasturl = "/tabs/tab1?title=" + this.portaltitle
+        }
         this.fields = [];
         this.type = "edit"
-        this.storage.get("allforms").then(data => {
-          data = JSON.parse(data)
-          if(data==null){
-            console.log(' allforms is loading!');
-            return false;
-          }
-          this.templates = data.templates
-          //this.templates = JSON.parse(data).templates
-          this.selecttemplat = this.getTemplatByViewId(this.templates, res.aid)
-          if (!this.selecttemplat) {
-            console.log(res.aid,' is not find!');
-            return false;
-          }
-          this.mandatoryWhenApprove = this.selecttemplat.mandatoryWhenApprove?this.selecttemplat.mandatoryWhenApprove:"0";
-          this.skipMandatory = this.selecttemplat.skipMandatory?this.selecttemplat.skipMandatory:"0";
-          this.btnBox = this.selecttemplat.menubaritem
-          this.title = this.selecttemplat.template.templateTitle
-          this.sysfields = this.selecttemplat.template.secs[0].fields
-          this.mandafields = this.selecttemplat.template.mandaFields
-          this.templatid = this.selecttemplat.template.templateId
-          //get questionnaire sections
-          let quesFields: any = this.selecttemplat.template.quesFields;
-          for (let i = 0; i < quesFields.length; i++) {
-            const element = quesFields[i];
-            let answerWhen = element.answerWhen;
-            for (let key in answerWhen) {
-              this.quesSecId = this.quesSecId.concat(answerWhen[key]);
-            }
-          }
-
-          for (let i = 0; i < this.selecttemplat.template.secs.length; i++) {
-            this.selecttemplat.template.secs[i].fields.forEach(data => {
-              
-              if (data.xtype == "radio" || data.xtype == "select") {
-                if(data.xtype == "radio") data.options = data.options.filter(function (obj) { return obj.value != "" })
-                //data.options = data.options.filter(function (obj) { return obj.value != "" })
-                if (data.xtype == "select") {
-                  if (this.selecttemplat.template.subListFields.length > 0) {
-                    let secId = this.selecttemplat.template.secs[i].secId;
-                    let fieldname = data.name;
-                    let fieldId = fieldname.split(secId + '_')[1];
-                    let v = this.selecttemplat.template.subListFields.find(e => e.parentSecId == secId &&
-                      e.options && e.options.subfieldlist && e.options.subfieldlist.pfieldid && e.options.subfieldlist.pfieldid == fieldId)
-                    if (v) {
-                      data.hasSubfield = true;
-                      data.fieldId = fieldId;
-                    }
-
-                  }
-                }
-              } else if (data.xtype == 'multiou' || data.xtype == 'singleou') {
-                let obj: any = this.getOuLevelAndGroupId(data.name, this.selecttemplat.template.secs[i].secId);
-                let level: number = obj.level;
-                let ouGroupId: string = obj.ouGroupId;
-                if (this.initiatorOU) {
-                  let iou: any = this.initiatorOU.split('\\');
-                  let tmp: any = '';
-                  for (let m = 0; m < level; m++) {
-                    if (tmp == '') {
-                      if (iou[m]) tmp = iou[m];
-                    } else {
-                      if (iou[m]) tmp += "/" + iou[m];
-                    }
-                  }
-                  this.getOUSublistdetails(data.name, tmp, this.selecttemplat.template.secs[i].secId);
-                  data.value = tmp;
-                }
-
-              }else if(data.xtype == 'checkbox'){
-                if(data.value){
-                  let cehckvalues=data.value.split(",")
-                  data.options.forEach(option =>{
-                     let flag=cehckvalues.some(v =>{
-                       return v==option.value
-                     })
-                     if(flag){
-                       option.ischeck=true
-                     }else{
-                      option.ischeck=false
-                     }
-                  })
-                }
-              
-               
-            }else if(data.xtype == 'questionnaire'){
-              let v = data.options[0];
-              if(v && v.value){
-                if(v.value!='') data.options.unshift({value:'',text:''});
-              }
-            }
-              this.loadSecs.push(data);
-              this.fields.push(data) //
-              //this.selectScore(data,data.value,this.selecttemplat.template.secs[i].title)
-            })
-            // console .log(this.selecttemplat.template.secs[i])
-            if (this.quesSecId.indexOf(this.selecttemplat.template.secs[i].secId) == -1) this.sections.push(this.selecttemplat.template.secs[i])
-            this.sectionsold.push(this.selecttemplat.template.secs[i])
-            this.list.push({ "show": false })
-          }
-          this.initHasSubfield('change');
-          let flag = this.sections.some(function (obj, index) {
-            //console.log(obj.title)
-            return obj.title == "Severity"
-          })
-          if (flag) {
-            this.change({ "label": "Severity" })
-          }
-
-        })
+        if(res.subform && res.mainunid && res.mainunid!=""){
+          this.inheritValue({"mainunid":res.mainunid}).then((result: any) => {
+            this.inheritMap = result;
+            console.log("-------ssss:",this.inheritMap);
+            this.getAllForms(res);
+          })    
+        }else{
+          this.getAllForms(res);     
+        }              
       }
-      
-
     })
 
   }
+  getAllForms(res){
+    this.storage.get("allforms").then(data => {
+      data = JSON.parse(data)
+      if(data==null){
+        console.log(' allforms is loading!');
+        return false;
+      }
+      this.templates = data.templates
+      //this.templates = JSON.parse(data).templates
+      this.selecttemplat = this.getTemplatByViewId(this.templates, res.aid)
+      if (!this.selecttemplat) {
+        console.log(res.aid,' is not find!');
+        return false;
+      }
+      this.mandatoryWhenApprove = this.selecttemplat.mandatoryWhenApprove?this.selecttemplat.mandatoryWhenApprove:"0";
+      this.skipMandatory = this.selecttemplat.skipMandatory?this.selecttemplat.skipMandatory:"0";
+      this.btnBox = this.selecttemplat.menubaritem
+      this.title = this.selecttemplat.template.templateTitle
+      this.sysfields = this.selecttemplat.template.secs[0].fields
+      this.mandafields = this.selecttemplat.template.mandaFields
+      this.templatid = this.selecttemplat.template.templateId
+      //get questionnaire sections
+      let quesFields: any = this.selecttemplat.template.quesFields;
+      for (let i = 0; i < quesFields.length; i++) {
+        const element = quesFields[i];
+        let answerWhen = element.answerWhen;
+        for (let key in answerWhen) {
+          this.quesSecId = this.quesSecId.concat(answerWhen[key]);
+        }
+      }
 
+      for (let i = 0; i < this.selecttemplat.template.secs.length; i++) {
+        this.selecttemplat.template.secs[i].fields.forEach(data => {
+          
+          if (data.xtype == "radio" || data.xtype == "select") {
+            if(data.xtype == "radio") data.options = data.options.filter(function (obj) { return obj.value != "" })
+            //data.options = data.options.filter(function (obj) { return obj.value != "" })
+            if (data.xtype == "select") {
+              if (this.selecttemplat.template.subListFields.length > 0) {
+                let secId = this.selecttemplat.template.secs[i].secId;
+                let fieldname = data.name;
+                let fieldId = fieldname.split(secId + '_')[1];
+                let v = this.selecttemplat.template.subListFields.find(e => e.parentSecId == secId &&
+                  e.options && e.options.subfieldlist && e.options.subfieldlist.pfieldid && e.options.subfieldlist.pfieldid == fieldId)
+                if (v) {
+                  data.hasSubfield = true;
+                  data.fieldId = fieldId;
+                }
+
+              }
+            }
+          } else if (data.xtype == 'multiou' || data.xtype == 'singleou') {
+            let obj: any = this.getOuLevelAndGroupId(data.name, this.selecttemplat.template.secs[i].secId);
+            let level: number = obj.level;
+            let ouGroupId: string = obj.ouGroupId;
+            if (this.initiatorOU) {
+              let iou: any = this.initiatorOU.split('\\');
+              let tmp: any = '';
+              for (let m = 0; m < level; m++) {
+                if (tmp == '') {
+                  if (iou[m]) tmp = iou[m];
+                } else {
+                  if (iou[m]) tmp += "/" + iou[m];
+                }
+              }
+              this.getOUSublistdetails(data.name, tmp, this.selecttemplat.template.secs[i].secId);
+              data.value = tmp;
+            }
+
+          }else if(data.xtype == 'checkbox'){
+            if(data.value){
+              let cehckvalues=data.value.split(",")
+              data.options.forEach(option =>{
+                 let flag=cehckvalues.some(v =>{
+                   return v==option.value
+                 })
+                 if(flag){
+                   option.ischeck=true
+                 }else{
+                  option.ischeck=false
+                 }
+              })
+            }
+          
+           
+        }else if(data.xtype == 'questionnaire'){
+          let v = data.options[0];
+          if(v && v.value){
+            if(v.value!='') data.options.unshift({value:'',text:''});
+          }
+        }
+        if(res.subform && this.inheritMap[data.name]){
+          console.log("---inheritval--------:",this.inheritMap[data.name]);
+          if (data.xtype == 'multiou' || data.xtype == 'singleou') {
+            this.getOUSublistdetails(data.name, this.inheritMap[data.name], this.selecttemplat.template.secs[i].secId);
+          }
+          data.value = this.inheritMap[data.name];
+        }
+          this.loadSecs.push(data);
+          this.fields.push(data) //
+          //this.selectScore(data,data.value,this.selecttemplat.template.secs[i].title)
+        })
+        // console .log(this.selecttemplat.template.secs[i])
+        if (this.quesSecId.indexOf(this.selecttemplat.template.secs[i].secId) == -1) this.sections.push(this.selecttemplat.template.secs[i])
+        this.sectionsold.push(this.selecttemplat.template.secs[i])
+        this.list.push({ "show": false })
+      }
+      this.initHasSubfield('change');
+      let flag = this.sections.some(function (obj, index) {
+        //console.log(obj.title)
+        return obj.title == "Severity"
+      })
+      if (flag) {
+        this.change({ "label": "Severity" })
+      }
+
+    })
+  }
   getTemplatByViewId(data, vid) {
     let res;
     data.forEach(element => {
@@ -653,7 +678,7 @@ export class NewFormPage implements OnInit {
         actiontype = "open"
         if (this.subformflag) {
           actiontype = "edit"
-          this.router.navigate(["/new-form"], { queryParams: { unid: this.ulrs.unid, aid: this.ulrs.aid, title: this.ulrs.title, stat: this.ulrs.stat, type: actiontype, refresh: new Date().getTime(), cururl: this.lasturl } });
+          this.router.navigate(["/new-form"], { queryParams: { unid: this.mainunid, aid: this.ulrs.aid, title: this.atitle, stat: this.ulrs.stat, type: actiontype, refresh: new Date().getTime(), cururl: this.lasturl } });
         } else {
           this.router.navigateByUrl(this.lasturl)
         }
@@ -758,7 +783,7 @@ export class NewFormPage implements OnInit {
           this.commonCtrl.processHide();
           //this.router.navigate(["/new-form"], { queryParams: { unid:  this.ulrs.unid, aid: this.ulrs.aid, title: this.ulrs.title, stat: this.ulrs.stat, type: actiontype, refresh: new Date().getTime() } });
           if (this.subformflag) {
-            this.router.navigate(["/new-form"], { queryParams: { unid: this.ulrs.unid, aid: this.ulrs.aid, title: this.ulrs.title, stat: this.ulrs.stat, type: actiontype, refresh: new Date().getTime(), cururl: this.lasturl } });
+            this.router.navigate(["/new-form"], { queryParams: { unid: this.mainunid, aid: this.ulrs.aid, title: this.atitle, stat: this.ulrs.stat, type: actiontype, refresh: new Date().getTime(), cururl: this.lasturl } });
           } else {
             this.router.navigateByUrl(this.lasturl)
           }
@@ -1281,7 +1306,7 @@ export class NewFormPage implements OnInit {
     console.log(this.subformflag)
     if (this.subformflag) {
       let actiontype = "edit"
-      this.router.navigate(["/new-form"], { queryParams: { unid: this.ulrs.unid, aid: this.ulrs.aid, title: this.ulrs.title, stat: this.ulrs.stat, type: actiontype, refresh: new Date().getTime(), cururl: this.lasturl } });
+      this.router.navigate(["/new-form"], { queryParams: { unid: this.mainunid, aid: this.ulrs.aid, title: this.atitle, stat: this.ulrs.stat, type: actiontype, refresh: new Date().getTime(), cururl: this.lasturl } });
     } else {
       this.router.navigateByUrl(this.lasturl)
       //this.nav.navigateBack('/tabs/tab1',{queryParams:{title:this.portaltitle}});
@@ -1780,6 +1805,16 @@ export class NewFormPage implements OnInit {
    }
    
   }
+  inheritValue(para) {
+    return new Promise((resolve, reject) => {
+      this.storage.get("loginDetails").then(data => {
+        this.getforms.inheritValue(data, para).pipe(first()).subscribe(data => {
+          data = JSON.parse(data.data);
+          resolve(data);
+        })
+      })
+    })
+  }
   ngAfterViewInit(){
 
     console.log('ngAfterViewInit:',this.cbgcolor)
@@ -1791,6 +1826,46 @@ export class NewFormPage implements OnInit {
       });
       }
     });
+  }
+  async getRiskmatrix(selectedRiskMatrix,fieldname,fieldvalue) {
+    console.log('fieldvalue:',fieldvalue);
+    let obj: Object = {
+      riskMatrixFrameData: selectedRiskMatrix,
+      riskMatrixSaveData: fieldvalue,
+      riskName:fieldname,
+
+      type: this.type,
+      unid: this.ulrs.unid,
+      aid: this.ulrs.aid,
+      title: this.ulrs.title,
+      stat: this.ulrs.stat,
+      refresh: new Date().getTime(),
+      cururl: this.lasturl,
+      lasturl: this.router.url
+    }
+    const modal = await this.modal.create({
+      showBackdrop: true,
+      component: RiskmatrixComponent,
+      componentProps: {obj}
+    });
+    modal.present();
+    //监听销毁的事件
+    const { data } = await modal.onDidDismiss();
+    console.log('data.result:',data.result);
+    if(data.result!=''){
+      for (let i = 0; i < this.selecttemplat.template.secs.length; i++) {
+        if(this.selecttemplat.template.secs[i].fields){
+          this.selecttemplat.template.secs[i].fields.forEach(item => {
+            // console.log(fieldname)
+            // console.log(item.name)
+            if (item.name == fieldname) {
+              item.value = JSON.parse(data.result);
+            }
+          })
+        }
+      }
+    }
+    
   }
 }
 

@@ -90,5 +90,19 @@ export class GetallformsService {
     return from(this.httpnative.get(param,'',''));
 
   }
+  inheritValue(logindetail:any,para:any):Observable<any>{
+    let unid=para.mainunid;
+    let param:string = logindetail.server+'/'+logindetail.folder+'/integrumws.nsf/xp_App.xsp/inheritValue?mainunid='+encodeURIComponent(unid);
+    if(logindetail.username && logindetail.password){
+      let auth='Basic '+btoa(logindetail.username+':'+logindetail.password);
+
+      const options = {
+          "Content-Type":"application/json; charset=utf-8",
+          "Authorization":auth
+      };
+      return from(this.httpnative.get(param,'',options));
+    }
+    return from(this.httpnative.get(param,'',''));       
+  }
 
 }

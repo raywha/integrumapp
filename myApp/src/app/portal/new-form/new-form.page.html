@@ -226,7 +226,7 @@
             </div> -->
             <div *ngIf="field.xtype==='riskmatrix'">
               <ion-label style="margin-bottom:10px; " color="basic" stacked>{{field.label}}</ion-label>
-              <button style="padding-left:10px;" ion-item block color="secondary" (click)="riskMatrix(field.RiskMatrix,field.value,field.name)">Risk Matrix</button>
+              <button style="padding-left:10px;" ion-item block color="secondary" (click)="getRiskmatrix(field.RiskMatrix,field.name,field.value)">Risk Matrix</button>
                <!-- <a [routerLink]="['/risk-matrix']" [queryParams]="{riskMatrixFrameData:tobj,riskMatrixSaveData:field.value,riskName:field.name}">Risk Matrix</a> -->
                <ion-item *ngIf="field.value" [ngStyle]="{ 'background-color': field.value.ResultColor,'padding-left':'10px' }">
                   {{field.value.TheScore}}
@@ -594,7 +594,7 @@
                   </div>
                   <div *ngIf="field.xtype==='riskmatrix'">
                     <ion-label style="margin-bottom:10px; " color="basic" stacked>{{field.label}}</ion-label>
-                    <button style="padding-left:10px;" ion-item block color="secondary" (click)="riskMatrix(field.RiskMatrix,field.value,field.name)">Risk Matrix</button>
+                    <button style="padding-left:10px;" ion-item block color="secondary" (click)="getRiskmatrix(field.RiskMatrix,field.name,field.value)">Risk Matrix</button>
                      <!-- <a [routerLink]="['/risk-matrix']" [queryParams]="{riskMatrixFrameData:tobj,riskMatrixSaveData:field.value,riskName:field.name}">Risk Matrix</a> -->
                      <ion-item *ngIf="field.value" [ngStyle]="{ 'background-color': field.value.ResultColor,'padding-left':'10px' }">
                         {{field.value.TheScore}}
