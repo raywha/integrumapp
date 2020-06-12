@@ -104,5 +104,19 @@ export class GetallformsService {
     }
     return from(this.httpnative.get(param,'',''));       
   }
+  submitToMr2(logindetail:any,para:any ):Observable<any>{
+    let { unid,mr2 } = para;
+    const url = `/${logindetail.folder}/integrumws.nsf/xp_App.xsp/invokeServerFunctions?unid=${unid}&action=sendforreview&strformMR=${mr2}`;
+    if(logindetail.username && logindetail.password){
+      let auth='Basic '+btoa(logindetail.username+':'+logindetail.password);
 
+      const options = {
+          "Content-Type":"application/json; charset=utf-8",
+          "Authorization":auth
+      };
+      return from(this.httpnative.get(url,'',options));
+    }
+    return from(this.httpnative.get(url,'',''));
+  
+  }
 }

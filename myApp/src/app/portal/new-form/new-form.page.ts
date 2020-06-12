@@ -116,6 +116,9 @@ export class NewFormPage implements OnInit {
   public cameraTips:string = 'Tap image to see more options';
   public inheritMap:any;
   public atitle;
+  public mr2Type;
+  public mr2Val;
+  public mr2Label:string = 'Select Final Reviewer';
   constructor(
     private storage: Storage,
     public modal: ModalController,
@@ -198,6 +201,7 @@ export class NewFormPage implements OnInit {
           // alert(fileName);
           //this.selecttemplat = this.getTemplatByViewId(this.templates, res.aid)
           this.selecttemplat = this.templates[0];
+
           this.mandatoryWhenApprove = this.selecttemplat.mandatoryWhenApprove?this.selecttemplat.mandatoryWhenApprove:"0";
           this.skipMandatory = this.selecttemplat.skipMandatory?this.selecttemplat.skipMandatory:"0";
           let selectSecId: any = this.selecttemplat.sectionids ? this.selecttemplat.sectionids : [];
@@ -205,6 +209,11 @@ export class NewFormPage implements OnInit {
           if (!this.selecttemplat) {
             console.log('Not find selecttemplat!');
             return false;
+          }
+          if(this.selecttemplat.secondFormMR && this.selecttemplat.secondFormMR.mrType){
+            this.mr2Type = this.selecttemplat.secondFormMR.mrType;
+            if(this.selecttemplat.secondFormMR.value) this.mr2Val  = this.selecttemplat.secondFormMR.value;
+            if(this.selecttemplat.secondFormMR.label) this.mr2Label = this.selecttemplat.secondFormMR.label;
           }
           //if (this.type == "edit") {
           this.btnBox = this.selecttemplat.menubaritem
@@ -614,7 +623,7 @@ export class NewFormPage implements OnInit {
           if (fieldError) {
             console.log("必填了")
             console.log(msg)
-            this.presentAlert("The follow fields are mandatory:<br/>" + msg, "", "OK")
+            this.presentAlert("The follow fields are mandatory:<br/>" + msg, "", ["OK"])
             return false;
           }
         }
@@ -658,7 +667,7 @@ export class NewFormPage implements OnInit {
           if (fieldError) {
             console.log("必填了")
             console.log(msg)
-            this.presentAlert("The follow fields are mandatory:<br/>" + msg, "", "OK")
+            this.presentAlert("The follow fields are mandatory:<br/>" + msg, "", ["OK"])
             return false;
           }
         }
@@ -688,6 +697,49 @@ export class NewFormPage implements OnInit {
           console.log("操作删除")
           this.presentModal('delete');
           break;
+          case 'btnSendForRv':
+        if(this.mr2Type){
+          console.log('mr2type:',this.mr2Type)
+          if(this.mr2Type=='template'){
+            //this.submitToMr2(this.formID,data.result);
+            console.log('this.mr2Val:',this.mr2Val);
+            if(this.mr2Val && this.mr2Val.length<20){
+              let options="";
+              for(let i=0;i<this.mr2Val.length;i++){
+                options+='<ion-item><ion-label>'+this.mr2Val[i]+'</ion-label><ion-radio slot="end" value='+this.mr2Val[i]+'></ion-radio></ion-item>';
+              }
+              this.presentAlert( '<ion-radio-group>'+options+'</ion-radio-group>',"",[
+                {text:'Cancel',role:'Cancel',handler:()=>{console.log("----cancel----");}},
+                {
+                  text:'OK',handler:()=>{
+                    let dom = document.querySelector(".radio-checked");
+                    if(dom){
+                      let label = dom.parentNode.children[0];
+                      let val = label.textContent;
+                      console.log("----------val----:",val);
+                      this.submitToMr2(this.formID,val);
+                    }                  
+                  }
+                }
+              ]);
+            }else{
+              this.getMr2('','single',this.mr2Label);
+            }
+          }else if(this.mr2Type=='directmanager'){
+            console.log('mr2value:',this.mr2Val);
+            if(this.mr2Val && this.mr2Val!='' && this.mr2Val!=[]){
+              this.submitToMr2(this.formID,this.mr2Val);
+            }else{
+              this.getMr2('','single',this.mr2Label);
+            }
+          }else{
+            this.getMr2('','single',this.mr2Label);
+          }
+        }else{
+          this.getMr2('','single',this.mr2Label);
+        }
+        
+        break;
       default:
         actiontype = "open"
         // this.router.navigateByUrl(this.lasturl)
@@ -700,13 +752,13 @@ export class NewFormPage implements OnInit {
 
 
   }
-  async presentAlert(msg: string, header: string, btn: string) {
+  async presentAlert(msg: string, header: string, btn: any) {
 
     const alert = await this.alertController.create({
       header: header,
       subHeader: '',
       message: msg,
-      buttons: [btn]
+      buttons: btn
     });
 
     await alert.present();
@@ -1798,7 +1850,7 @@ export class NewFormPage implements OnInit {
         if(data.status=='success'){
           this.router.navigateByUrl(this.lasturl);
         }else{
-          this.presentAlert("failed!Error:" + data.result, "", "OK")
+          this.presentAlert("failed!Error:" + data.result, "", ["OK"])
         }
       })
     })
@@ -1866,6 +1918,39 @@ export class NewFormPage implements OnInit {
       }
     }
     
+  }
+  async getMr2(fieldvalue,stype:string,label) {
+    const cbgcolor = this.cbgcolor;
+    const modal = await this.modal.create({
+      showBackdrop: true,
+      component: SecurityComponent,
+      componentProps: {stype,fieldvalue,label,cbgcolor}
+    });
+    modal.present();
+    //监听销毁的事件
+    const { data } = await modal.onDidDismiss();
+    if(data.result!=''){
+      this.submitToMr2(this.formID,data.result);
+    }
+  }
+  submitToMr2(unid:string,mr2:string) {
+    const para = {unid,mr2};
+    return new Promise((resolve, reject) => {
+      this.storage.get("loginDetails").then(logindata => {
+        //this.getforms.getFormData(logindata, { "unid": "EBE27D0FEC6AEFF9482584D90020DCE6" }).pipe(first()).subscribe(data => {
+        this.getforms.submitToMr2(logindata, para).pipe(first()).subscribe(data => {
+          if(data.status=='success'){
+            this.router.navigateByUrl(this.lasturl)
+          }else{
+            this.presentAlert("Error:<br/>" + data.reason, "", ["OK"])
+          }
+          
+
+        })
+        //resolve(data)
+        //})
+      })
+    })
   }
 }
 
