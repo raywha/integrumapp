@@ -12,7 +12,7 @@ import { Storage } from '@ionic/storage';
 export class SubformlistPage implements OnInit {
   public atitle:any =[];
   public aids:any = [];
-  public title:string = 'Select a template from list';
+  public title:string = 'Subform Selection';
   constructor(public nav:NavController,public router:Router,public storage:Storage) { }
 
   ngOnInit() {

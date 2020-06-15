@@ -156,7 +156,7 @@ export class SecurityComponent implements OnInit {
     this.start += this.pnum;
     console.log('this.start:', this.start)
     setTimeout(() => {
-      this.commonCtrl.show();
+      //this.commonCtrl.show();
       for (let i = this.start; i < this.start + this.pnum; i++) {
         if (this.listDatabak[i]) {
           this.listData.push(this.listDatabak[i]);
@@ -170,7 +170,7 @@ export class SecurityComponent implements OnInit {
 
       }//edd for loop
       infiniteScroll.target.complete();
-      this.commonCtrl.hide();
+      //this.commonCtrl.hide();
     }, 500);
 
   };

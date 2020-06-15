@@ -703,7 +703,7 @@ export class NewFormPage implements OnInit {
           if(this.mr2Type=='template'){
             //this.submitToMr2(this.formID,data.result);
             console.log('this.mr2Val:',this.mr2Val);
-            if(this.mr2Val && this.mr2Val.length<20){
+            if(this.mr2Val && this.mr2Val.length>0){
               let options="";
               for(let i=0;i<this.mr2Val.length;i++){
                 options+='<ion-item><ion-label>'+this.mr2Val[i]+'</ion-label><ion-radio slot="end" value='+this.mr2Val[i]+'></ion-radio></ion-item>';
