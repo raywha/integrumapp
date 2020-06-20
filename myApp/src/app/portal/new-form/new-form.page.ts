@@ -119,6 +119,8 @@ export class NewFormPage implements OnInit {
   public mr2Type;
   public mr2Val;
   public mr2Label:string = 'Select Final Reviewer';
+  public reassignLabel: string = 'Select Person';
+  public formmr;
   constructor(
     private storage: Storage,
     public modal: ModalController,
@@ -723,22 +725,25 @@ export class NewFormPage implements OnInit {
                 }
               ]);
             }else{
-              this.getMr2('','single',this.mr2Label);
+              this.getPersons('', 'single', this.mr2Label, 'submitToMr2');
             }
           }else if(this.mr2Type=='directmanager'){
             console.log('mr2value:',this.mr2Val);
             if(this.mr2Val && this.mr2Val!='' && this.mr2Val!=[]){
               this.submitToMr2(this.formID,this.mr2Val);
             }else{
-              this.getMr2('','single',this.mr2Label);
+              this.getPersons('', 'single', this.mr2Label, 'submitToMr2');
             }
           }else{
-            this.getMr2('','single',this.mr2Label);
+            this.getPersons('', 'single', this.mr2Label, 'submitToMr2');
           }
         }else{
-          this.getMr2('','single',this.mr2Label);
+          this.getPersons('', 'single', this.mr2Label, 'submitToMr2');
         }
         
+        break;
+        case 'btnReAssign':
+        this.getPersons('', 'single', this.reassignLabel, 'reAssign')
         break;
       default:
         actiontype = "open"
@@ -1839,22 +1844,13 @@ export class NewFormPage implements OnInit {
     });
    modal.present();
    const { data } = await modal.onDidDismiss();
-   if(data.data!='cancel'){
-    const para:any = {
-      unid:this.ulrs.unid,
-      cm:data
+   if (data.result == 'cancel') return false;
+    if(stype=='delete'){
+      this.deleteDoc(data.result);
+    }else if(stype == 'reAssign'){
+      this.reAssign(data.result);
     }
-    this.storage.get('loginDetails').then(logindata => {
-      this.getforms.doDeleteDoc(logindata,para).pipe(first()).subscribe(data => {
-        data = JSON.parse(data.data);
-        if(data.status=='success'){
-          this.router.navigateByUrl(this.lasturl);
-        }else{
-          this.presentAlert("failed!Error:" + data.result, "", ["OK"])
-        }
-      })
-    })
-   }
+    
    
   }
   inheritValue(para) {
@@ -1919,18 +1915,24 @@ export class NewFormPage implements OnInit {
     }
     
   }
-  async getMr2(fieldvalue,stype:string,label) {
+  async getPersons(fieldvalue, stype: string, label ,btntype: string) {
     const cbgcolor = this.cbgcolor;
     const modal = await this.modal.create({
       showBackdrop: true,
       component: SecurityComponent,
-      componentProps: {stype,fieldvalue,label,cbgcolor}
+      componentProps: { stype, fieldvalue, label, cbgcolor }
     });
     modal.present();
     //监听销毁的事件
     const { data } = await modal.onDidDismiss();
-    if(data.result!=''){
-      this.submitToMr2(this.formID,data.result);
+    if (data.result != '') {
+      if(btntype=='submitToMr2'){
+        this.submitToMr2(this.formID, data.result);
+      }else if(btntype=='reAssign'){
+        this.formmr = data.result;
+        this.presentModal(btntype);
+      }
+      
     }
   }
   submitToMr2(unid:string,mr2:string) {
@@ -1949,6 +1951,36 @@ export class NewFormPage implements OnInit {
         })
         //resolve(data)
         //})
+      })
+    })
+  }
+  deleteDoc(cm: any){
+    let unid: string = this.formID;
+    const para: any = {
+      //unid: this.ulrs.unid,
+      unid,
+      cm
+    }
+    this.storage.get('loginDetails').then(logindata => {
+      this.getforms.doDeleteDoc(logindata, para).pipe(first()).subscribe(data => {
+        if (data.status == 'success') {
+          this.router.navigateByUrl(this.lasturl);
+        } else {
+          this.presentAlert("failed!Error:" + data.result, "", "OK")
+        }
+      })
+    })
+  }
+  reAssign(comments: string){
+    let unid: string = this.formID;
+    const para: any = {unid, comments, formmr: this.formmr};
+    this.storage.get('loginDetails').then(logindata => {
+      this.getforms.doReAssign(logindata, para).pipe(first()).subscribe(data => {
+        if (data.status == 'success') {
+          this.router.navigateByUrl(this.lasturl);
+        } else {
+          this.presentAlert("failed!Error:" + data.result, "", "OK")
+        }
       })
     })
   }

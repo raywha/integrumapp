@@ -77,7 +77,7 @@ export class GetallformsService {
   doDeleteDoc(logindetail:any,para:any):Observable<any>{
     const unid:string = para.unid;
     const cm:string   = para.cm;
-    let param:string = `${logindetail.server}/${logindetail.folder}/integrumws.nsf/xp_App.xsp/deleteDoc?unid=${encodeURIComponent(unid)}$cm=${encodeURIComponent(cm)}`
+    let param:string = `${logindetail.server}/${logindetail.folder}/integrumws.nsf/xp_App.xsp/deleteDoc?unid=${encodeURIComponent(unid)}&cm=${encodeURIComponent(cm)}`
     if(logindetail.username && logindetail.password){
       let auth='Basic '+btoa(logindetail.username+':'+logindetail.password);
 
@@ -118,5 +118,20 @@ export class GetallformsService {
     }
     return from(this.httpnative.get(url,'',''));
   
+  }
+  doReAssign(logindetail:any,para:any):Observable<any>{
+    const {unid, comments, formmr} = para;
+    const url = `/${logindetail.folder}/integrumws.nsf/xp_App.xsp/invokeServerFunctions?unid=${unid}&action=reassign&formmr=${formmr}&comments=${encodeURIComponent(comments)}`;
+    if(logindetail.username && logindetail.password){
+      let auth='Basic '+btoa(logindetail.username+':'+logindetail.password);
+
+      const options = {
+          "Content-Type":"application/json; charset=utf-8",
+          "Authorization":auth
+      };
+      return from(this.httpnative.get(url,'',options));
+    }
+    return from(this.httpnative.get(url,'',''));
+    
   }
 }
