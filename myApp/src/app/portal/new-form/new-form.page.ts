@@ -21,6 +21,7 @@ import { RiskmatrixComponent } from "../../common/riskmatrix/riskmatrix.componen
 import { ElementRef,ViewChildren} from '@angular/core';
 import { Plugins, CameraResultType, CameraSource } from '@capacitor/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { SignaturepadPopover } from '../signaturepad-popover/signaturepad-popover';
 @Component({
   selector: 'app-new-form',
   templateUrl: './new-form.page.html',
@@ -351,6 +352,8 @@ export class NewFormPage implements OnInit {
                 //if(this.type != 'edit'){
                   if(data.value && data.value!='') data.value = moment(`${data.value}`,'YYYY-MM-DD hh:mm:ss').format('HH:mm:ss');
                 //}
+              }else if(data.xtype == 'signature'){
+                data.value = this.sanitizer.bypassSecurityTrustResourceUrl( data.value );
               }
                 this.fields.push(data) //
                 // this.selectScore(data,data.value,this.selecttemplat.template.secs[i].title)
@@ -1984,5 +1987,38 @@ export class NewFormPage implements OnInit {
       })
     })
   }
+  async signaturePanel(fieldname) {
+
+    let opt = { enableBackdropDismiss: false, cssClass: 'signature-popover' }
+    //let popover: any;
+    //popover = this.popoverController.create(SignaturepadPopover, {}, opt);
+    //popover.present({
+      // ev: myEvent
+    //});
+    const popover = await this.popoverController.create({
+      component: SignaturepadPopover,
+      componentProps: { },
+      translucent: true,
+      cssClass: "signature-popover",
+      mode: "md"
+    });
+    popover.present();
+    const { data } = await popover.onDidDismiss();
+    for (let i = 0; i < this.selecttemplat.template.secs.length; i++) {
+      if (this.selecttemplat.template.secs[i].fields) {
+        this.selecttemplat.template.secs[i].fields.forEach(item => {
+          // console.log(fieldname)
+          // console.log(item.name)
+          if (item.name == fieldname) {
+            //console.log(data)
+            //item.value = JSON.parse(data.result);
+            item.value = data;
+
+          }
+        })
+      }
+    }
+
+  };
 }
 

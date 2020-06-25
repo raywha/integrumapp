@@ -291,17 +291,18 @@
             </div>
             <!--signature-->
             <div *ngIf="field.xtype==='signature'" [hidden]="field.hide">
+              <ion-item>
               <ion-label style="margin-bottom:10px; " color="basic" stacked>
                 {{field.label}}
                 <span *ngIf="field.mandatory=='Y'" class="needfill">*</span>
               </ion-label>
-
+            </ion-item>
               <ion-input style="display:none;" [(ngModel)]='field.value'></ion-input>
               <div *ngIf="!field.value" class="signature-area">
-                <button ion-button clear>Sign Here</button>
+                <button ion-button clear (click)="signaturePanel(field.name)">Sign Here</button>
               </div>
               <div *ngIf="field.value">
-                <ion-item>
+                <ion-item (click)="signaturePanel(field.name)">
                   <img [src]="field.value" />
                 </ion-item>
               </div>
@@ -586,9 +587,17 @@
                       
                     </div>
                     <div *ngIf="field.xtype!=='attachment'" [hidden]="field.hide">
-                      <ion-text  [color]="txtfontcolor">
-                        {{field.value}}
-                      </ion-text>
+                      <div *ngIf="field.xtype==='signature'">
+                        <div *ngIf="field.value">
+                          <img [src]="field.value" />
+                        </div>
+                      </div>
+                      <div *ngIf="field.xtype!=='signature'">
+
+                        <ion-text  [color]="txtfontcolor">
+                          {{field.value}}
+                        </ion-text>
+                      </div>
                     </div>
                   </div>
                   </div>

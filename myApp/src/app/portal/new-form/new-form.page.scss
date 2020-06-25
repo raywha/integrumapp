@@ -98,7 +98,17 @@ ion-item {
        width: 100%;
     }
 }
-
+.signature-area{
+   display:flex;
+   background-color:#eee;
+   height:100px;
+   width:200px;
+   justify-content: center;
+   align-items: center;
+  }
+  .signature-popover .popover-content{
+   width: 500px;
+   }
 
 
 

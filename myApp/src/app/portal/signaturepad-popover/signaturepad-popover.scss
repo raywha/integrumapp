@@ -1,0 +1,11 @@
+page-signaturepad-popover {
+.signature-popover .popover-content{
+width: 500px;
+}
+}
+.popover-content 
+.scroll-content{
+    overflow-y:hidden;
+}
+$popover-md-width: 500px;
+$popover-ios-width: 500px;
