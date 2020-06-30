@@ -138,7 +138,7 @@ export class AuthemailPage implements OnInit {
         result => {
           if (result.data.indexOf('DOCTYPE') == -1) {
             result = JSON.parse(result.data)
-            this.commonCtrl.processShow('Processing...');
+            //this.commonCtrl.processShow('Processing...');
             if (result.returnResponse == "Success") {
               this.user = result.user.username;
               this.loginDetails.username = this.user;
@@ -153,6 +153,10 @@ export class AuthemailPage implements OnInit {
               this.storage.set("loginDetails", this.loginDetails);
 
               localStorage.setItem('bgcolor', result.color);
+
+              var curtime = new Date();
+              console.log('-->starttime:', curtime.toLocaleTimeString());
+
               this.auth.updateUserInfo(this.loginDetails).pipe(first()).subscribe(
                 data => {
                   console.log('updateUserInfo----data...:', data)
@@ -168,10 +172,23 @@ export class AuthemailPage implements OnInit {
                   this.translate.setDefaultLang(data.lan);
                   this.translate.use(data.lan);
                   this.storage.set("loginDetails", this.loginDetails)
+
+                  this.getallforms.getAllForms(this.loginDetails,data.lan).pipe(first()).subscribe(data => {
+                    this.commonCtrl.processHide();
+                    const otime = new Date();
+                    console.log('getAllForms--otime.toLocaleTimeString:', otime.toLocaleTimeString(), '-->starttime:', curtime.toLocaleTimeString());
+                    data = JSON.parse(data.data);
+                    this.storage.set('allforms', JSON.stringify(data));
+                  })
+
+                  this.commonCtrl.processHide();
+                  this.ngZone.run(() => {
+
+                    this.router.navigate(['tabs/tab1'],{ queryParams: { lan: data.lan } })
+                  })
                 }
               )
-              var curtime = new Date();
-              console.log('-->starttime:', curtime.toLocaleTimeString());
+              
               localStorage.setItem('hasLogged', 'true');
               localStorage.setItem('user', this.user);
               localStorage.setItem('OUCategory', result.user.oucategory)
@@ -191,18 +208,8 @@ export class AuthemailPage implements OnInit {
                   this.storage.set('psninfo', JSON.stringify(data));
                 }
               )
-              this.getallforms.getAllForms(this.loginDetails).pipe(first()).subscribe(data => {
-                this.commonCtrl.processHide();
-                const otime = new Date();
-                console.log('getAllForms--otime.toLocaleTimeString:', otime.toLocaleTimeString(), '-->starttime:', curtime.toLocaleTimeString());
-                data = JSON.parse(data.data);
-                this.storage.set('allforms', JSON.stringify(data));
-              })
-              this.commonCtrl.processHide();
-              this.ngZone.run(() => {
-
-                this.router.navigate(['tabs/tab1'])
-              })
+              
+              
             } else {
               this.commonCtrl.processHide();
               //this.presentAlert("password error！");

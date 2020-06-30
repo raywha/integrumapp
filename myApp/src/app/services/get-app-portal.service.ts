@@ -13,19 +13,23 @@ export class GetAppPortalService {
 
   constructor(public translate :TranslateService,private http: HttpClient,private common:CommonService,private httpnative: HTTP) { }
 
-  getPortalInfo(logindetail:any): Observable<any> {
+  getPortalInfo(logindetail:any, lan?:string): Observable<any> {
     console.log('getProtalInfo---->',logindetail)
     let email = logindetail.email && logindetail.email!=''?logindetail.email:localStorage.getItem('email');
-    let params:string = `${logindetail.server}/${logindetail.folder}/integrumws.nsf/xp_App.xsp/getAppPortal?&email=${encodeURIComponent(email)}`;
-
+    let browerLang=this.translate.getDefaultLang();
+    if(lan){
+      browerLang = lan;
+    }
+    let params:string = `${logindetail.server}/${logindetail.folder}/integrumws.nsf/xp_App.xsp/getAppPortal?&email=${encodeURIComponent(logindetail.email)}&lan=${browerLang}`;
+console.log('getProtalInfo url:',params)
     if(logindetail.username && logindetail.password){
-      let browerLang=this.translate.getDefaultLang();
+      
       let auth='Basic '+btoa(logindetail.username+':'+logindetail.password);
       const options = {
           "Content-Type":"application/json; charset=utf-8",
           "Authorization":auth
       };
-      let params:string = `${logindetail.server}/${logindetail.folder}/integrumws.nsf/xp_App.xsp/getAppPortal?&email=${encodeURIComponent(logindetail.email)}&lan=${browerLang}`;
+      
       return from(this.httpnative.get(params,"",options));
     }
     return from(this.httpnative.get(params,"",''));
@@ -47,9 +51,13 @@ export class GetAppPortalService {
     let key=para.key
     let count=para.count
     let curpage=para.curpage
-    let params:string = `${logindetail.server}/${logindetail.folder}/integrumws.nsf/xp_App.xsp/getViewData?viewid=${encodeURIComponent(key)}&countperpage=${encodeURIComponent(count)}&curpage=${encodeURIComponent(curpage)}`;
+    let browerLang=this.translate.getDefaultLang();
+    if(localStorage.getItem('lan')){
+      browerLang = localStorage.getItem('lan');
+    }
+    let params:string = `${logindetail.server}/${logindetail.folder}/integrumws.nsf/xp_App.xsp/getViewData?viewid=${encodeURIComponent(key)}&countperpage=${encodeURIComponent(count)}&curpage=${encodeURIComponent(curpage)}&languageid=${encodeURIComponent(browerLang)}`;
     if(key && key != ''){
-      if(key.startsWith('my_')) params = `${logindetail.server}/${logindetail.folder}/integrumws.nsf/xp_App.xsp/getViewData?viewid=${encodeURIComponent(key)}&countperpage=${encodeURIComponent(count)}&curpage=${encodeURIComponent(curpage)}&uname=${encodeURIComponent(logindetail.username)}`;
+      if(key.startsWith('my_')) params = `${logindetail.server}/${logindetail.folder}/integrumws.nsf/xp_App.xsp/getViewData?viewid=${encodeURIComponent(key)}&countperpage=${encodeURIComponent(count)}&curpage=${encodeURIComponent(curpage)}&uname=${encodeURIComponent(logindetail.username)}&languageid=${encodeURIComponent(browerLang)}`;
     }
     if(logindetail.username && logindetail.password){
       let auth='Basic '+btoa(logindetail.username+':'+logindetail.password);

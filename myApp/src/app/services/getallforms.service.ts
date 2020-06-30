@@ -12,23 +12,34 @@ export class GetallformsService {
 
   constructor(public translate :TranslateService,private http: HttpClient,private common:CommonService,private httpnative: HTTP) { }
 
-  getAllForms(logindetail:any ):Observable<any>{
+  getAllForms(logindetail:any, lan?:string):Observable<any>{
+    let browerLang=this.translate.getDefaultLang();
+    if(lan){
+      browerLang = lan;
+    }
+    const url = `${logindetail.server}/${logindetail.folder}/integrumws.nsf/xp_App.xsp/getAllForms?ver=v2&languageid=${browerLang}`;
+    console.log('getallforms url:',url);
     if(logindetail.username && logindetail.password){
       let auth='Basic '+btoa(logindetail.username+':'+logindetail.password);
       const options = {
           "Content-Type":"application/json; charset=utf-8",
           "Authorization":auth
       };
-      return from(this.httpnative.get(logindetail.server+'/'+logindetail.folder+'/integrumws.nsf/xp_App.xsp/getAllForms?ver=v2&languageid','',options));
+      return from(this.httpnative.get(url,'',options));
     }
-    return from(this.httpnative.get(logindetail.server+'/'+logindetail.folder+'/integrumws.nsf/xp_App.xsp/getAllForms?ver=v2&languageid','',''));
+    return from(this.httpnative.get(url,'',''));
   }
 
 
-  getFormData(logindetail:any,para:any ):Observable<any>{
+  getFormData(logindetail:any,para:any, lan?:string ):Observable<any>{
+    let browerLang=this.translate.getDefaultLang();
+    if(lan){
+      browerLang = lan;
+    }
     let unid=para.unid
     let isedit = para.isedit;
-    let param:string = logindetail.server+'/'+logindetail.folder+'/integrumws.nsf/xp_App.xsp/getDocInfoV2?unid='+encodeURIComponent(unid)+'&isedit='+encodeURIComponent(isedit);
+    let param:string = logindetail.server+'/'+logindetail.folder+'/integrumws.nsf/xp_App.xsp/getDocInfoV2?unid='+encodeURIComponent(unid)+'&languageid='+browerLang+'&isedit='+encodeURIComponent(isedit);
+    console.log('getFormData  url:',param)
     if(logindetail.username && logindetail.password){
       let auth='Basic '+btoa(logindetail.username+':'+logindetail.password);
 

@@ -108,8 +108,14 @@ export class LoginpassPage implements OnInit {
               this.loginDetails.OUCategory = result.user.oucategory;
 
               this.storage.set("loginDetails",this.loginDetails)
+              localStorage.setItem('bgcolor', result.color);
+              
+              var curtime = new Date();
+              console.log('-->starttime:', curtime.toLocaleTimeString());
+
               this.auth.updateUserInfo(this.loginDetails).pipe(first()).subscribe(
                 data => {
+                  console.log('updateUserInfo----data...:', data)
                   data = JSON.parse(data.data);
                   this.loginDetails.OUCategory = data.OUCategory;
                   const EmpCurrentPortal = data.EmpCurrentPortal;
@@ -122,33 +128,42 @@ export class LoginpassPage implements OnInit {
                   this.translate.setDefaultLang(data.lan);
                   this.translate.use(data.lan);
                   this.storage.set("loginDetails", this.loginDetails)
+
+                  this.getallforms.getAllForms(this.loginDetails,data.lan).pipe(first()).subscribe(data => {
+                    this.commonCtrl.processHide();
+                    const otime = new Date();
+                    console.log('getAllForms--otime.toLocaleTimeString:', otime.toLocaleTimeString(), '-->starttime:', curtime.toLocaleTimeString());
+                    data = JSON.parse(data.data);
+                    this.storage.set('allforms', JSON.stringify(data));
+                  })
+
+                  this.commonCtrl.processHide();
+                  this.ngZone.run(() => {
+
+                    this.router.navigate(['tabs/tab1'],{ queryParams: { lan: data.lan } })
+                  })
                 }
               )
+              
               localStorage.setItem('hasLogged', 'true');
               localStorage.setItem('user', this.user);
               localStorage.setItem('OUCategory', result.user.oucategory)
               this.getou.getous(this.user, this.pass, this.server, this.folder).pipe(first()).subscribe(
                 data => {
+                  const otime = new Date();
+                  console.log('getous--otime.toLocaleTimeString:', otime.toLocaleTimeString(), '-->starttime:', curtime.toLocaleTimeString());
                   data = JSON.parse(data.data);
                   this.storage.set('ous', JSON.stringify(data));
                 }
               )
               this.getpsn.getpersoninfo(this.user, this.pass, this.server, this.folder).pipe(first()).subscribe(
                 data => {
+                  const otime = new Date();
+                  console.log('getpersoninfo--otime.toLocaleTimeString:', otime.toLocaleTimeString(), '-->starttime:', curtime.toLocaleTimeString());
                   data = JSON.parse(data.data);
                   this.storage.set('psninfo', JSON.stringify(data));
                 }
               )
-              this.getallforms.getAllForms(this.loginDetails).pipe(first()).subscribe(data => {
-                // console.log("forms信息"+JSON.stringify(data))
-                data = JSON.parse(data.data);
-                this.storage.set('allforms', JSON.stringify(data));
-              })
-              this.commonCtrl.processHide();
-              this.ngZone.run(()=>{
-                this.router.navigate(['tabs/tab1']);
-
-              })
 
             } else {
               this.commonCtrl.processHide();

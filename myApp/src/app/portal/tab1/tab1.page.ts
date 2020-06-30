@@ -58,42 +58,83 @@ export class Tab1Page {
     }else{
       console.log('not bgcolor:')
     }
+    console.log('router url:',this.router.url)
     this.sdomain = AppConfig.domain;
     this.folder = AppConfig.folder;
     this.show()
     this.storage.get("loginDetails").then(data => {
       let lan = this.translate.getDefaultLang();
       if(localStorage.getItem('lan')){
-        console.log("localStorage.getItem('lan'):",localStorage.getItem('lan'),'--lan:',lan)
-        if(localStorage.getItem('lan')!=lan){
-          this.processShow('loading...');
-          this.getallforms.getAllForms(data).pipe(first()).subscribe(data => {
-            data = JSON.parse(data.data);
-            console.log('over getallforms:',data)
-            this.storage.set('allforms', JSON.stringify(data));  
-            localStorage.setItem('lan',lan);  
-            this.processHide();
+        console.log("localStorage.getItem('lan'):",localStorage.getItem('lan'),'--lan:',lan);
+        this.activeRoute.queryParams.subscribe(res => {
+          if (!res.lan) {
+            if(localStorage.getItem('lan')!=lan){
+              this.processShow('loading...');
+              localStorage.setItem('lan',lan); 
+              this.getallforms.getAllForms(data).pipe(first()).subscribe(data => {
+                if (data.data.indexOf('DOCTYPE') == -1) {
+                  data = JSON.parse(data.data);
+                  console.log('over getallforms:',data)
+                  this.storage.set('allforms', JSON.stringify(data));  
+                  
+                }else{
+                  this.router.navigate(['authemail'])
+                }
+                 
+                this.processHide();
+            })
+            }
+          }
         })
-        }
+        
       }
-      this.geapp.getPortalInfo(data).pipe(first())
-        .subscribe(data => {
-          console.log(data)
-          data = JSON.parse(data.data);
-          this.portalInfo = data
-          this.portalTile = data.selectedPortal
-          this.data = this.getDataBykey(this.portalTile, "Title")
-          this.hide()
-        })
+      this.activeRoute.queryParams.subscribe(res => {
+        console.log('***************activeRoute.queryParams:',res)
+        if (res.lan) {
+          this.geapp.getPortalInfo(data,res.lan).pipe(first())
+          .subscribe(data => {
+            console.log('getPortalInfo result:',data)
+            if (data.data.indexOf('DOCTYPE') == -1) {
+              data = JSON.parse(data.data);
+              this.portalInfo = data
+              this.portalTile = data.selectedPortal
+              this.data = this.getDataBykey(this.portalTile, "Title")
+              this.hide()
+            }else{
+              this.router.navigate(['authemail'])
+            }
+          })
+        }else{
+          this.geapp.getPortalInfo(data).pipe(first())
+          .subscribe(data => {
+            console.log('getPortalInfo result:',data)
+            if (data.data.indexOf('DOCTYPE') == -1) {
+              data = JSON.parse(data.data);
+              this.portalInfo = data
+              this.portalTile = data.selectedPortal
+              this.data = this.getDataBykey(this.portalTile, "Title")
+              this.hide()
+            }else{
+              this.router.navigate(['authemail'])
+            }
+          })
+        }
+      });
+      
         this.getou.getLoginPic(data).pipe(first()).subscribe(data => {
-          console.log(data)
-          data = JSON.parse(data.data);
-          this.titlelog=data.HeaderCompanyLogo
+          if (data.data.indexOf('DOCTYPE') == -1) {
+            data = JSON.parse(data.data);
+            this.titlelog=data.HeaderCompanyLogo
+          }else{
+            this.router.navigate(['authemail'])
+          }
+          
           
         });
 
     })
     this.activeRoute.queryParams.subscribe(res => {
+      console.log('activeRoute.queryParams:',res)
       this.portalTile = res.title
       if (res.key) {
         this.data = this.getDataBykey(res.title, "Title")
