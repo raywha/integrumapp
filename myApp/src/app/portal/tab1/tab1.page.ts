@@ -105,19 +105,25 @@ export class Tab1Page {
             }
           })
         }else{
-          this.geapp.getPortalInfo(data).pipe(first())
-          .subscribe(data => {
-            console.log('getPortalInfo result:',data)
-            if (data.data.indexOf('DOCTYPE') == -1) {
-              data = JSON.parse(data.data);
-              this.portalInfo = data
-              this.portalTile = data.selectedPortal
-              this.data = this.getDataBykey(this.portalTile, "Title")
-              this.hide()
-            }else{
-              this.router.navigate(['authemail'])
-            }
-          })
+          if (res.key) {
+            this.portalTile = res.title
+            this.data = this.getDataBykey(res.title, "Title")
+          }else{
+            this.geapp.getPortalInfo(data).pipe(first())
+            .subscribe(data => {
+              console.log('getPortalInfo result:',data)
+              if (data.data.indexOf('DOCTYPE') == -1) {
+                data = JSON.parse(data.data);
+                this.portalInfo = data
+                this.portalTile = data.selectedPortal
+                this.data = this.getDataBykey(this.portalTile, "Title")
+                this.hide()
+              }else{
+                this.router.navigate(['authemail'])
+              }
+            })
+          }
+          
         }
       });
       
@@ -131,8 +137,9 @@ export class Tab1Page {
           
           
         });
-
+        
     })
+    /*
     this.activeRoute.queryParams.subscribe(res => {
       console.log('activeRoute.queryParams:',res)
       this.portalTile = res.title
@@ -140,6 +147,7 @@ export class Tab1Page {
         this.data = this.getDataBykey(res.title, "Title")
       }
     });
+    */
   }
 
   ngOnInit() {
