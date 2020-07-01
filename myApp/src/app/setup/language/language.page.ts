@@ -4,6 +4,7 @@ import {HttpClient,HttpHeaders} from '@angular/common/http';
 import { first } from 'rxjs/operators';
 import { LanguageService } from "../../services/setup/language.service";
 import { Storage } from '@ionic/storage';
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-language',
   templateUrl: './language.page.html',
@@ -15,7 +16,8 @@ export class LanguagePage implements OnInit {
   public langularArr:any=[];
   public lan:string='';
   public name:string;
-  constructor(public translate :TranslateService,public http:HttpClient, public LanguageService:LanguageService,private storage:Storage) { 
+  public selectlan;
+  constructor(public translate :TranslateService,public router:Router, public http:HttpClient, public LanguageService:LanguageService,private storage:Storage) { 
     // this.translate.setDefaultLang('zh');
    
   }
@@ -34,6 +36,7 @@ export class LanguagePage implements OnInit {
            //获取当前设置的语言
           let browerLang=this.translate.getDefaultLang();
           this.lan=browerLang;
+          this.selectlan = this.lan;
         }
       )
     })
@@ -44,7 +47,12 @@ export class LanguagePage implements OnInit {
     console.log(this.lan)
     console.log(item.SelectedLanguages)
     this.translate.setDefaultLang(item.SelectedLanguages)
-    this.translate.use(item.SelectedLanguages)
+    this.translate.use(item.SelectedLanguages);
+    this.selectlan = item.SelectedLanguages;
   }
-
+  goBack(){
+    // this.nav.back()
+    　//this.router.navigate(['tabs/tab1'],{ queryParams: { selectlan: this.selectlan } })
+     
+   }
 }

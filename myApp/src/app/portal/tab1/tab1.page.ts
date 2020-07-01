@@ -58,7 +58,7 @@ export class Tab1Page {
     }else{
       console.log('not bgcolor:')
     }
-    console.log('router url:',this.router.url)
+    console.log('---router url:',this.router.url)
     this.sdomain = AppConfig.domain;
     this.folder = AppConfig.folder;
     this.show()
@@ -83,47 +83,43 @@ export class Tab1Page {
                  
                 this.processHide();
             })
+
+            
             }
-          }
-        })
-        
-      }
-      this.activeRoute.queryParams.subscribe(res => {
-        console.log('***************activeRoute.queryParams:',res)
-        if (res.lan) {
-          this.geapp.getPortalInfo(data,res.lan).pipe(first())
-          .subscribe(data => {
-            console.log('getPortalInfo result:',data)
-            if (data.data.indexOf('DOCTYPE') == -1) {
-              data = JSON.parse(data.data);
-              this.portalInfo = data
-              this.portalTile = data.selectedPortal
-              this.data = this.getDataBykey(this.portalTile, "Title")
-              this.hide()
-            }else{
-              this.router.navigate(['authemail'])
-            }
-          })
-        }else{
-          if (res.key) {
-            this.portalTile = res.title
-            this.data = this.getDataBykey(res.title, "Title")
-          }else{
             this.geapp.getPortalInfo(data).pipe(first())
             .subscribe(data => {
-              console.log('getPortalInfo result:',data)
               if (data.data.indexOf('DOCTYPE') == -1) {
                 data = JSON.parse(data.data);
                 this.portalInfo = data
                 this.portalTile = data.selectedPortal
+              if(res.title){
+                this.portalTile = res.title;
+              }
                 this.data = this.getDataBykey(this.portalTile, "Title")
                 this.hide()
               }else{
                 this.router.navigate(['authemail'])
               }
             })
+
           }
-          
+        })
+        
+      }
+      this.activeRoute.queryParams.subscribe(res => {
+        if (res.lan) {
+          this.geapp.getPortalInfo(data,res.lan).pipe(first())
+          .subscribe(data => {
+            if (data.data.indexOf('DOCTYPE') == -1) {
+              data = JSON.parse(data.data);
+              this.portalInfo = data
+              this.portalTile = data.selectedPortal;
+              this.data = this.getDataBykey(this.portalTile, "Title")
+              this.hide()
+            }else{
+              this.router.navigate(['authemail'])
+            }
+          })
         }
       });
       
