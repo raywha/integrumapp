@@ -12,6 +12,7 @@ import {OpenModalComponent} from "../../common/open-modal/open-modal.component";
 import { RiskmatrixComponent } from "../../common/riskmatrix/riskmatrix.component";
 import { SignaturePadModule } from 'angular2-signaturepad';
 import { SignaturepadPopover } from '../signaturepad-popover/signaturepad-popover';
+import { RoleComponent } from "../../common/role/role.component";
 const routes: Routes = [
   {
     path: '',
@@ -27,7 +28,7 @@ const routes: Routes = [
     SignaturePadModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [NewFormPage,PopoverComponent,SecurityComponent,OpenModalComponent,RiskmatrixComponent,SignaturepadPopover],
-  entryComponents:[PopoverComponent,SecurityComponent,OpenModalComponent,RiskmatrixComponent,SignaturepadPopover]
+  declarations: [NewFormPage,PopoverComponent,SecurityComponent,OpenModalComponent,RiskmatrixComponent,SignaturepadPopover,RoleComponent],
+  entryComponents:[PopoverComponent,SecurityComponent,OpenModalComponent,RiskmatrixComponent,SignaturepadPopover,RoleComponent]
 })
 export class NewFormPageModule {}

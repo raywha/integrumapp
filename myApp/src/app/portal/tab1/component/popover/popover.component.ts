@@ -12,6 +12,7 @@ export class PopoverComponent implements OnInit {
   public setting: any = [];
   public type: string;
   public portalList: any = [];
+  public selectPortalIndex: number = 0;
   constructor(public nav: NavController, public Popover: PopoverController, public translate: TranslateService,
     public params: NavParams,
     public router:Router
@@ -20,6 +21,7 @@ export class PopoverComponent implements OnInit {
       this.setting = res;
     })
     this.type = this.params.get("type")
+    if(this.type=='setup') this.selectPortalIndex = this.params.get('selectPortalIndex');
     if(this.params.get("portal")){
       let plist = this.params.get("portal").items;
       let userallportal = this.params.get("portal").userallportal;
@@ -51,7 +53,8 @@ export class PopoverComponent implements OnInit {
       this.nav.navigateBack('account');
     } else if (code == 2) {
       this.Popover.dismiss()
-      this.nav.navigateBack('language');
+      //this.nav.navigateBack('language');
+      this.nav.navigateBack('language',{queryParams:{selectPortalIndex:this.selectPortalIndex}})
     } else if (code == 3) {
       this.Popover.dismiss()
       // this.nav.navigateBack('add-action');

@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="tabs/tab1" text="" color="dark"></ion-back-button>
+      <ion-back-button defaultHref="tabs/tab1" (click)="goBack()" text="" color="dark"></ion-back-button>
     </ion-buttons>
     <ion-title>{{'public.language' | translate}}</ion-title>
   </ion-toolbar>

@@ -95,6 +95,12 @@ export class Tab1Page {
               if(res.title){
                 this.portalTile = res.title;
               }
+              if(res.selectPortalIndex){
+                let selectPortalIndex = res.selectPortalIndex;
+                if(selectPortalIndex<0) selectPortalIndex = 0;
+                const title = this.portalInfo.items[selectPortalIndex].Title;
+                this.portalTile = title;
+              }
                 this.data = this.getDataBykey(this.portalTile, "Title")
                 this.hide()
               }else{
@@ -150,10 +156,14 @@ export class Tab1Page {
 
   }
   async presentPopover(ev: any) {
+    let selectPortalIndex: number = 0;
+    if(this.portalInfo){
+      selectPortalIndex = this.portalInfo.items.findIndex(item => item.Title == this.portalTile)
+    }
     const popover = await this.popoverController.create({
       component: PopoverComponent,
       event: ev,
-      componentProps: { type: "setup", portalTile: this.portalTile },
+      componentProps: { type: "setup", selectPortalIndex },
       translucent: true
     });
     return await popover.present();

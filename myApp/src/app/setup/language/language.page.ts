@@ -4,7 +4,8 @@ import {HttpClient,HttpHeaders} from '@angular/common/http';
 import { first } from 'rxjs/operators';
 import { LanguageService } from "../../services/setup/language.service";
 import { Storage } from '@ionic/storage';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
+import { NavController } from '@ionic/angular'; 
 @Component({
   selector: 'app-language',
   templateUrl: './language.page.html',
@@ -16,10 +17,15 @@ export class LanguagePage implements OnInit {
   public langularArr:any=[];
   public lan:string='';
   public name:string;
-  public selectlan;
-  constructor(public translate :TranslateService,public router:Router, public http:HttpClient, public LanguageService:LanguageService,private storage:Storage) { 
+  public selectPortalIndex: number = 0;
+  constructor(public translate :TranslateService,public activeRoute: ActivatedRoute,public router:Router, public nav:NavController, public http:HttpClient, public LanguageService:LanguageService,private storage:Storage) { 
     // this.translate.setDefaultLang('zh');
-   
+    this.activeRoute.queryParams.subscribe(res => {
+      console.log('res:',res)
+      if (res.selectPortalIndex) {
+        this.selectPortalIndex = res.selectPortalIndex
+      }
+    });
   }
 
   ngOnInit() {
@@ -36,7 +42,7 @@ export class LanguagePage implements OnInit {
            //获取当前设置的语言
           let browerLang=this.translate.getDefaultLang();
           this.lan=browerLang;
-          this.selectlan = this.lan;
+          //this.selectlan = this.lan;
         }
       )
     })
@@ -48,11 +54,11 @@ export class LanguagePage implements OnInit {
     console.log(item.SelectedLanguages)
     this.translate.setDefaultLang(item.SelectedLanguages)
     this.translate.use(item.SelectedLanguages);
-    this.selectlan = item.SelectedLanguages;
+    
   }
   goBack(){
     // this.nav.back()
     　//this.router.navigate(['tabs/tab1'],{ queryParams: { selectlan: this.selectlan } })
-     
+    this.nav.navigateBack('/tabs/tab1',{queryParams:{selectPortalIndex:this.selectPortalIndex}});
    }
 }

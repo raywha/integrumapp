@@ -22,6 +22,7 @@ import { ElementRef,ViewChildren} from '@angular/core';
 import { Plugins, CameraResultType, CameraSource } from '@capacitor/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { SignaturepadPopover } from '../signaturepad-popover/signaturepad-popover';
+import { RoleComponent } from "../../common/role/role.component";
 @Component({
   selector: 'app-new-form',
   templateUrl: './new-form.page.html',
@@ -968,6 +969,34 @@ export class NewFormPage implements OnInit {
       showBackdrop: true,
       component: SecurityComponent,
       componentProps: {stype,fieldvalue,label,cbgcolor:this.cbgcolor }
+    });
+    modal.present();
+    //监听销毁的事件
+    const { data } = await modal.onDidDismiss();
+    for (let i = 0; i < this.selecttemplat.template.secs.length; i++) {
+      if(this.selecttemplat.template.secs[i].fields){
+        this.selecttemplat.template.secs[i].fields.forEach(item => {
+          // console.log(fieldname)
+          // console.log(item.name)
+          if (item.name == fieldname) {
+            // console.log(data)
+            item.value = data.result;
+          }
+        })
+      }
+      
+
+    }
+
+    // console.log(this.selecttemplat.template.secs)
+
+  }
+  //查找名称
+  async getRole(fieldname, fieldvalue,stype:string,label,rolelist) {
+    const modal = await this.modal.create({
+      showBackdrop: true,
+      component: RoleComponent,
+      componentProps: {stype,fieldvalue,label,cbgcolor:this.cbgcolor,rolelist }
     });
     modal.present();
     //监听销毁的事件
@@ -1944,6 +1973,7 @@ export class NewFormPage implements OnInit {
       this.storage.get("loginDetails").then(logindata => {
         //this.getforms.getFormData(logindata, { "unid": "EBE27D0FEC6AEFF9482584D90020DCE6" }).pipe(first()).subscribe(data => {
         this.getforms.submitToMr2(logindata, para).pipe(first()).subscribe(data => {
+          data = JSON.parse(data.data);
           if(data.status=='success'){
             this.router.navigateByUrl(this.lasturl)
           }else{
@@ -1966,6 +1996,7 @@ export class NewFormPage implements OnInit {
     }
     this.storage.get('loginDetails').then(logindata => {
       this.getforms.doDeleteDoc(logindata, para).pipe(first()).subscribe(data => {
+        data = JSON.parse(data.data);
         if (data.status == 'success') {
           this.router.navigateByUrl(this.lasturl);
         } else {
@@ -1979,6 +2010,7 @@ export class NewFormPage implements OnInit {
     const para: any = {unid, comments, formmr: this.formmr};
     this.storage.get('loginDetails').then(logindata => {
       this.getforms.doReAssign(logindata, para).pipe(first()).subscribe(data => {
+        data = JSON.parse(data.data);
         if (data.status == 'success') {
           this.router.navigateByUrl(this.lasturl);
         } else {
