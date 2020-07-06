@@ -2019,6 +2019,24 @@ export class NewFormPage implements OnInit {
       })
     })
   }
+  getPeopleByRole(para) {
+    return new Promise((resolve, reject) => {
+      this.storage.get("loginDetails").then(data => {
+        this.getforms.getPeopleByRole(data, para).pipe(first()).subscribe(data => {
+          data = JSON.parse(data.data);
+          if (data.status == 'success') {
+            var rolelist=""
+            for(var i=0;i<data.res.length;i++){
+              rolelist=rolelist+"<ion-item>"+data.res[i]+"</ion-item>";
+            }
+            this.presentAlert("<div>"+rolelist+"</div>", "Role Mr list", ["Close"]);
+          } else {
+            this.presentAlert("failed!Error:" + data.res, "", "OK")
+          }
+        })
+      })
+    })
+  }
   async signaturePanel(fieldname) {
 
     let opt = { enableBackdropDismiss: false, cssClass: 'signature-popover' }

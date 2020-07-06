@@ -38,7 +38,10 @@
           </ion-icon>
         </ion-item>
         <ion-item>
-          <ion-text [ngStyle]="{'color': cbgcolor}">
+          <ion-text *ngIf="field.name=='formRoleMR'" (click)="getPeopleByRole(field.value)" [ngStyle]="{'color': cbgcolor}">
+            {{field.value}}
+          </ion-text>
+          <ion-text *ngIf="field.name=='formMR'" [ngStyle]="{'color': cbgcolor}">
             {{field.value}}
           </ion-text>
         </ion-item>
