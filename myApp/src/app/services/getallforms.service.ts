@@ -145,6 +145,36 @@ export class GetallformsService {
     return from(this.httpnative.get(url,'',''));
     
   }
+  doApprove(logindetail:any,para:any):Observable<any>{
+    const {unid, comments} = para;
+    const url = `/${logindetail.folder}/integrumws.nsf/xp_App.xsp/invokeServerFunctions?unid=${unid}&action=approve&comments=${encodeURIComponent(comments)}`;
+    if(logindetail.username && logindetail.password){
+      let auth='Basic '+btoa(logindetail.username+':'+logindetail.password);
+
+      const options = {
+          "Content-Type":"application/json; charset=utf-8",
+          "Authorization":auth
+      };
+      return from(this.httpnative.get(url,'',options));
+    }
+    return from(this.httpnative.get(url,'',''));
+    
+  }
+  doReject(logindetail:any,para:any):Observable<any>{
+    const {unid, comments} = para;
+    const url = `/${logindetail.folder}/integrumws.nsf/xp_App.xsp/invokeServerFunctions?unid=${unid}&action=reject&comments=${encodeURIComponent(comments)}`;
+    if(logindetail.username && logindetail.password){
+      let auth='Basic '+btoa(logindetail.username+':'+logindetail.password);
+
+      const options = {
+          "Content-Type":"application/json; charset=utf-8",
+          "Authorization":auth
+      };
+      return from(this.httpnative.get(url,'',options));
+    }
+    return from(this.httpnative.get(url,'',''));
+    
+  }
   getPeopleByRole(logindetail:any,role:any):Observable<any>{
     let param:string = logindetail.server+'/'+logindetail.folder+'/integrumws.nsf/xp_App.xsp/getPeopleByRole?role='+encodeURIComponent(role);
     if(logindetail.username && logindetail.password){

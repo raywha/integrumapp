@@ -360,7 +360,13 @@ export class NewFormPage implements OnInit {
                 // this.selectScore(data,data.value,this.selecttemplat.template.secs[i].title)
               })
             }else if(this.selecttemplat.template.secs[i].secId == "AuditTrail"){
-              if(this.selecttemplat.template.secs[i].secInfoContent && this.selecttemplat.template.secs[i].secInfoContent!='') selectSecId.push('AuditTrail');
+              if(this.selecttemplat.template.secs[i].secInfoContent && this.selecttemplat.template.secs[i].secInfoContent!=''){
+                
+                  let secInfoContent = this.selecttemplat.template.secs[i].secInfoContent;
+                  secInfoContent = secInfoContent.replace(/\n/g,'<br/>');
+                  this.selecttemplat.template.secs[i].secInfoContent = secInfoContent
+                  selectSecId.push('AuditTrail');
+                }
             }
             // console .log(this.selecttemplat.template.secs[i])
             // console.log(this.selecttemplat.template.secs[i].secId)
@@ -419,7 +425,8 @@ export class NewFormPage implements OnInit {
       this.mandatoryWhenApprove = this.selecttemplat.mandatoryWhenApprove?this.selecttemplat.mandatoryWhenApprove:"0";
       this.skipMandatory = this.selecttemplat.skipMandatory?this.selecttemplat.skipMandatory:"0";
       this.btnBox = this.selecttemplat.menubaritem
-      this.title = this.selecttemplat.template.templateTitle
+      //this.title = this.selecttemplat.template.templateTitle;
+      this.title = this.atitle;
       this.sysfields = this.selecttemplat.template.secs[0].fields
       this.mandafields = this.selecttemplat.template.mandaFields
       this.templatid = this.selecttemplat.template.templateId
@@ -746,9 +753,15 @@ export class NewFormPage implements OnInit {
         }
         
         break;
-        case 'btnReAssign':
+      case 'btnReAssign':
         this.getPersons('', 'single', this.reassignLabel, 'reAssign')
         break;
+      case "btnApprove":
+        this.presentModal('approve');
+        break;
+      case "btnReject":
+          this.presentModal('reject');
+          break;
       default:
         actiontype = "open"
         // this.router.navigateByUrl(this.lasturl)
@@ -1881,6 +1894,10 @@ export class NewFormPage implements OnInit {
       this.deleteDoc(data.result);
     }else if(stype == 'reAssign'){
       this.reAssign(data.result);
+    }else if(stype == 'approve'){
+      this.approve(data.result);
+    }else if(stype == 'reject'){
+      this.reject(data.result);
     }
     
    
@@ -2019,6 +2036,34 @@ export class NewFormPage implements OnInit {
       })
     })
   }
+  approve(comments: string){
+    let unid: string = this.formID;
+    const para: any = {unid, comments};
+    this.storage.get('loginDetails').then(logindata => {
+      this.getforms.doApprove(logindata, para).pipe(first()).subscribe(data => {
+        data = JSON.parse(data.data);
+        if (data.status == 'success') {
+          this.router.navigateByUrl(this.lasturl);
+        } else {
+          this.presentAlert("failed!Error:" + data.result, "", "OK")
+        }
+      })
+    })
+  }
+  reject(comments: string){
+    let unid: string = this.formID;
+    const para: any = {unid, comments};
+    this.storage.get('loginDetails').then(logindata => {
+      this.getforms.doReject(logindata, para).pipe(first()).subscribe(data => {
+        data = JSON.parse(data.data);
+        if (data.status == 'success') {
+          this.router.navigateByUrl(this.lasturl);
+        } else {
+          this.presentAlert("failed!Error:" + data.result, "", "OK")
+        }
+      })
+    })
+  }
   getPeopleByRole(para) {
     return new Promise((resolve, reject) => {
       this.storage.get("loginDetails").then(data => {
@@ -2029,7 +2074,7 @@ export class NewFormPage implements OnInit {
             for(var i=0;i<data.res.length;i++){
               rolelist=rolelist+"<ion-item>"+data.res[i]+"</ion-item>";
             }
-            this.presentAlert("<div>"+rolelist+"</div>", "Role Mr list", ["Close"]);
+            this.presentAlert("<div>"+rolelist+"</div>", "", ["Close"]);
           } else {
             this.presentAlert("failed!Error:" + data.res, "", "OK")
           }
