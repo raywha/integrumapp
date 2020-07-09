@@ -117,7 +117,7 @@ export class GetallformsService {
   }
   submitToMr2(logindetail:any,para:any ):Observable<any>{
     let { unid,mr2 } = para;
-    const url = `/${logindetail.folder}/integrumws.nsf/xp_App.xsp/invokeServerFunctions?unid=${unid}&action=sendforreview&strformMR=${mr2}`;
+    const url = `${logindetail.server}/${logindetail.folder}/integrumws.nsf/xp_App.xsp/invokeServerFunctions?unid=${unid}&action=sendforreview&strformMR=${mr2}`;
     if(logindetail.username && logindetail.password){
       let auth='Basic '+btoa(logindetail.username+':'+logindetail.password);
 
@@ -132,7 +132,7 @@ export class GetallformsService {
   }
   doReAssign(logindetail:any,para:any):Observable<any>{
     const {unid, comments, formmr} = para;
-    const url = `/${logindetail.folder}/integrumws.nsf/xp_App.xsp/invokeServerFunctions?unid=${unid}&action=reassign&formmr=${formmr}&comments=${encodeURIComponent(comments)}`;
+    const url = `${logindetail.server}/${logindetail.folder}/integrumws.nsf/xp_App.xsp/invokeServerFunctions?unid=${unid}&action=reassign&formmr=${formmr}&comments=${encodeURIComponent(comments)}`;
     if(logindetail.username && logindetail.password){
       let auth='Basic '+btoa(logindetail.username+':'+logindetail.password);
 
@@ -147,7 +147,7 @@ export class GetallformsService {
   }
   doApprove(logindetail:any,para:any):Observable<any>{
     const {unid, comments} = para;
-    const url = `/${logindetail.folder}/integrumws.nsf/xp_App.xsp/invokeServerFunctions?unid=${unid}&action=approve&comments=${encodeURIComponent(comments)}`;
+    const url = `${logindetail.server}/${logindetail.folder}/integrumws.nsf/xp_App.xsp/invokeServerFunctions?unid=${unid}&action=approve&comments=${encodeURIComponent(comments)}`;
     if(logindetail.username && logindetail.password){
       let auth='Basic '+btoa(logindetail.username+':'+logindetail.password);
 
@@ -162,7 +162,7 @@ export class GetallformsService {
   }
   doReject(logindetail:any,para:any):Observable<any>{
     const {unid, comments} = para;
-    const url = `/${logindetail.folder}/integrumws.nsf/xp_App.xsp/invokeServerFunctions?unid=${unid}&action=reject&comments=${encodeURIComponent(comments)}`;
+    const url = `${logindetail.server}/${logindetail.folder}/integrumws.nsf/xp_App.xsp/invokeServerFunctions?unid=${unid}&action=reject&comments=${encodeURIComponent(comments)}`;
     if(logindetail.username && logindetail.password){
       let auth='Basic '+btoa(logindetail.username+':'+logindetail.password);
 
