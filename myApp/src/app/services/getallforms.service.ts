@@ -175,6 +175,21 @@ export class GetallformsService {
     return from(this.httpnative.get(url,'',''));
     
   }
+  doReopen(logindetail:any,para:any):Observable<any>{
+    const {unid, comments} = para;
+    const url = `${logindetail.server}/${logindetail.folder}/integrumws.nsf/xp_App.xsp/invokeServerFunctions?unid=${unid}&action=reopen&comments=${encodeURIComponent(comments)}`;
+    if(logindetail.username && logindetail.password){
+      let auth='Basic '+btoa(logindetail.username+':'+logindetail.password);
+
+      const options = {
+          "Content-Type":"application/json; charset=utf-8",
+          "Authorization":auth
+      };
+      return from(this.httpnative.get(url,'',options));
+    }
+    return from(this.httpnative.get(url,'',''));
+    
+  }
   getPeopleByRole(logindetail:any,role:any):Observable<any>{
     let param:string = logindetail.server+'/'+logindetail.folder+'/integrumws.nsf/xp_App.xsp/getPeopleByRole?role='+encodeURIComponent(role);
     if(logindetail.username && logindetail.password){

@@ -762,6 +762,9 @@ export class NewFormPage implements OnInit {
       case "btnReject":
           this.presentModal('reject');
           break;
+      case "btnReopen":
+            this.presentModal('reopen');
+            break;
       default:
         actiontype = "open"
         // this.router.navigateByUrl(this.lasturl)
@@ -1891,13 +1894,15 @@ export class NewFormPage implements OnInit {
    const { data } = await modal.onDidDismiss();
    if (data.result == 'cancel') return false;
     if(stype=='delete'){
-      this.deleteDoc(data.result);
+      this.deleteDoc(data.data);
     }else if(stype == 'reAssign'){
-      this.reAssign(data.result);
+      this.reAssign(data.data);
     }else if(stype == 'approve'){
-      this.approve(data.result);
+      this.approve(data.data);
     }else if(stype == 'reject'){
-      this.reject(data.result);
+      this.reject(data.data);
+    }else if(stype == 'reopen'){
+      this.reopen(data.data);
     }
     
    
@@ -2064,6 +2069,20 @@ export class NewFormPage implements OnInit {
       })
     })
   }
+  reopen(comments: string){
+    let unid: string = this.formID;
+    const para: any = {unid, comments};
+    this.storage.get('loginDetails').then(logindata => {
+      this.getforms.doReopen(logindata, para).pipe(first()).subscribe(data => {
+        data = JSON.parse(data.data);
+        if (data.status == 'success') {
+          this.router.navigateByUrl(this.lasturl);
+        } else {
+          this.presentAlert("failed!Error:" + data.result, "", "OK")
+        }
+      })
+    })
+  }
   getPeopleByRole(para) {
     return new Promise((resolve, reject) => {
       this.storage.get("loginDetails").then(data => {
@@ -2115,5 +2134,22 @@ export class NewFormPage implements OnInit {
     }
 
   };
+  fnMicroSort(column, sortType, dcArray) {
+    dcArray.sort(function (x, y) {
+      if (x[column][1] == "number") {
+        if (sortType == "asce") {
+          return x[column][0] - y[column][0];
+        } else {
+          return y[column][0] - x[column][0];
+        }
+      } else {
+        if (sortType == "asce") {
+          return x[column][0].localeCompare(y[column][0]);
+        } else {
+          return y[column][0].localeCompare(x[column][0]);
+        }
+      }
+    })
+  }
 }
 
