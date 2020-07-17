@@ -5,7 +5,7 @@
                 <ion-col></ion-col>
                 <ion-col>
                     <div>
-                        <ion-img [src]="logPic.log"></ion-img>
+                        <ion-img *ngIf="logPic.log" [src]="logPic.log"></ion-img>
                     </div>
                 </ion-col>
                 <ion-col></ion-col>

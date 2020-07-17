@@ -203,4 +203,47 @@ export class GetallformsService {
     }
     return from(this.httpnative.get(param,'',''));
   }
+  getDocData(logindetail:any,unid: string ):Observable<any>{
+    let param:string = logindetail.server+'/'+logindetail.folder+'/integrumws.nsf/xp_App.xsp/getFormData?key='+encodeURIComponent(unid);
+    if(logindetail.username && logindetail.password){
+      let auth='Basic '+btoa(logindetail.username+':'+logindetail.password);
+
+      const options = {
+          "Content-Type":"application/json; charset=utf-8",
+          "Authorization":auth
+      };
+      return from(this.httpnative.get(param,'',options));
+    }
+    return from(this.httpnative.get(param,'',''));
+    
+  }
+  removeDoc(logindetail:any,unid: string ):Observable<any>{
+    let param:string = logindetail.server+'/'+logindetail.folder+'/integrumws.nsf/xp_App.xsp/removeMicroData?docid='+encodeURIComponent(unid);
+    if(logindetail.username && logindetail.password){
+      let auth='Basic '+btoa(logindetail.username+':'+logindetail.password);
+
+      const options = {
+          "Content-Type":"application/json; charset=utf-8",
+          "Authorization":auth
+      };
+      return from(this.httpnative.get(param,'',options));
+    }
+    return from(this.httpnative.get(param,'',''));
+  }
+  saveMicrodbDoc(logindetail:any,para:any ):Observable<any>{
+    let  data=para;
+    this.httpnative.setDataSerializer("json");
+    if(logindetail.username && logindetail.password){
+      let auth='Basic '+btoa(logindetail.username+':'+logindetail.password);
+      let unid=para.unid
+      const options = {
+          "Content-Type":"application/json; charset=utf-8",
+          "Authorization":auth
+      };
+      console.log('para:',para)
+      
+      return from(this.httpnative.post(logindetail.server+'/'+logindetail.folder+'/integrumws.nsf/xp_App.xsp/saveMicroData',data,options));
+    }
+    return from(this.httpnative.post(logindetail.server+'/'+logindetail.folder+'/integrumws.nsf/xp_App.xsp/saveMicroData',data,''));
+  }
 }

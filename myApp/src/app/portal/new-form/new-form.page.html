@@ -100,7 +100,7 @@
         </ion-item>
         
         <div *ngIf="list[index].show" class="guidance-box">
-          <div *ngIf="section.secId!='AuditTrail' && section.secId!='subform' ">
+          <div *ngIf="section.secId!='AuditTrail' && section.secId!='subform' && section.sectionType!='1' ">
           <div *ngFor="let field of section.fields;let index = index;" class="fieldshow">
             <!--multiselectfield-->
             <div *ngIf="field.xtype==='multiselect'" [hidden]="field.hide">
@@ -504,6 +504,63 @@
 
           </ion-item>
         </div>
+        <div *ngIf="section.sectionType=='1'">
+          <ion-item lines="none">
+            <div *ngIf="!formID">
+              <ion-label [color]="txtfontcolor" stacked>
+                Please save the document to add Field Table sections.
+              </ion-label>
+            </div>
+            <div *ngIf="formID && type!='open'">
+              <ion-button #testdom (click)="newMicrodb(null, section)">Add</ion-button>
+            </div>
+
+          </ion-item>
+            <ion-grid>
+              <ion-row>
+                <ion-col class="fieldshow" *ngIf="section.enableHideRemoveButton =='ka_No'">
+                  <ion-item>
+                    
+                  </ion-item>
+                </ion-col>
+                  <ion-col class="fieldshow">
+                    <ion-item>
+                      {{section.dispFields[0].label}} 
+                      <span *ngIf="section.IsMircroSort=='ka_Yes' && section.sortFieldName == section.dispFields[0].id">
+                        <img [src]="orderbyImg" alt="" (click)="microsort(section)">
+                      </span>
+                    </ion-item>
+                  </ion-col>
+                  <ion-col>
+                    <ion-item>
+                      {{section.dispFields[1].label}} 
+                      <span *ngIf="section.IsMircroSort=='ka_Yes' && section.sortFieldName == section.dispFields[1].id">
+                        <img [src]="orderbyImg" alt="" (click)="microsort(section)">
+                      </span>
+                    </ion-item>
+                  </ion-col>
+              </ion-row>
+                <ion-row *ngFor="let mdoc of getMicrodbData(section.secId);let index = index;" class="fieldshow">
+                  <ion-col *ngIf="section.enableHideRemoveButton =='ka_No'">
+                    <ion-item>
+                      <a (click)="removeMicroDoc(mdoc.unid,section.secId)"  [ngStyle]="{'color':cbgcolor}">Remove  </a>
+                    </ion-item>
+                  </ion-col>
+                  <ion-col class="fieldshow">
+                    <ion-item>
+                      <a (click)="newMicrodb(mdoc.unid,section)"  [ngStyle]="{'color':cbgcolor}">{{mdoc.firstcolval}} </a>
+                    </ion-item>
+                  </ion-col>
+                  <ion-col>
+                    <ion-item>
+                      <a (click)="newMicrodb(mdoc.unid,section)"  [ngStyle]="{'color':cbgcolor}">{{mdoc['secondcolval']}}  </a>
+                    </ion-item>
+                  </ion-col>
+                </ion-row>
+            </ion-grid>
+            
+          
+        </div>
       </div>
 
     </div>
@@ -550,7 +607,7 @@
 
     <div *ngFor="let section of sections;let index = index;" class="field-container" [id]="section.secId">
       <div *ngIf="index>0">
-        <ion-item lines="none" [color]="secbgcolor">
+        <ion-item lines="none" #testdom>
           <ion-label color="light">{{section.title}}&nbsp;&nbsp;&nbsp;&nbsp;{{section.score}}</ion-label>
           <ion-icon slot="end" color="light" name="arrow-forward" mode="ios"
             (click)="isShowGuidance(section.secId,index)" *ngIf="!(list&&list[index]&&list[index].show)"></ion-icon>
@@ -559,7 +616,7 @@
           </ion-icon>
         </ion-item>
         <div *ngIf="list[index].show" class="guidance-box">
-          <div *ngIf="section.secId!='AuditTrail' && section.secId!='subform' ">
+          <div *ngIf="section.secId!='AuditTrail' && section.secId!='subform' && section.sectionType!='1' ">
             <div *ngFor="let field of section.fields;let index = index;" class="fieldshow" [hidden]="field.hide">
               <!--multiselectfield-->
                 <ion-item lines="none">
@@ -648,6 +705,41 @@
               </div>
 
             </ion-item>
+          </div>
+          <div *ngIf="section.sectionType=='1'">
+            <ion-grid>
+              <ion-row>
+                  <ion-col size="6" class="fieldshow">
+                    <ion-item>
+                      {{section.dispFields[0].label}} 
+                      <span *ngIf="section.IsMircroSort=='ka_Yes' && section.sortFieldName == section.dispFields[0].id">
+                        <img [src]="orderbyImg" alt="" (click)="microsort(section)">
+                      </span>
+                    </ion-item>
+                  </ion-col>
+                  <ion-col>
+                    <ion-item>
+                      {{section.dispFields[1].label}} 
+                      <span *ngIf="section.IsMircroSort=='ka_Yes' && section.sortFieldName == section.dispFields[1].id">
+                        <img [src]="orderbyImg" alt="" (click)="microsort(section)">
+                      </span>
+                    </ion-item>
+                  </ion-col>
+              </ion-row>
+                <ion-row *ngFor="let mdoc of getMicrodbData(section.secId);let index = index;" class="fieldshow">
+                  <ion-col size="6" class="fieldshow">
+                    <ion-item>
+                      <a (click)="newMicrodb(mdoc.unid,section)"  [ngStyle]="{'color':cbgcolor}">{{mdoc.firstcolval}} </a>
+                    </ion-item>
+                  </ion-col>
+                  <ion-col>
+                    <ion-item>
+                      <a (click)="newMicrodb(mdoc.unid,section)"  [ngStyle]="{'color':cbgcolor}">{{mdoc['secondcolval']}}  </a>
+                    </ion-item>
+                  </ion-col>
+                </ion-row>
+            </ion-grid>
+            
           </div>
         </div>
 

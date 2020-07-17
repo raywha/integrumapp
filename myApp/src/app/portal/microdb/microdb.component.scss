@@ -1,0 +1,37 @@
+ion-item {
+    min-height: 20px;
+    ion-label{
+        white-space: normal;
+    }
+    ion-text,ion-datetime,ion-select,ion-radio-group ion-item{
+       /*color: #b81321;*/
+    }
+    ion-select{
+      max-width: 100%;
+      padding-left: 0;
+      .select-text{
+         white-space: normal !important;
+         word-break:break-all;
+      }
+      
+    }
+    ion-datetime{padding:0;}
+}
+.button-wrapper{
+    display:flex;
+    flex-flow:nowrap;
+    justify-content: space-around;
+    align-items: center;
+    height:64px;
+}
+.button-wrapper button{
+flex: 1;
+}
+.button-wrapper .button-inner{
+font-size:20px;
+}
+.button-wrapper button:first-child{
+    border-right: 1px white solid;
+    border-top-right-radius: 0px;   
+    border-bottom-right-radius: 0px;  
+}

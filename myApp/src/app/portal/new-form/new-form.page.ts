@@ -23,6 +23,7 @@ import { Plugins, CameraResultType, CameraSource } from '@capacitor/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { SignaturepadPopover } from '../signaturepad-popover/signaturepad-popover';
 import { RoleComponent } from "../../common/role/role.component";
+import { MicrodbComponent } from '../microdb/microdb.component';
 @Component({
   selector: 'app-new-form',
   templateUrl: './new-form.page.html',
@@ -123,6 +124,9 @@ export class NewFormPage implements OnInit {
   public mr2Label:string = 'Select Final Reviewer';
   public reassignLabel: string = 'Select Person';
   public formmr;
+  public microdbData:any = [];
+  public orderbyImg: string = 'assets/icon/sort_none.gif';
+  public orderbyState: boolean;
   constructor(
     private storage: Storage,
     public modal: ModalController,
@@ -174,6 +178,7 @@ export class NewFormPage implements OnInit {
     }
       this.sections = []
       this.sectionsold = []
+      this.microdbData = [];
       this.portaltitle = res.temptitle
       this.subformflag = res.subform
       this.atitle = res.aTitle;
@@ -260,7 +265,7 @@ export class NewFormPage implements OnInit {
             }
           }
           for (let i = 0; i < this.selecttemplat.template.secs.length; i++) {
-            if (this.selecttemplat.template.secs[i].fields) {
+            if (this.selecttemplat.template.secs[i].fields && this.selecttemplat.template.secs[i].sectionType!='1') {
               this.selecttemplat.template.secs[i].fields.forEach(data => {
 
                 //data.value = formdata[data.name]
@@ -367,6 +372,21 @@ export class NewFormPage implements OnInit {
                   this.selecttemplat.template.secs[i].secInfoContent = secInfoContent
                   selectSecId.push('AuditTrail');
                 }
+            }
+            if(this.selecttemplat.template.secs[i].sectionType=='1'){
+              const { secId, title, fields, enableHideRemoveButton, IsMircroSort, microData: { IsSupperUser, dcData } } = this.selecttemplat.template.secs[i];
+              console.log('this.microdbData:',this.microdbData);
+              const microsec = this.selecttemplat.template.secs[i];
+              if(IsMircroSort == 'ka_Yes'){
+                  const sortField = microsec.sortField;
+                  microsec.sortFieldName = sortField;
+                  if(sortField.includes(' '))  microsec.sortFieldName = sortField.split(' ')[0];
+                  microsec.sortStatus = 'N';
+
+                  const sortIndex = microsec.dispFields.findIndex( e => e.id == microsec.sortFieldName);
+                  microsec.sortIndex = sortIndex;
+              }
+              this.microdbData.push({ secId, title, fields, enableHideRemoveButton, IsMircroSort,  IsSupperUser, dcData  });
             }
             // console .log(this.selecttemplat.template.secs[i])
             // console.log(this.selecttemplat.template.secs[i].secId)
@@ -2134,22 +2154,138 @@ export class NewFormPage implements OnInit {
     }
 
   };
-  fnMicroSort(column, sortType, dcArray) {
-    dcArray.sort(function (x, y) {
-      if (x[column][1] == "number") {
-        if (sortType == "asce") {
-          return x[column][0] - y[column][0];
-        } else {
-          return y[column][0] - x[column][0];
-        }
-      } else {
-        if (sortType == "asce") {
-          return x[column][0].localeCompare(y[column][0]);
-        } else {
-          return y[column][0].localeCompare(x[column][0]);
-        }
+  async newMicrodb(unid: string, section:any) {
+    const cbgcolor = this.cbgcolor;
+    const type = this.type;
+    const mianunid = this.formID;
+    section.fields.forEach(e => {
+      if(e.value) delete e.value;
+    });
+    const modal = await this.modal.create({
+      showBackdrop: true,
+      component: MicrodbComponent,
+      componentProps: {  section, cbgcolor , unid, mianunid, type }
+    });
+    modal.present();
+    //监听销毁的事件
+    const { data } = await modal.onDidDismiss();
+    
+    console.log('data:',data);
+    if(data.result == 'success'){
+      this.reUpdateMicrodbData(section.secId,data.unid,data.firstDisVal, data.firstDisType ,data.secondDisVal, data.secondDisType);
+    }
+  };
+  reUpdateMicrodbData(secId: string, unid: string, firstDisVal: any, firstDisType: any, secondDisVal: any, secondDisType:any){
+    const microdb = this.microdbData.find(item=>item.secId==secId);
+    if(microdb){
+      const doc = microdb.dcData.find(e => e[0] == unid );
+      if(doc){
+        if(firstDisVal) doc[1][0] = firstDisVal;
+        if(secondDisVal) doc[2][0] = secondDisVal;
+      }else{
+        const arr: any = [];
+        arr[0] = unid;
+        arr[1] = [firstDisVal, firstDisType];
+        arr[2] = [secondDisVal, secondDisType];
+        microdb.dcData.push(arr);
       }
+      
+    }
+  }
+  getMicrodbData(secId: string){
+    const arr = [];
+    const microdb = this.microdbData.find(item=>item.secId==secId);
+    if(microdb){
+      microdb.dcData.forEach(e => {
+        const obj = { unid:'', firstcolval: '', firstcoltype: '', secondcolval: '', secondcoltype: '' };
+        obj.unid = e[0];
+        const firstcol = e[1];
+        if(firstcol){
+          obj.firstcolval = e[1][0];
+          const firstcoltype = e[1][1];
+          if(firstcoltype) obj.firstcoltype = firstcoltype.indexOf(' ') > -1?firstcoltype.split(' ')[0]:firstcoltype;
+          obj.firstcolval = this.formatValue(obj.firstcolval, obj.firstcoltype)
+        }
+        
+        const secondcol = e[2];
+        if(secondcol){
+          obj.secondcolval = e[2][0];
+          const secondcoltype = e[2][1];
+          if(secondcoltype) obj.secondcoltype = secondcoltype.indexOf(' ') > -1?secondcoltype.split(' ')[0]:secondcoltype;
+          obj.secondcolval = this.formatValue(obj.secondcolval, obj.secondcoltype)
+        }
+        arr.push(obj);
+      });
+      
+    }
+    return arr;
+  }
+  formatValue(val:any, type: string){
+    if(type == 'date'){
+      if(val) val = moment(`${val}`, 'YYYY-MM-DD').format('DD/MM/YYYY');
+    }else if(type == 'time'){
+      if(val) val =moment(`${val}`, 'YYYY-MM-DD hh:mm:ss').format('hh:mm');
+    }
+    return val;
+  }
+  removeMicroDoc(unid: string, secId: string){
+    
+    this.storage.get('loginDetails').then(logindata => {
+      this.getforms.removeDoc(logindata, unid).pipe(first()).subscribe(data => {
+        data = JSON.parse(data.data);
+        console.log('removeMicroDoc:',data)
+        if (data.result == 'success') {
+          console.log('***this.microdbdata:',this.microdbData);
+          this.updateMicrodbData(secId, unid);
+        } else {
+          this.presentAlert("failed!Error:" + data.result, "", "OK")
+        }
+      })
     })
   }
+  updateMicrodbData(secId: string,unid: string){
+    const microdb = this.microdbData.find(item=>item.secId==secId);
+    if(microdb){
+      const index = microdb.dcData.findIndex(e => e[0] && e[0] == unid);
+      if(index>-1){
+        microdb.dcData.splice(index,1);
+      }
+    }
+  }
+  microsort(section: any){
+    if(section.sortIndex < 2 && section.sortIndex > -1){
+      const sortIndex = section.sortIndex;
+      this.orderbyState = !this.orderbyState;
+      const secId: string = section.secId;
+      const microdb = this.microdbData.find(item=>item.secId==secId);
+      if(this.orderbyState){
+        this.orderbyImg = 'assets/icon/sort_both_ascending.gif';
+        microdb.dcData.sort(this.fnsort(sortIndex+1));
+      }else{
+        this.orderbyImg = 'assets/icon/sort_both_descending.gif';
+        microdb.dcData.sort(this.fnsort(sortIndex+1)).reverse() ;
+      }
+    }
+  }
+  fnsort(index){
+    return   (o, p)=> {
+      var a, b;
+      if (typeof o === "object" && typeof p === "object" && o && p) {
+        a = o[index][0];
+        b = p[index][0];
+        if (a === b) {
+          return 0;
+        }
+        if (typeof a === typeof b) {
+          return a < b ? -1 : 1;
+        }
+        return typeof a < typeof b ? -1 : 1;
+      }
+      else {
+        throw ("error");
+      }
+    }
+  }
+
 }
 

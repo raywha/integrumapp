@@ -42,6 +42,9 @@ export class FormListPage implements OnInit {
     public router:Router,
     
   ) {
+    if(localStorage.getItem("bgcolor")){
+      this.cbgcolor = localStorage.getItem("bgcolor");
+    }
     console.log(  this.searchkey.start)
     this.activeRoute.queryParams.subscribe(res => {
       this.portaltitle=res.temptitle
@@ -153,7 +156,7 @@ export class FormListPage implements OnInit {
           this.vtitle = res.vtitle
         
           this.storage.get("loginDetails").then(data => {
-            if(data.code=="kn001") this.cbgcolor = "#3880ff";
+            //if(data.code=="kn001") this.cbgcolor = "#3880ff";
             this.para.key = this.vid;
             this.para.count = this.searchkey.count
             this.para.curpage = this.searchkey.start
@@ -178,7 +181,7 @@ export class FormListPage implements OnInit {
           //getass
           this.vid=res.vid
           this.storage.get("loginDetails").then(data => {
-            if(data.code=="kn001") this.cbgcolor = "#3880ff";
+            //if(data.code=="kn001") this.cbgcolor = "#3880ff";
             this.para.key = this.vid;
             this.geapp.getActDocsAssoForms(data, this.para).pipe(first())
               .subscribe(data => {
