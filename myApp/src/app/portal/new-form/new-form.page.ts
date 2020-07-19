@@ -264,6 +264,7 @@ export class NewFormPage implements OnInit {
               this.quesSecId = this.quesSecId.concat(answerWhen[key]);
             }
           }
+          console.log('selecttemplate:',this.selecttemplat.template)
           for (let i = 0; i < this.selecttemplat.template.secs.length; i++) {
             if (this.selecttemplat.template.secs[i].fields && this.selecttemplat.template.secs[i].sectionType!='1') {
               this.selecttemplat.template.secs[i].fields.forEach(data => {
@@ -374,6 +375,7 @@ export class NewFormPage implements OnInit {
                 }
             }
             if(this.selecttemplat.template.secs[i].sectionType=='1'){
+              console.log('this.selecttemplat.template.secs[i]:',this.selecttemplat.template.secs[i])
               const { secId, title, fields, enableHideRemoveButton, IsMircroSort, microData: { IsSupperUser, dcData } } = this.selecttemplat.template.secs[i];
               console.log('this.microdbData:',this.microdbData);
               const microsec = this.selecttemplat.template.secs[i];
@@ -2064,9 +2066,11 @@ export class NewFormPage implements OnInit {
   approve(comments: string){
     let unid: string = this.formID;
     const para: any = {unid, comments};
+    this.commonCtrl.processShow('Processing...');
     this.storage.get('loginDetails').then(logindata => {
       this.getforms.doApprove(logindata, para).pipe(first()).subscribe(data => {
         data = JSON.parse(data.data);
+        this.commonCtrl.processHide();
         if (data.status == 'success') {
           this.router.navigateByUrl(this.lasturl);
         } else {

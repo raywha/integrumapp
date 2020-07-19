@@ -197,7 +197,7 @@
               </ion-item>
               <ion-item>
                 <ion-icon slot="end" name="arrow-forward" mode="ios" (click)="getSecurity(field.name,field.value,'single',field.label)"></ion-icon>
-                <ion-text  [color]="txtfontcolor">
+                <ion-text [ngStyle]="{'color': cbgcolor}">
                   <h6> {{field.value}}</h6>
                 </ion-text>
               </ion-item>
@@ -212,7 +212,7 @@
                 </ion-item>
                 <ion-item>
                 <ion-icon slot="end" name="arrow-forward" mode="ios" (click)="getSecurity(field.name,field.value,'multi',field.label)"></ion-icon>
-                <ion-text  [color]="txtfontcolor">
+                <ion-text [ngStyle]="{'color': cbgcolor}">
                   <h6> {{field.value}}</h6>
                 </ion-text>
               </ion-item>
@@ -248,7 +248,7 @@
               </ion-item>
               <ion-item>
                 <ion-icon slot="end" name="arrow-forward" mode="ios" (click)="getemplistData()"></ion-icon>
-                <ion-text  [color]="txtfontcolor">
+                <ion-text [ngStyle]="{'color': cbgcolor}">
                   <h6> {{field.value}}</h6>
                 </ion-text>
               </ion-item>
@@ -334,7 +334,7 @@
                       {{cameraTips}}
                     </div>
                     <div *ngIf="att.type!=='image'">
-                      <ion-text  [color]="txtfontcolor">
+                      <ion-text [ngStyle]="{'color': cbgcolor}">
                         {{att.value}}
                       </ion-text>
                     </div>
@@ -484,7 +484,7 @@
           <div *ngFor="let sdoc of section.sdocs;let index = index;" class="fieldshow">
             <ion-item lines="none">
               <div>
-                <ion-text  [color]="txtfontcolor">
+                <ion-text [ngStyle]="{'color': cbgcolor}">
                   <a [routerLink]="['/new-form']"  [ngStyle]="{'color':cbgcolor}"
                     [queryParams]="{unid:sdoc.sunid,aid:sdoc.formid,title:sdoc.refNo,stat:sdoc.WFStatus,type:'open',cururl:ulrs.url}">{{sdoc.refNo}}</a>
                 </ion-text>
@@ -496,7 +496,7 @@
         <div *ngIf="section.secId=='AuditTrail'">
           <ion-item lines="none">
             <div>
-              <ion-text  [color]="txtfontcolor">
+              <ion-text [ngStyle]="{'color': cbgcolor}">
                 <span [innerHTML]="section.secInfoContent"></span>
               </ion-text>
 
@@ -507,7 +507,7 @@
         <div *ngIf="section.sectionType=='1'">
           <ion-item lines="none">
             <div *ngIf="!formID">
-              <ion-label [color]="txtfontcolor" stacked>
+              <ion-label [ngStyle]="{'color': cbgcolor}" stacked>
                 Please save the document to add Field Table sections.
               </ion-label>
             </div>
@@ -541,7 +541,7 @@
                   </ion-col>
               </ion-row>
                 <ion-row *ngFor="let mdoc of getMicrodbData(section.secId);let index = index;" class="fieldshow">
-                  <ion-col *ngIf="section.enableHideRemoveButton =='ka_No'">
+                  <ion-col *ngIf="section.enableHideRemoveButton !='ka_Yes'">
                     <ion-item>
                       <a (click)="removeMicroDoc(mdoc.unid,section.secId)"  [ngStyle]="{'color':cbgcolor}">Remove  </a>
                     </ion-item>
@@ -641,7 +641,7 @@
                           <img [src]="att.value" />
                         </div>
                         <div *ngIf="att.type!=='image'">
-                          <ion-text  [color]="txtfontcolor">
+                          <ion-text [ngStyle]="{'color': cbgcolor}">
                             {{att.value}}
                           </ion-text>
                         </div>
@@ -657,7 +657,7 @@
                       </div>
                       <div *ngIf="field.xtype!=='signature'">
 
-                        <ion-text  [color]="txtfontcolor">
+                        <ion-text [ngStyle]="{'color': cbgcolor}">
                           {{field.value}}
                         </ion-text>
                       </div>
@@ -688,7 +688,7 @@
             <div *ngFor="let sdoc of section.sdocs;let index = index;" class="fieldshow">
                 <ion-item lines="none">
                   <div>
-                    <ion-text  [color]="txtfontcolor">
+                    <ion-text [ngStyle]="{'color': cbgcolor}">
                       <a [routerLink]="['/new-form']" [ngStyle]="{'color':cbgcolor}" [queryParams]="{unid:sdoc.sunid,aid:sdoc.formid,title:sdoc.refNo,stat:sdoc.WFStatus,type:'open',cururl:ulrs.url}">{{sdoc.refNo}}</a>
                     </ion-text>
                   </div>
@@ -699,7 +699,7 @@
           <div *ngIf="section.secId=='AuditTrail'">
             <ion-item lines="none">
               <div>
-                <ion-text  [color]="txtfontcolor">
+                <ion-text [ngStyle]="{'color': cbgcolor}">
                   <span [innerHTML]="section.secInfoContent"></span>
                 </ion-text>
               </div>

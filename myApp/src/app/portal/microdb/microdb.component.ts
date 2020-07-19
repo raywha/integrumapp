@@ -31,6 +31,8 @@ export class MicrodbComponent implements OnInit {
   public secondDisVal: any;
   public secondDisType: any;
   public msection: any;
+  public curDate: string = '';
+  public maxYear: string = "2040";
   constructor(
     public navParams: NavParams,
     private sanitizer: DomSanitizer,
@@ -47,6 +49,9 @@ export class MicrodbComponent implements OnInit {
     //const { cbgcolor, section:{ fields, secId, dispFields, title, isReadyOnly, microData: { IsSupperUser } }, unid, mianunid, type } = this.navParams.data;
     const { cbgcolor, section: msection, unid, mianunid, type } = this.navParams.data;
     const { fields, secId, dispFields, title, isReadyOnly, microData: { IsSupperUser } } = msection;
+
+    let strnow = new Date();
+    this.curDate = `${strnow.getFullYear()}-${(strnow.getMonth() + 1).toString().padStart(2, '0')}-${strnow.getDate().toString().padStart(2, '0')}`;
     console.log('msection:',msection);
     this.msection = msection;
     this.cbgcolor = cbgcolor;
@@ -73,11 +78,13 @@ export class MicrodbComponent implements OnInit {
           if(data[e.name]){
             e.value = data[e.name]
           }
-          if(e.xtype == 'date'){
-            if(e.value) e.value = moment(`${e.value}`, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY');
-          }else if(e.xtype == 'time'){
-            if(e.value) e.value = moment(`${e.value}`, 'YYYY-MM-DD hh:mm:ss').format('hh:mm');
-          }
+          //if(this.type!='edit'){
+            if(e.xtype == 'date'){
+              if(e.value) e.value = moment(`${e.value}`, 'YYYY-MM-DD hh:mm:ss').format('YYYY-MM-DD');
+            }else if(e.xtype == 'time'){
+              if(e.value) e.value = moment(`${e.value}`, 'YYYY-MM-DD hh:mm:ss').format('hh:mm');
+            }
+          //}
         });
       })
     }
