@@ -52,7 +52,7 @@
           <ion-label  color="basic" stacked>{{field.label}}
             <span *ngIf="field.mandatory=='Y'" class="needfill">*</span>
           </ion-label>
-          <ion-icon slot="end" name="arrow-forward" mode="ios" (click)="getSecurity(field.name,field.value,'single',field.label)">
+          <ion-icon slot="end" name="arrow-forward" mode="ios"  (click)="getMrByTemplate(field.name,field.value,'single',field.label,field.options)">
           </ion-icon>
         </ion-item>
         <ion-item>
@@ -518,7 +518,7 @@
           </ion-item>
             <ion-grid>
               <ion-row>
-                <ion-col class="fieldshow" *ngIf="section.enableHideRemoveButton =='ka_No'">
+                <ion-col class="fieldshow" *ngIf="section.enableHideRemoveButton !='ka_Yes'" size="2">
                   <ion-item>
                     
                   </ion-item>
@@ -541,9 +541,10 @@
                   </ion-col>
               </ion-row>
                 <ion-row *ngFor="let mdoc of getMicrodbData(section.secId);let index = index;" class="fieldshow">
-                  <ion-col *ngIf="section.enableHideRemoveButton !='ka_Yes'">
+                  <ion-col *ngIf="section.enableHideRemoveButton !='ka_Yes'" size="2">
                     <ion-item>
-                      <a (click)="removeMicroDoc(mdoc.unid,section.secId)"  [ngStyle]="{'color':cbgcolor}">Remove  </a>
+                      
+                      <ion-icon name="trash-outline" (click)="removeMicroDoc(mdoc.unid,section.secId)"></ion-icon>
                     </ion-item>
                   </ion-col>
                   <ion-col class="fieldshow">

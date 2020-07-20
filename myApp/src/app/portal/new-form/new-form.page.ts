@@ -23,6 +23,7 @@ import { Plugins, CameraResultType, CameraSource } from '@capacitor/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { SignaturepadPopover } from '../signaturepad-popover/signaturepad-popover';
 import { RoleComponent } from "../../common/role/role.component";
+import { MrtemplateComponent } from "../../common/mrtemplate/mrtemplate.component";
 import { MicrodbComponent } from '../microdb/microdb.component';
 @Component({
   selector: 'app-new-form',
@@ -210,7 +211,7 @@ export class NewFormPage implements OnInit {
           // alert(fileName);
           //this.selecttemplat = this.getTemplatByViewId(this.templates, res.aid)
           this.selecttemplat = this.templates[0];
-
+          console.log('selecttemplat:',this.selecttemplat)
           this.mandatoryWhenApprove = this.selecttemplat.mandatoryWhenApprove?this.selecttemplat.mandatoryWhenApprove:"0";
           this.skipMandatory = this.selecttemplat.skipMandatory?this.selecttemplat.skipMandatory:"0";
           let selectSecId: any = this.selecttemplat.sectionids ? this.selecttemplat.sectionids : [];
@@ -444,6 +445,7 @@ export class NewFormPage implements OnInit {
         console.log(res.aid,' is not find!');
         return false;
       }
+      console.log('new selecttemplate:',this.selecttemplat)
       this.mandatoryWhenApprove = this.selecttemplat.mandatoryWhenApprove?this.selecttemplat.mandatoryWhenApprove:"0";
       this.skipMandatory = this.selecttemplat.skipMandatory?this.selecttemplat.skipMandatory:"0";
       this.btnBox = this.selecttemplat.menubaritem
@@ -1057,6 +1059,35 @@ export class NewFormPage implements OnInit {
     // console.log(this.selecttemplat.template.secs)
 
   }
+  //查
+  async getMrByTemplate(fieldname, fieldvalue,stype:string,label,rolelist) {
+    const modal = await this.modal.create({
+      showBackdrop: true,
+      component: MrtemplateComponent,
+      componentProps: {stype,fieldvalue,label,cbgcolor:this.cbgcolor,rolelist }
+    });
+    modal.present();
+    //监听销毁的事件
+    const { data } = await modal.onDidDismiss();
+    for (let i = 0; i < this.selecttemplat.template.secs.length; i++) {
+      if(this.selecttemplat.template.secs[i].fields){
+        this.selecttemplat.template.secs[i].fields.forEach(item => {
+          // console.log(fieldname)
+          // console.log(item.name)
+          if (item.name == fieldname) {
+            // console.log(data)
+            item.value = data.result;
+          }
+        })
+      }
+      
+
+    }
+
+    // console.log(this.selecttemplat.template.secs)
+
+  }
+  
   getOuList(fieldName: any, pSecId: any) {
     let obj: any = this.getOuLevelAndGroupId(fieldName, pSecId);
     let level: number = obj.level;

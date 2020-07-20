@@ -234,7 +234,12 @@
   </div>
   <!--computed-->
   <div *ngIf="field.xtype==='computed'" [hidden]="field.hide" class="column-count">
-    <h4>{{field.label}}</h4>
+    <ion-item>
+      <ion-label style="margin-bottom:10px;max-width: 100%; " color="basic" stacked>
+        {{field.label}}
+        <span *ngIf="field.mandatory=='Y'" class="needfill">*</span>
+      </ion-label>
+    </ion-item>
   </div>
   <!--textfield-->
   <div *ngIf="field.xtype==='text'" class="text-number" [hidden]="field.hide">
