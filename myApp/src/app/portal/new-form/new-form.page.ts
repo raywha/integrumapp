@@ -235,6 +235,12 @@ export class NewFormPage implements OnInit {
             this.btnBox.result.forEach((val,index,arr) => {
               if (val.btnType && val.btnType=='btnPdf') arr.splice(index,1);
             });
+            this.btnBox.result.forEach((val, index, arr) => {
+              if (val.btnType && val.btnType == 'btnExport2PDF') arr.splice(index, 1);
+            });
+            this.btnBox.result.forEach((val, index, arr) => {
+              if (val.btnType && val.btnType == 'btnExport2FWord') arr.splice(index, 1);
+            });
           }
           
 
@@ -778,7 +784,13 @@ export class NewFormPage implements OnInit {
         
         break;
       case 'btnReAssign':
-        this.getPersons('', 'single', this.reassignLabel, 'reAssign')
+        console.log(this.sysfields);
+        const formMR = this.sysfields.find(item => item.name == 'formMR')
+        if(formMR.xtype =='select'){
+          this.getReassignMrByTemplate('','single',this.reassignLabel,formMR.options)
+        }else{
+          this.getPersons('', 'single', this.reassignLabel, 'reAssign')
+        }
         break;
       case "btnApprove":
         this.presentModal('approve');
@@ -1059,7 +1071,7 @@ export class NewFormPage implements OnInit {
     // console.log(this.selecttemplat.template.secs)
 
   }
-  //查
+  //
   async getMrByTemplate(fieldname, fieldvalue,stype:string,label,rolelist) {
     const modal = await this.modal.create({
       showBackdrop: true,
@@ -1087,7 +1099,22 @@ export class NewFormPage implements OnInit {
     // console.log(this.selecttemplat.template.secs)
 
   }
-  
+  async getReassignMrByTemplate( fieldvalue,stype:string,label,rolelist) {
+    const modal = await this.modal.create({
+      showBackdrop: true,
+      component: MrtemplateComponent,
+      componentProps: {stype,fieldvalue,label,cbgcolor:this.cbgcolor,rolelist }
+    });
+    modal.present();
+    //监听销毁的事件
+    const { data } = await modal.onDidDismiss();
+    if (data.result != '') {
+      this.formmr = data.result;
+        this.presentModal('reAssign');
+      
+    }
+
+  }
   getOuList(fieldName: any, pSecId: any) {
     let obj: any = this.getOuLevelAndGroupId(fieldName, pSecId);
     let level: number = obj.level;
@@ -1945,7 +1972,8 @@ export class NewFormPage implements OnInit {
     });
    modal.present();
    const { data } = await modal.onDidDismiss();
-   if (data.result == 'cancel') return false;
+
+   if (data.data != 'cancel'){
     if(stype=='delete'){
       this.deleteDoc(data.data);
     }else if(stype == 'reAssign'){
@@ -1957,6 +1985,8 @@ export class NewFormPage implements OnInit {
     }else if(stype == 'reopen'){
       this.reopen(data.data);
     }
+   }
+    
     
    
   }
@@ -2130,10 +2160,11 @@ export class NewFormPage implements OnInit {
     this.storage.get('loginDetails').then(logindata => {
       this.getforms.doReopen(logindata, para).pipe(first()).subscribe(data => {
         data = JSON.parse(data.data);
+        console.log('reopen:',data)
         if (data.status == 'success') {
           this.router.navigateByUrl(this.lasturl);
         } else {
-          this.presentAlert("failed!Error:" + data.result, "", "OK")
+          this.presentAlert("failed!Error:" + data.reason, "", "OK")
         }
       })
     })
