@@ -424,11 +424,12 @@
                     </ion-label>
                   </div>
                   <ion-list  >
-                    <ion-radio-group  >
+                    <ion-radio-group [value]="field.value" >
                       <ion-item *ngFor="let option of field.options">
                         <ion-label>{{option.text}}</ion-label>
-                        <ion-radio *ngIf="field.value==option.text" checked slot="start" value="{{option.text}}" (click)="radioChange(field,option.text,section.title)"></ion-radio>
-                        <ion-radio *ngIf="field.value!=option.text"  slot="start" value="{{option.text}}" (click)="radioChange(field,option.text,section.title)"></ion-radio>
+                        <ion-radio slot="start" value="{{option.text}}" (click)="radioChange(field,option.text,section.title)"></ion-radio>
+                        <!-- <ion-radio *ngIf="field.value==option.text" checked="true" slot="start" value="{{option.text}}" (click)="radioChange(field,option.text,section.title)"></ion-radio>
+                        <ion-radio *ngIf="field.value!=option.text"  slot="start" value="{{option.text}}" (click)="radioChange(field,option.text,section.title)"></ion-radio> -->
                       </ion-item>
                     </ion-radio-group>
                    
@@ -531,14 +532,23 @@
                       </span>
                     </ion-item>
                   </ion-col>
-                  <ion-col>
-                    <ion-item>
+                  <ion-col *ngIf="section.dispFields[1]" size="3">
+                    <ion-item style="margin-left: -30px;">
                       {{section.dispFields[1].label}} 
                       <span *ngIf="section.IsMircroSort=='ka_Yes' && section.sortFieldName == section.dispFields[1].id">
                         <img [src]="orderbyImg" alt="" (click)="microsort(section)">
                       </span>
                     </ion-item>
                   </ion-col>
+                  <ion-col *ngIf="section.dispFields[2]" size="3">
+                    <ion-item  style="margin:0 -20px">
+                      {{section.dispFields[2].label}} 
+                      <span *ngIf="section.IsMircroSort=='ka_Yes' && section.sortFieldName == section.dispFields[2].id">
+                        <img [src]="orderbyImg" alt="" (click)="microsort(section)">
+                      </span>
+                    </ion-item>
+                  </ion-col>
+                  
               </ion-row>
                 <ion-row *ngFor="let mdoc of getMicrodbData(section.secId);let index = index;" class="fieldshow">
                   <ion-col *ngIf="section.enableHideRemoveButton !='ka_Yes'" size="2">
@@ -548,13 +558,18 @@
                     </ion-item>
                   </ion-col>
                   <ion-col class="fieldshow">
-                    <ion-item>
+                    <ion-item style="margin-left:-20px;">
                       <a (click)="newMicrodb(mdoc.unid,section)"  [ngStyle]="{'color':cbgcolor}">{{mdoc.firstcolval}} </a>
                     </ion-item>
                   </ion-col>
-                  <ion-col>
-                    <ion-item>
+                  <ion-col *ngIf="section.dispFields[1]" size="3">
+                    <ion-item style="margin-left:-30px;margin-right: -20px;;">
                       <a (click)="newMicrodb(mdoc.unid,section)"  [ngStyle]="{'color':cbgcolor}">{{mdoc['secondcolval']}}  </a>
+                    </ion-item>
+                  </ion-col>
+                  <ion-col *ngIf="section.dispFields[2]" size="3">
+                    <ion-item>
+                      <a (click)="newMicrodb(mdoc.unid,section)"  [ngStyle]="{'color':cbgcolor}">{{mdoc['thirdcolval']}}  </a>
                     </ion-item>
                   </ion-col>
                 </ion-row>
@@ -710,7 +725,7 @@
           <div *ngIf="section.sectionType=='1'">
             <ion-grid>
               <ion-row>
-                  <ion-col size="6" class="fieldshow">
+                <ion-col [size]="section.dispFields[2]?4:(section.dispFields[1]?6:'')" class="fieldshow">
                     <ion-item>
                       {{section.dispFields[0].label}} 
                       <span *ngIf="section.IsMircroSort=='ka_Yes' && section.sortFieldName == section.dispFields[0].id">
@@ -718,24 +733,37 @@
                       </span>
                     </ion-item>
                   </ion-col>
-                  <ion-col>
-                    <ion-item>
+                  <ion-col size="4" *ngIf="section.dispFields[1]">
+                    <ion-item style="margin-right:-20px">
                       {{section.dispFields[1].label}} 
                       <span *ngIf="section.IsMircroSort=='ka_Yes' && section.sortFieldName == section.dispFields[1].id">
                         <img [src]="orderbyImg" alt="" (click)="microsort(section)">
                       </span>
                     </ion-item>
                   </ion-col>
+                  <ion-col size="4" *ngIf="section.dispFields[2]">
+                    <ion-item style="margin-right:-20px">
+                      {{section.dispFields[2].label}} 
+                      <span *ngIf="section.IsMircroSort=='ka_Yes' && section.sortFieldName == section.dispFields[2].id">
+                        <img [src]="orderbyImg" alt="" (click)="microsort(section)">
+                      </span>
+                    </ion-item>
+                  </ion-col>
               </ion-row>
                 <ion-row *ngFor="let mdoc of getMicrodbData(section.secId);let index = index;" class="fieldshow">
-                  <ion-col size="6" class="fieldshow">
-                    <ion-item>
+                  <ion-col [size]="section.dispFields[2]?4:(section.dispFields[1]?6:'')" class="fieldshow">
+                    <ion-item style="margin-left: -10px;">
                       <a (click)="newMicrodb(mdoc.unid,section)"  [ngStyle]="{'color':cbgcolor}">{{mdoc.firstcolval}} </a>
                     </ion-item>
                   </ion-col>
-                  <ion-col>
+                  <ion-col *ngIf="section.dispFields[1]">
                     <ion-item>
                       <a (click)="newMicrodb(mdoc.unid,section)"  [ngStyle]="{'color':cbgcolor}">{{mdoc['secondcolval']}}  </a>
+                    </ion-item>
+                  </ion-col>
+                  <ion-col *ngIf="section.dispFields[2]">
+                    <ion-item>
+                      <a (click)="newMicrodb(mdoc.unid,section)"  [ngStyle]="{'color':cbgcolor}">{{mdoc['thirdcolval']}}  </a>
                     </ion-item>
                   </ion-col>
                 </ion-row>

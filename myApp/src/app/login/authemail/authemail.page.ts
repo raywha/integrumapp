@@ -180,26 +180,29 @@ export class AuthemailPage implements OnInit {
                     data = JSON.parse(data.data);
                     this.storage.set('allforms', JSON.stringify(data));
                   })
-
-                  this.commonCtrl.processHide();
+                  this.getou.getous(this.user, this.pass, this.server, this.folder).pipe(first()).subscribe(
+                    data => {
+                      const otime = new Date();
+                      console.log('getous--otime.toLocaleTimeString:', otime.toLocaleTimeString(), '-->starttime:', curtime.toLocaleTimeString());
+                      data = JSON.parse(data.data);
+                      this.storage.set('ous', JSON.stringify(data));
+                      this.commonCtrl.processHide();
                   this.ngZone.run(() => {
 
                     this.router.navigate(['tabs/tab1'],{ queryParams: { lan: data.lan } })
                   })
+                  
+                    }
+                  )
+                  
                 }
               )
               
               localStorage.setItem('hasLogged', 'true');
               localStorage.setItem('user', this.user);
+              console.log('this.user:',this.user)
               localStorage.setItem('OUCategory', result.user.oucategory)
-              this.getou.getous(this.user, this.pass, this.server, this.folder).pipe(first()).subscribe(
-                data => {
-                  const otime = new Date();
-                  console.log('getous--otime.toLocaleTimeString:', otime.toLocaleTimeString(), '-->starttime:', curtime.toLocaleTimeString());
-                  data = JSON.parse(data.data);
-                  this.storage.set('ous', JSON.stringify(data));
-                }
-              )
+              
               this.getpsn.getpersoninfo(this.user, this.pass, this.server, this.folder).pipe(first()).subscribe(
                 data => {
                   const otime = new Date();

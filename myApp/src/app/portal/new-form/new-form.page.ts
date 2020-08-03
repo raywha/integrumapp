@@ -144,7 +144,7 @@ export class NewFormPage implements OnInit {
     private diagnostic: Diagnostic,
     private camera: Camera,
     private geolocation: Geolocation,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
   ) {
     if(localStorage.getItem("bgcolor")){
       console.log('localStorage-->bgcolor:',localStorage.getItem('bgcolor'))
@@ -368,6 +368,10 @@ export class NewFormPage implements OnInit {
                 //}
               }else if(data.xtype == 'signature'){
                 data.value = this.sanitizer.bypassSecurityTrustResourceUrl( data.value );
+              }else if(data.xtype == 'headline'){
+                if(this.findSameLabelname(this.selecttemplat.template.secs[i].fields,data.label,data.name)){
+                  data.hide = true;
+                }
               }
                 this.fields.push(data) //
                 // this.selectScore(data,data.value,this.selecttemplat.template.secs[i].title)
@@ -528,6 +532,10 @@ export class NewFormPage implements OnInit {
           let v = data.options[0];
           if(v && v.value){
             if(v.value!='') data.options.unshift({value:'',text:''});
+          }
+        } else if(data.xtype == 'headline'){
+          if(this.findSameLabelname(this.selecttemplat.template.secs[i].fields,data.label,data.name)){
+            data.hide = true;
           }
         }
         if(res.subform && this.inheritMap[data.name]){
@@ -2238,21 +2246,23 @@ export class NewFormPage implements OnInit {
     
     console.log('data:',data);
     if(data.result == 'success'){
-      this.reUpdateMicrodbData(section.secId,data.unid,data.firstDisVal, data.firstDisType ,data.secondDisVal, data.secondDisType);
+      this.reUpdateMicrodbData(section.secId,data.unid,data.firstDisVal, data.firstDisType ,data.secondDisVal, data.secondDisType, data.thirdDisVal, data.thirdDisType);
     }
   };
-  reUpdateMicrodbData(secId: string, unid: string, firstDisVal: any, firstDisType: any, secondDisVal: any, secondDisType:any){
+  reUpdateMicrodbData(secId: string, unid: string, firstDisVal: any, firstDisType: any, secondDisVal: any, secondDisType:any, thirdDisVal: any, thirdDisType: any){
     const microdb = this.microdbData.find(item=>item.secId==secId);
     if(microdb){
       const doc = microdb.dcData.find(e => e[0] == unid );
       if(doc){
         if(firstDisVal) doc[1][0] = firstDisVal;
         if(secondDisVal) doc[2][0] = secondDisVal;
+        if(thirdDisVal) doc[3][0] = thirdDisVal
       }else{
         const arr: any = [];
         arr[0] = unid;
         arr[1] = [firstDisVal, firstDisType];
         arr[2] = [secondDisVal, secondDisType];
+        arr[3] = [thirdDisVal, thirdDisType];
         microdb.dcData.push(arr);
       }
       
@@ -2263,7 +2273,15 @@ export class NewFormPage implements OnInit {
     const microdb = this.microdbData.find(item=>item.secId==secId);
     if(microdb){
       microdb.dcData.forEach(e => {
-        const obj = { unid:'', firstcolval: '', firstcoltype: '', secondcolval: '', secondcoltype: '' };
+        const obj = { 
+          unid:'',
+          firstcolval: '', 
+          firstcoltype: '', 
+          secondcolval: '', 
+          secondcoltype: '',
+          thirdcolval: '',
+          thirdcoltype: ''
+        };
         obj.unid = e[0];
         const firstcol = e[1];
         if(firstcol){
@@ -2279,6 +2297,13 @@ export class NewFormPage implements OnInit {
           const secondcoltype = e[2][1];
           if(secondcoltype) obj.secondcoltype = secondcoltype.indexOf(' ') > -1?secondcoltype.split(' ')[0]:secondcoltype;
           obj.secondcolval = this.formatValue(obj.secondcolval, obj.secondcoltype)
+        }
+        const thirdcol = e[3];
+        if(thirdcol){
+          obj.thirdcolval = e[3][0];
+          const thirdcoltype = e[3][1];
+          if(thirdcoltype) obj.thirdcoltype = thirdcoltype.indexOf(' ') > -1?thirdcoltype.split(' ')[0]:thirdcoltype;
+          obj.thirdcolval = this.formatValue(obj.thirdcolval, obj.thirdcoltype)
         }
         arr.push(obj);
       });
@@ -2351,6 +2376,11 @@ export class NewFormPage implements OnInit {
         throw ("error");
       }
     }
+  }
+  findSameLabelname(fields: any, label: string, name: any): boolean{
+    const result = fields.filter(e => e.name!=name && e.label==label);
+    if(result) return true;
+    return false;
   }
 
 }

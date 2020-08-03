@@ -55,6 +55,18 @@ export class LoginpassPage implements OnInit {
   ) {
     this.ssoserver = localStorage.getItem('ssoserver');
     this.ssofolder = localStorage.getItem('ssofolder');
+
+    Plugins.App.addListener('appUrlOpen', (data: any) => {
+      console.log('---backfrombrowser', data)
+      Plugins.Browser.close();
+      if (data.url)
+        if (data.url.includes('key1')) {
+          this.ssoAuth(data);
+        }
+        else {
+          console.log("no key FOUND");
+        }
+    });
   }
 
 
@@ -207,6 +219,37 @@ export class LoginpassPage implements OnInit {
       url: browserURL
     });
   }
-  
+  ssoAuth(data: any) {
+    let newURL = data.url.split('?');
+    let newkey = newURL[1].split('&');
+
+    this.key1 = newkey[0].split('=');
+    this.key2 = newkey[1].split('=');
+    console.log('------key1------', this.key1);
+    console.log('------key2------', this.key2);
+    let postData = { key1: this.key1[1], key2: this.key2[1] };
+    console.log("POSTDATA>>>", postData);
+
+    
+    this.auth.ssoData(this.ssoserver, this.ssofolder, postData).subscribe(d => {
+      d = JSON.parse(d.data)
+      if (d.result == "false") {
+        this.presentAlert('Login Failed!<br/>Please contact your administrator.', 'integrumNOW Error', 'OK');
+
+      }
+      else {
+        console.log('success....', d);
+        this.Login();
+        //this.saveLoginDetails(loginDetails);p@ssw0rd
+      }
+
+
+    },
+      error => {
+        // browser.close();
+        this.presentAlert('Login Failed 123!', 'integrumNOW Error', 'OK');
+
+      });
+  }
   
 }
