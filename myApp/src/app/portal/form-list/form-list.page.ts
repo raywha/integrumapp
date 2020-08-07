@@ -78,7 +78,7 @@ export class FormListPage implements OnInit {
     setTimeout(() => {
       this.activeRoute.queryParams.subscribe(res => {
         console.log(res);
-        this.commonCtrl.show()
+        this.commonCtrl.processShow('loading....');
         if (res) {
           this.stype = res.type
           this.formid=res.formid
@@ -93,8 +93,8 @@ export class FormListPage implements OnInit {
               this.para.curpage = this.searchkey.start
               this.geapp.getViewData(data, this.para).pipe(first())
                 .subscribe(data => {
-                  console.log(data)
                   data = JSON.parse(data.data);
+                  console.log('viewlist getView data:',data)
                   let tempdate;
                   data.data.forEach(element => {
                     // tempdate = new Date(element.calendarDate.replace("ZE8", ""))
@@ -107,6 +107,7 @@ export class FormListPage implements OnInit {
                   this.data = this.data.concat( data.data)
                   this.databak =this.data
                   event.target.complete();
+                  this.commonCtrl.processHide();
                 })
             })
           }else{
@@ -116,8 +117,8 @@ export class FormListPage implements OnInit {
               this.para.key = this.vid;
               this.geapp.getActDocsAssoForms(data, this.para).pipe(first())
                 .subscribe(data => {
-                  console.log(data)
                   data = JSON.parse(data.data);
+                  console.log('viewlist getActDocsAssoForms data:',data)
                   let tempdate;
                   data.actDocs.forEach(element => {
                     if(element.ActDueforCompletion){
@@ -131,11 +132,10 @@ export class FormListPage implements OnInit {
                   });
                   this.data = data.actDocs
                   this.databak =this.data
-                
+                  this.commonCtrl.processHide();
                 })
             })
           }
-          this.commonCtrl.hide()
         }
       })
       if (this.data.length == 1000) {
