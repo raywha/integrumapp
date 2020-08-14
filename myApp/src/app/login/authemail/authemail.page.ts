@@ -11,6 +11,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { GetallformsService } from "../../services/getallforms.service";
 import { commonCtrl } from "../../common/common";
 import { Plugins } from '@capacitor/core';
+import { AppConfig } from '../../config';
 
 @Component({
   selector: 'app-authemail',
@@ -117,7 +118,7 @@ export class AuthemailPage implements OnInit {
               this.translate.get('login').subscribe((res: any) => {
                 this.resmsg = res.authmailerr;
               }).add(this.translate.get('alert').subscribe((res: any) => {
-                this.presentAlert(this.resmsg, res.title, res.btn);
+                this.presentAlert(this.resmsg, res.title, [res.btn]);
               }));
 
             }
@@ -161,6 +162,37 @@ export class AuthemailPage implements OnInit {
                 data => {
                   console.log('updateUserInfo----data...:', data)
                   data = JSON.parse(data.data);
+
+                  const AppVersionNo = data.AppVersionNo;
+                  const curVersion = AppConfig.appversion;
+                  const msg = data.msg; 
+                  const btnYes = data.btnYes;
+                  const btnNo = data.btnNo;
+                  let AppURL = data.AppURL;
+                  if(AppURL!='') AppURL.replace('https','itms-apps')
+                  if(AppVersionNo && AppVersionNo.includes('.')){
+                    const ret  = AppVersionNo.split('.');
+                    const cret = curVersion.split('.');
+                    const first  = ret[0];
+                    const curfir = cret[0];
+                    if(curfir < first){
+                      //TODO
+                      this.promptOfUpdate(msg,btnYes,btnNo,AppURL);
+                    }else if(curfir == first){
+                      const second = ret[1];
+                      const cursec = cret[1];
+                      if(second.includes('.')){
+                        //TODO
+
+                      }else{
+                        console.log('cursec:',cursec, ' second:',second)
+                        if( cursec < second){
+                          this.promptOfUpdate(msg,btnYes,btnNo,AppURL);
+                        }
+                      }
+                    }
+                  }
+
                   this.loginDetails.OUCategory = data.OUCategory;
                   const EmpCurrentPortal = data.EmpCurrentPortal;
                   this.loginDetails.empgroup = EmpCurrentPortal;
@@ -219,7 +251,7 @@ export class AuthemailPage implements OnInit {
               this.translate.get('login').subscribe((res: any) => {
                 this.resmsg = res.authpasserr;
               }).add(this.translate.get('alert').subscribe((res: any) => {
-                this.presentAlert(this.resmsg, res.title, res.btn);
+                this.presentAlert(this.resmsg, res.title, [res.btn]);
               }));
             }
           } else {
@@ -228,7 +260,7 @@ export class AuthemailPage implements OnInit {
             this.translate.get('login').subscribe((res: any) => {
               this.resmsg = res.authpasserr;
             }).add(this.translate.get('alert').subscribe((res: any) => {
-              this.presentAlert(this.resmsg, res.title, res.btn);
+              this.presentAlert(this.resmsg, res.title, [res.btn]);
             }));
           }
         },
@@ -305,7 +337,7 @@ export class AuthemailPage implements OnInit {
                 this.resmsg = res.authmailerr;
               }).add(this.translate.get('alert').subscribe((res: any) => {
                 this.sso = false;
-                this.presentAlert(this.resmsg, res.title, res.btn);
+                this.presentAlert(this.resmsg, res.title, [res.btn]);
               }));
 
             }
@@ -366,7 +398,7 @@ export class AuthemailPage implements OnInit {
     this.auth.ssoData(this.ssoserver, ssofolder, postData).subscribe(d => {
       d = JSON.parse(d.data)
       if (d.result == "false") {
-        this.presentAlert('Login Failed!<br/>Please contact your administrator.', 'integrumNOW Error', 'OK');
+        this.presentAlert('Login Failed!<br/>Please contact your administrator.', 'integrumNOW Error', ['OK']);
 
       }
       else {
@@ -379,8 +411,17 @@ export class AuthemailPage implements OnInit {
     },
       error => {
         // browser.close();
-        this.presentAlert('Login Failed 123!', 'integrumNOW Error', 'OK');
+        this.presentAlert('Login Failed 123!', 'integrumNOW Error', ['OK']);
 
       });
+  }
+  promptOfUpdate(msg: any,btnYes: string, btnNo: string, url: string){
+    this.presentAlert(msg,'',[
+      {text:btnNo, handler:()=>{}},
+      {text:btnYes,handler:()=>{
+        console.log('prompt of update///');
+        Plugins.Browser.open({url});
+      }}
+    ]);
   }
 }

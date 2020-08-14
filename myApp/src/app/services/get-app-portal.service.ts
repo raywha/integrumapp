@@ -57,7 +57,7 @@ console.log('getProtalInfo url:',params)
     }
     let params:string = `${logindetail.server}/${logindetail.folder}/integrumws.nsf/xp_App.xsp/getViewData?viewid=${encodeURIComponent(key)}&countperpage=${encodeURIComponent(count)}&curpage=${encodeURIComponent(curpage)}&languageid=${encodeURIComponent(browerLang)}`;
     if(key && key != ''){
-      if(key.startsWith('My_') || key.startsWith('my_')) params = `${logindetail.server}/${logindetail.folder}/integrumws.nsf/xp_App.xsp/getViewData?viewid=${encodeURIComponent(key)}&countperpage=${encodeURIComponent(count)}&curpage=${encodeURIComponent(curpage)}&uname=${encodeURIComponent(logindetail.username)}&languageid=${encodeURIComponent(browerLang)}`;
+      if(key.startsWith('My_') || key.startsWith('my_')) params = `${logindetail.server}/${logindetail.folder}/integrumws.nsf/xp_App.xsp/getMyViewData?viewid=${encodeURIComponent(key)}&uname=${encodeURIComponent(logindetail.username)}&languageid=${encodeURIComponent(browerLang)}`;
     }
     if(logindetail.username && logindetail.password){
       let auth='Basic '+btoa(logindetail.username+':'+logindetail.password);

@@ -16,6 +16,7 @@ import * as moment from 'moment';
 export class FormListPage implements OnInit {
   public data = [] //{"DocRefNumber":"测试我得标题啦","WFStatus":"","formMR":""}
   public databak =[];
+  public myviewdata = [];
   public vid: string;
   public para = {
     "key": "",
@@ -33,6 +34,7 @@ export class FormListPage implements OnInit {
   public cururl:string;
   public portaltitle:string ;
   public cbgcolor = "#b81321";
+  public isMyView: boolean = false;
   constructor(
     private storage: Storage,
     public geapp: GetAppPortalService,
@@ -78,7 +80,6 @@ export class FormListPage implements OnInit {
     setTimeout(() => {
       this.activeRoute.queryParams.subscribe(res => {
         console.log(res);
-        this.commonCtrl.processShow('loading....');
         if (res) {
           this.stype = res.type
           this.formid=res.formid
@@ -86,30 +87,49 @@ export class FormListPage implements OnInit {
           if (this.stype === "formlist") {
             this.vid = res.vid.split("/")[1].split("?")[0]
             this.vtitle = res.vtitle
-          
-            this.storage.get("loginDetails").then(data => {
-              this.para.key = this.vid;
-              this.para.count = this.searchkey.count
-              this.para.curpage = this.searchkey.start
-              this.geapp.getViewData(data, this.para).pipe(first())
-                .subscribe(data => {
-                  data = JSON.parse(data.data);
-                  console.log('viewlist getView data:',data)
-                  let tempdate;
-                  data.data.forEach(element => {
-                    // tempdate = new Date(element.calendarDate.replace("ZE8", ""))
-                    // //this.draftime = tempdate.getFullYear() + "/" + (tempdate.getMonth() + 1) + "/" + tempdate.getDate()
-                    // this.draftime = tempdate.getDate() + "/" + (tempdate.getMonth() + 1) + "/" + tempdate.getFullYear()
-                    // element.calendarDate = this.draftime;
-                    //element.calendarDate = element.calendarDate.split(' ')[0]
-                    if(element.calendarDate!='') element.calendarDate = moment(`${element.calendarDate}`,'YYYY-MM-DD').format('DD/MM/YYYY');
-                  });
-                  this.data = this.data.concat( data.data)
-                  this.databak =this.data
-                  event.target.complete();
-                  this.commonCtrl.processHide();
-                })
-            })
+          console.log('loaddata..',this.myviewdata);
+          console.log('ismyview',this.isMyView)
+            if(this.isMyView){
+              //this.commonCtrl.show();
+              
+              const istart: number = (this.searchkey.start-1)*this.searchkey.count;
+                const iend: number = istart + this.searchkey.count;
+                const ndata = this.myviewdata.slice(istart,iend);
+                this.data = this.data.concat(ndata);
+                this.databak = this.data;
+                console.log('this.data.',this.data);
+                this.commonCtrl.hide();
+                event.target.complete();
+                //this.commonCtrl.hide();
+              
+            }else{
+              this.commonCtrl.processShow('loading....');
+
+              this.storage.get("loginDetails").then(data => {
+                this.para.key = this.vid;
+                this.para.count = this.searchkey.count
+                this.para.curpage = this.searchkey.start
+                this.geapp.getViewData(data, this.para).pipe(first())
+                  .subscribe(data => {
+                    data = JSON.parse(data.data);
+                    console.log('viewlist getView data:',data)
+                    let tempdate;
+                    data.data.forEach(element => {
+                      // tempdate = new Date(element.calendarDate.replace("ZE8", ""))
+                      // //this.draftime = tempdate.getFullYear() + "/" + (tempdate.getMonth() + 1) + "/" + tempdate.getDate()
+                      // this.draftime = tempdate.getDate() + "/" + (tempdate.getMonth() + 1) + "/" + tempdate.getFullYear()
+                      // element.calendarDate = this.draftime;
+                      //element.calendarDate = element.calendarDate.split(' ')[0]
+                      if(element.calendarDate!='') element.calendarDate = moment(`${element.calendarDate}`,'YYYY-MM-DD').format('DD/MM/YYYY');
+                    });
+                    this.data = this.data.concat( data.data)
+                    this.databak =this.data
+                    event.target.complete();
+                    this.commonCtrl.processHide();
+                  })
+              })
+            }
+            
           }else{
             //getass
             this.vid=res.vid
@@ -137,6 +157,7 @@ export class FormListPage implements OnInit {
             })
           }
         }
+        this.commonCtrl.processHide();
       })
       if (this.data.length == 1000) {
         event.target.disabled = true;
@@ -154,7 +175,7 @@ export class FormListPage implements OnInit {
         if (this.stype === "formlist") {
           if(res.vid && res.vid!='') this.vid = res.vid.split("/")[1].split("?")[0]
           this.vtitle = res.vtitle
-        
+          if(this.vid.startsWith('my_') || this.vid.startsWith('My_')) this.isMyView = true;
           this.storage.get("loginDetails").then(data => {
             //if(data.code=="kn001") this.cbgcolor = "#3880ff";
             this.para.key = this.vid;
@@ -164,6 +185,7 @@ export class FormListPage implements OnInit {
               .subscribe(data => {
                 // console.log(data)
                 data = JSON.parse(data.data);
+                console.log('getdata:',data)
                 let tempdate;
                 data.data.forEach(element => {
                   // tempdate = new Date(element.calendarDate.replace("ZE8", ""))
@@ -172,8 +194,14 @@ export class FormListPage implements OnInit {
                   // element.calendarDate = this.draftime;
                   if(element.calendarDate!='') element.calendarDate = moment(`${element.calendarDate}`,'YYYY-MM-DD').format('DD/MM/YYYY');
                 });
-                this.data = data.data
-                this.databak =this.data
+                if(this.isMyView){
+                  this.myviewdata = data.data;
+                  this.data = data.data.slice(0,this.searchkey.count);
+                  this.databak = this.data;
+                }else{
+                  this.data = data.data
+                  this.databak =this.data
+                }
                 this.commonCtrl.processHide();
               })
           })

@@ -1024,11 +1024,12 @@ export class NewFormPage implements OnInit {
     return 1;
   }
   //查找名称
-  async getSecurity(fieldname, fieldvalue,stype:string,label) {
+  async getSecurity(field, stype:string) {
+    const { name, value, label, xtype} = field;
     const modal = await this.modal.create({
       showBackdrop: true,
       component: SecurityComponent,
-      componentProps: {stype,fieldvalue,label,cbgcolor:this.cbgcolor }
+      componentProps: {stype,value,label,cbgcolor:this.cbgcolor }
     });
     modal.present();
     //监听销毁的事件
@@ -1038,18 +1039,53 @@ export class NewFormPage implements OnInit {
         this.selecttemplat.template.secs[i].fields.forEach(item => {
           // console.log(fieldname)
           // console.log(item.name)
-          if (item.name == fieldname) {
+          if (item.name == name) {
             // console.log(data)
             item.value = data.result;
           }
         })
       }
-      
 
     }
+    if(xtype == 'singleempselect'){
+      const groupId = field.groupId;
+      if(groupId && groupId!=''){
+        this.commonCtrl.show();
+        const secId = field.secId;
+        const sec = this.selecttemplat.template.secs.find(item => item.secId == secId);
+        if(sec){
+          console.log('sec:',sec)
+          const fields = sec.fields;
+          //const relafields = fields.filter(e => e.groupId == groupId)
+          const relafields = [];
+          fields.forEach(e => {
+            if(e.groupId == groupId) relafields.push(e.mapFieldId);
+          });
+          if(relafields.length>0){
+            this.getFieldVal(relafields.join(';'),data.result,fields)
+          }
+          
+        }else{
+          this.commonCtrl.hide();
+        }
+      }
+    }
 
-    // console.log(this.selecttemplat.template.secs)
 
+  }
+  getFieldVal(fields: string, fullname: string,sec: any){
+    
+    this.storage.get('loginDetails').then(logindata => {
+      this.getforms.getFieldValue(logindata, fields,fullname).pipe(first()).subscribe(data => {
+        data = JSON.parse(data.data);
+        sec.forEach(e => {
+          if(e.mapFieldId!=''){
+            if(data[e.mapFieldId]!=null) e.value = data[e.mapFieldId];
+          }
+        });
+        this.commonCtrl.hide();
+      })
+    })
   }
   //查找名称
   async getRole(fieldname, fieldvalue,stype:string,label,rolelist) {

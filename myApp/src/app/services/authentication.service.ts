@@ -4,13 +4,16 @@ import { Observable,from } from 'rxjs';
 import { catchError,map } from 'rxjs/operators';
 import { CommonService } from './common.service';
 import { HTTP } from '@ionic-native/http/ngx';
-import {AppConfig } from '../config'
+import { AppConfig } from '../config';
+import { Platform } from '@ionic/angular';
+import { TranslateService } from '@ngx-translate/core';
+
 @Injectable({
   providedIn: 'root'
 })
 export class AuthenticationService {
 
-  constructor(private http: HttpClient,private common:CommonService,private httpnative: HTTP) { }
+  constructor(private platform: Platform,private translate: TranslateService,private http: HttpClient,private common:CommonService,private httpnative: HTTP) { }
 
   login(userid: string,pass:string,domain:string,folder:string): Observable<any> {
 
@@ -43,13 +46,20 @@ export class AuthenticationService {
   updateUserInfo(logindetail:any):Observable<any>{
     const {folder,username,email,code,OUCategory} = logindetail;
     const deviceid = "iphone12 001";
+    const lan = this.translate.getDefaultLang() || localStorage.getItem("lan");
+    let os:string = "Android";
+    if(this.platform.is('ios')){
+      os = "iOS";
+    }
     const data = {
       username,
       email,
       "oucategory":OUCategory,
       code,
       deviceid,
-      "devicettype":"iphone13 plus"
+      "devicettype":"iphone13 plus",
+      os,
+      lan
     }
     console.log('updateUserInfo---service---->',logindetail)
     console.log('url:',AppConfig.domain+'/'+AppConfig.folder+'/appmgt.nsf/xp_ws.xsp/updateUserInfo')

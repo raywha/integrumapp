@@ -34,7 +34,7 @@
           </ion-label>
           <ion-icon *ngIf="field.name=='formRoleMR'" slot="end" name="arrow-forward" mode="ios" (click)="getRole(field.name,field.value,'single',field.label,field.rolelistlimitedto)">
           </ion-icon>
-          <ion-icon *ngIf="field.name=='formMR'" slot="end" name="arrow-forward" mode="ios" (click)="getSecurity(field.name,field.value,'single',field.label)">
+          <ion-icon *ngIf="field.name=='formMR'" slot="end" name="arrow-forward" mode="ios" (click)="getSecurity(field,'single')">
           </ion-icon>
         </ion-item>
         <ion-item>
@@ -196,7 +196,7 @@
                 </ion-label>
               </ion-item>
               <ion-item>
-                <ion-icon slot="end" name="arrow-forward" mode="ios" (click)="getSecurity(field.name,field.value,'single',field.label)"></ion-icon>
+                <ion-icon slot="end" name="arrow-forward" mode="ios" (click)="getSecurity(field,'single')"></ion-icon>
                 <ion-text [ngStyle]="{'color': cbgcolor}">
                   <h6> {{field.value}}</h6>
                 </ion-text>
@@ -211,7 +211,7 @@
                 </ion-label>
                 </ion-item>
                 <ion-item>
-                <ion-icon slot="end" name="arrow-forward" mode="ios" (click)="getSecurity(field.name,field.value,'multi',field.label)"></ion-icon>
+                <ion-icon slot="end" name="arrow-forward" mode="ios" (click)="getSecurity(field,'multi')"></ion-icon>
                 <ion-text [ngStyle]="{'color': cbgcolor}">
                   <h6> {{field.value}}</h6>
                 </ion-text>

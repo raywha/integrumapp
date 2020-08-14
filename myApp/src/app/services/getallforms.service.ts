@@ -247,4 +247,17 @@ export class GetallformsService {
     }
     return from(this.httpnative.post(logindetail.server+'/'+logindetail.folder+'/integrumws.nsf/xp_App.xsp/saveMicroData',data,''));
   }
+  getFieldValue(logindetail:any,fields: string, fullname: string):Observable<any>{
+    const url = `${logindetail.server}/${logindetail.folder}/integrumws.nsf/xp_App.xsp/getFieldsValue?fields=${encodeURIComponent(fields)}&fullname=${encodeURIComponent(fullname)}`;
+    if(logindetail.username && logindetail.password){
+      let auth='Basic '+btoa(logindetail.username+':'+logindetail.password);
+
+      const options = {
+          "Content-Type":"application/json; charset=utf-8",
+          "Authorization":auth
+      };
+      return from(this.httpnative.get(url,'',options));
+    }
+    return from(this.httpnative.get(url,'',''));
+  }
 }
