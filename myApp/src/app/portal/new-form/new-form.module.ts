@@ -15,6 +15,8 @@ import { SignaturepadPopover } from '../signaturepad-popover/signaturepad-popove
 import { RoleComponent } from "../../common/role/role.component";
 import { MrtemplateComponent } from "../../common/mrtemplate/mrtemplate.component";
 import { MicrodbComponent } from '../microdb/microdb.component';
+import { DynamicsecComponent } from '../dynamicsec/dynamicsec.component';
+
 const routes: Routes = [
   {
     path: '',
@@ -30,7 +32,7 @@ const routes: Routes = [
     SignaturePadModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [NewFormPage,PopoverComponent,SecurityComponent,OpenModalComponent,RiskmatrixComponent,SignaturepadPopover,RoleComponent,MrtemplateComponent,MicrodbComponent],
-  entryComponents:[PopoverComponent,SecurityComponent,OpenModalComponent,RiskmatrixComponent,SignaturepadPopover,RoleComponent,MrtemplateComponent,MicrodbComponent]
+  declarations: [NewFormPage,PopoverComponent,SecurityComponent,OpenModalComponent,RiskmatrixComponent,SignaturepadPopover,RoleComponent,MrtemplateComponent,MicrodbComponent,DynamicsecComponent],
+  entryComponents:[PopoverComponent,SecurityComponent,OpenModalComponent,RiskmatrixComponent,SignaturepadPopover,RoleComponent,MrtemplateComponent,MicrodbComponent,DynamicsecComponent]
 })
 export class NewFormPageModule {}

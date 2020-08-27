@@ -265,7 +265,7 @@ export class LoginpassPage implements OnInit {
     this.auth.ssoData(this.ssoserver, this.ssofolder, postData).subscribe(d => {
       d = JSON.parse(d.data)
       if (d.result == "false") {
-        this.presentAlert('Login Failed!<br/>Please contact your administrator.', 'integrumNOW Error', ['OK']);
+        //this.presentAlert('Login Failed!<br/>Please contact your administrator.', 'Error', ['OK']);
 
       }
       else {

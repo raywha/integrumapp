@@ -1,4 +1,4 @@
-import { Component, OnInit, QueryList } from '@angular/core';
+import { Component, OnInit, QueryList, ViewChild } from '@angular/core';
 import { Storage } from '@ionic/storage';
 import { ModalController, AlertController, NavController,ActionSheetController ,Platform} from '@ionic/angular';
 import { ActivatedRoute } from '@angular/router';
@@ -33,6 +33,8 @@ import { MicrodbComponent } from '../microdb/microdb.component';
 })
 export class NewFormPage implements OnInit {
   @ViewChildren("testdom") testdom: QueryList<ElementRef>;
+  @ViewChild('dynamicsec') dynamicsec:any;
+
   public formType;
   public templates: any;
   public title: string;
@@ -128,6 +130,7 @@ export class NewFormPage implements OnInit {
   public microdbData:any = [];
   public orderbyImg: string = 'assets/icon/sort_none.gif';
   public orderbyState: boolean;
+  public dynamicDatas:any = {};
   constructor(
     private storage: Storage,
     public modal: ModalController,
@@ -369,9 +372,11 @@ export class NewFormPage implements OnInit {
               }else if(data.xtype == 'signature'){
                 data.value = this.sanitizer.bypassSecurityTrustResourceUrl( data.value );
               }else if(data.xtype == 'headline'){
-                if(this.findSameLabelname(this.selecttemplat.template.secs[i].fields,data.label,data.name)){
-                  data.hide = true;
-                }
+                console.log('data.label:',data.label)
+                if(data.name == 'hsi_IncidentDetails_hsi_headlineCFOrg' || data.name == 'hsi_IncidentDetails_hsi_headlineCFHuman' || data.name == 'hsi_IncidentDetails_hsi_headlineCFTech') data.hide = true;
+                // if(this.findSameLabelname(this.selecttemplat.template.secs[i].fields,data.label,data.name)){
+                //   data.hide = true;
+                // }
               }
                 this.fields.push(data) //
                 // this.selectScore(data,data.value,this.selecttemplat.template.secs[i].title)
@@ -406,6 +411,12 @@ export class NewFormPage implements OnInit {
             if (selectSecId.indexOf(this.selecttemplat.template.secs[i].secId) != -1) this.sections.push(this.selecttemplat.template.secs[i])
             //if(this.quesSecId.indexOf(this.selecttemplat.template.secs[i].secId)==-1) this.sections.push(this.selecttemplat.template.secs[i])
             this.sectionsold.push(this.selecttemplat.template.secs[i])
+            if(this.selecttemplat.template.secs[i].dynamicData){
+              let dynamicJson = {};
+              dynamicJson["fields"] = this.selecttemplat.template.secs[i].fields;
+              dynamicJson["dynamicData"] = this.selecttemplat.template.secs[i].dynamicData;
+              this.dynamicDatas[this.selecttemplat.template.secs[i].secId] = dynamicJson;
+            }
 
             this.list.push({ "show": false })
             this.commonCtrl.hide()
@@ -418,6 +429,7 @@ export class NewFormPage implements OnInit {
           if (flag) {
             this.change({ "label": "Severity", "value": this.severityvalue })
           }
+          this.comPercents();
           //})
         })
       } else {
@@ -534,9 +546,10 @@ export class NewFormPage implements OnInit {
             if(v.value!='') data.options.unshift({value:'',text:''});
           }
         } else if(data.xtype == 'headline'){
-          if(this.findSameLabelname(this.selecttemplat.template.secs[i].fields,data.label,data.name)){
-            data.hide = true;
-          }
+          // if(this.findSameLabelname(this.selecttemplat.template.secs[i].fields,data.label,data.name)){
+          //   data.hide = true;
+          // }
+          if(data.name == 'hsi_IncidentDetails_hsi_headlineCFOrg' || data.name == 'hsi_IncidentDetails_hsi_headlineCFHuman' || data.name == 'hsi_IncidentDetails_hsi_headlineCFTech') data.hide = true;
         }
         if(res.subform && this.inheritMap[data.name]){
           console.log("---inheritval--------:",this.inheritMap[data.name]);
@@ -553,6 +566,12 @@ export class NewFormPage implements OnInit {
         if (this.quesSecId.indexOf(this.selecttemplat.template.secs[i].secId) == -1) this.sections.push(this.selecttemplat.template.secs[i])
         this.sectionsold.push(this.selecttemplat.template.secs[i])
         this.list.push({ "show": false })
+        if(this.selecttemplat.template.secs[i].dynamicData){
+          let dynamicJson = {};
+          dynamicJson["fields"] = this.selecttemplat.template.secs[i].fields;
+          dynamicJson["dynamicData"] = this.selecttemplat.template.secs[i].dynamicData;
+          this.dynamicDatas[this.selecttemplat.template.secs[i].secId] = dynamicJson;
+        }
       }
       this.initHasSubfield('change');
       let flag = this.sections.some(function (obj, index) {
@@ -562,9 +581,34 @@ export class NewFormPage implements OnInit {
       if (flag) {
         this.change({ "label": "Severity" })
       }
-
+      this.comPercents();
     })
   }
+  comPercents(){  
+    const secs = this.selecttemplat.template.secs;
+    secs.forEach(sec => {
+      if(sec.dynamicData){
+        let tempscore = 0;
+        let naNum = 0;
+        let total = sec.dynamicData.quesList.length;
+        sec.dynamicData.quesList.forEach((data,index) => {
+          if(data.length>1){
+            if (data[1] == "Yes") {
+              tempscore = tempscore + 1
+            }
+            if (data[1] == "N/A") {
+              naNum = naNum + 1
+            }
+          } 
+        });
+        if (total != 0) { 
+          let result:string = (tempscore*100 / (total-naNum)).toFixed();
+          console.log(result);
+          sec.score = tempscore + "/" + (total-naNum) + "   (" + ( result) + "%)"
+        }
+      }
+    });
+}
   getTemplatByViewId(data, vid) {
     let res;
     data.forEach(element => {
@@ -587,13 +631,25 @@ export class NewFormPage implements OnInit {
   };
 
 
-  isShowGuidance(sectionid, index) {
+  isShowGuidance(section, index) {
     // console.log(sectionid)
     //console.log(index)
     // console.log(this.list)
     this.showGuidance = !this.showGuidance;
     this.num = index;
     this.list[index].show = !this.list[index].show;
+    console.log('dynamicsec:',this.dynamicsec);
+    console.log('this.section',section);
+    if(this.dynamicsec){
+      const curindex = this.dynamicsec.index;
+      section.index = curindex;
+      if(section.dynamicData.quesList[curindex]){
+        const fields = section.fields;
+        fields.forEach((e,i) => {
+          section.dynamicData.quesList[curindex][i] = e.value;
+        });
+      }
+    }
   }
 
   getSwitchBtn(item) {
@@ -670,7 +726,7 @@ export class NewFormPage implements OnInit {
 
         console.log("保存了")
         if(this.mandatoryWhenApprove!="1" && this.skipMandatory=="0"){
-          const {fieldError,msg} = this.checkMandatoryField();
+          const {fieldError,msg} = this.checkMandatoryField("save");
           if (fieldError) {
             console.log("必填了")
             console.log(msg)
@@ -678,6 +734,7 @@ export class NewFormPage implements OnInit {
             return false;
           }
         }
+        this.paraforsubmit.dynamicDatas = this.dynamicDatas;
         this.submit(this.paraforsubmit, actiontype)
         break;
       case "btnSubmit":
@@ -714,7 +771,7 @@ export class NewFormPage implements OnInit {
 
         console.log("提交操作")
         if(this.mandatoryWhenApprove!="1"){
-          const {fieldError,msg} = this.checkMandatoryField();
+          const {fieldError,msg} = this.checkMandatoryField("submit");
           if (fieldError) {
             console.log("必填了")
             console.log(msg)
@@ -723,7 +780,7 @@ export class NewFormPage implements OnInit {
           }
         }
         
-
+        this.paraforsubmit.dynamicDatas = this.dynamicDatas;
         this.submit(this.paraforsubmit, actiontype)
 
         break;
@@ -841,7 +898,7 @@ export class NewFormPage implements OnInit {
     }
     return (false);
   }
-  checkMandatoryField():any{
+  checkMandatoryField(action):any{
     let sectionsIds:any = [];
     for (let i = 0; i < this.sections.length; i++) {
       const element = this.sections[i];
@@ -880,7 +937,7 @@ export class NewFormPage implements OnInit {
               else {
 
                 if (this.fields[d].value < this.today) {
-                  msg += this.selecttemplat.template.mandaFields[p].label + ' date cannot be less than current date';
+                  msg += this.selecttemplat.template.mandaFields[p].label + ' date cannot be less than current date<br/>';
                   fieldError = true;
                 }
               }
@@ -889,6 +946,25 @@ export class NewFormPage implements OnInit {
         }
       }
     }//End
+    if(action=="submit"){
+      this.selecttemplat.template.secs.forEach(sec => {
+        var dyMsg="";
+        if(sec.dynamicData){        
+          sec.dynamicData.quesList.forEach((q,i) => {
+            if(!q[1]){
+              dyMsg += "Q"+(i+1)+",";
+            }
+          });
+        }
+        if(dyMsg!=""){
+          dyMsg = sec.title+":"+dyMsg;
+          dyMsg = dyMsg.slice(0,dyMsg.length-1);
+          dyMsg = dyMsg+"<br>";
+          msg +=dyMsg;
+          fieldError = true;
+        }
+      });
+    }
 
     return {fieldError,msg};
   }
@@ -2414,7 +2490,9 @@ export class NewFormPage implements OnInit {
     }
   }
   findSameLabelname(fields: any, label: string, name: any): boolean{
-    const result = fields.filter(e => e.name!=name && e.label==label);
+    console.log('name:',name,' label:',label)
+    const result = fields.find(e => e.name!=name && e.label==label);
+    console.log('findSameLabelname result:',result)
     if(result) return true;
     return false;
   }

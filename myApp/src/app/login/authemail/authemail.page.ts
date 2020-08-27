@@ -162,7 +162,7 @@ export class AuthemailPage implements OnInit {
                 data => {
                   console.log('updateUserInfo----data...:', data)
                   data = JSON.parse(data.data);
-
+                  console.log('updateUserInfo- parse---data...:', data)
                   const AppVersionNo = data.AppVersionNo;
                   const curVersion = AppConfig.appversion;
                   const msg = data.msg; 
@@ -398,7 +398,7 @@ export class AuthemailPage implements OnInit {
     this.auth.ssoData(this.ssoserver, ssofolder, postData).subscribe(d => {
       d = JSON.parse(d.data)
       if (d.result == "false") {
-        this.presentAlert('Login Failed!<br/>Please contact your administrator.', 'integrumNOW Error', ['OK']);
+        //this.presentAlert('Login Failed!<br/>Please contact your administrator.', 'Error', ['OK']);
 
       }
       else {

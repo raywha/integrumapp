@@ -93,8 +93,8 @@
         <ion-item lines="none"  #testdom>
           <ion-label color="light">{{section.title}}&nbsp;&nbsp;&nbsp;&nbsp;{{section.score}}</ion-label>
           <ion-icon slot="end" color="light" name="arrow-forward" mode="ios"
-            (click)="isShowGuidance(section.secId,index)" *ngIf="!(list&&list[index]&&list[index].show)"></ion-icon>
-          <ion-icon slot="end" color="light" name="arrow-down" mode="ios" (click)="isShowGuidance(section.secId,index)"
+            (click)="isShowGuidance(section,index)" *ngIf="!(list&&list[index]&&list[index].show)"></ion-icon>
+          <ion-icon slot="end" color="light" name="arrow-down" mode="ios" (click)="isShowGuidance(section,index)"
             *ngIf="list[index].show">
           </ion-icon>
         </ion-item>
@@ -505,7 +505,7 @@
 
           </ion-item>
         </div>
-        <div *ngIf="section.sectionType=='1'">
+        <div *ngIf="section.sectionType=='1' && !section.dynamicData">
           <ion-item lines="none">
             <div *ngIf="!formID">
               <ion-label [ngStyle]="{'color': cbgcolor}" stacked>
@@ -577,6 +577,10 @@
             
           
         </div>
+        <div *ngIf="section.sectionType=='1' && section.dynamicData">
+          <app-dynamicsec *ngIf="section.dynamicData.quesList.length>0" [sec]="section" doctype="edit" #dynamicsec></app-dynamicsec>
+          <ion-item *ngIf="section.dynamicData.quesList.length==0">no question</ion-item>
+        </div>
       </div>
 
     </div>
@@ -626,8 +630,8 @@
         <ion-item lines="none" #testdom>
           <ion-label color="light">{{section.title}}&nbsp;&nbsp;&nbsp;&nbsp;{{section.score}}</ion-label>
           <ion-icon slot="end" color="light" name="arrow-forward" mode="ios"
-            (click)="isShowGuidance(section.secId,index)" *ngIf="!(list&&list[index]&&list[index].show)"></ion-icon>
-          <ion-icon slot="end" color="light" name="arrow-down" mode="ios" (click)="isShowGuidance(section.secId,index)"
+            (click)="isShowGuidance(section,index)" *ngIf="!(list&&list[index]&&list[index].show)"></ion-icon>
+          <ion-icon slot="end" color="light" name="arrow-down" mode="ios" (click)="isShowGuidance(section,index)"
             *ngIf="list[index].show">
           </ion-icon>
         </ion-item>
@@ -722,7 +726,7 @@
 
             </ion-item>
           </div>
-          <div *ngIf="section.sectionType=='1'">
+          <div *ngIf="section.sectionType=='1' &&!section.dynamicData">
             <ion-grid>
               <ion-row>
                 <ion-col [size]="section.dispFields[2]?4:(section.dispFields[1]?6:'')" class="fieldshow">
@@ -769,6 +773,10 @@
                 </ion-row>
             </ion-grid>
             
+          </div>
+          <div *ngIf="section.sectionType=='1' && section.dynamicData">
+            <app-dynamicsec *ngIf="section.dynamicData.quesList.length>0" [sec]="section" doctype="open" #dynamicsec></app-dynamicsec>
+            <ion-item *ngIf="section.dynamicData.quesList.length==0">no question</ion-item>
           </div>
         </div>
 
