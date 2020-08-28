@@ -947,23 +947,8 @@ export class NewFormPage implements OnInit {
       }
     }//End
     if(action=="submit"){
-      this.selecttemplat.template.secs.forEach(sec => {
-        var dyMsg="";
-        if(sec.dynamicData){        
-          sec.dynamicData.quesList.forEach((q,i) => {
-            if(!q[1]){
-              dyMsg += "Q"+(i+1)+",";
-            }
-          });
-        }
-        if(dyMsg!=""){
-          dyMsg = sec.title+":"+dyMsg;
-          dyMsg = dyMsg.slice(0,dyMsg.length-1);
-          dyMsg = dyMsg+"<br>";
-          msg +=dyMsg;
-          fieldError = true;
-        }
-      });
+      msg = this.checkQuesMandatory(msg);
+      fieldError = true;
     }
 
     return {fieldError,msg};
@@ -2495,6 +2480,59 @@ export class NewFormPage implements OnInit {
     console.log('findSameLabelname result:',result)
     if(result) return true;
     return false;
+  }
+  checkQuesMandatory(msg) {
+    var checkSecs = [];
+    this.selecttemplat.template.secs.forEach(sec => {
+
+      var quesFields = this.selecttemplat.template.quesFields;
+
+      for (let i = 0; i < quesFields.length; i++) {
+        const el = quesFields[i];
+        let answerWhen = el.answerWhen;
+        let qsecId = el.parentSecId;
+        let qfieldId = el.fieldId;
+        if (sec.secId == qsecId) {
+          sec.fields.forEach(f => {
+            if (f.name == qfieldId) {
+              let qval = f.value ? f.value : "";
+              if (qval) checkSecs.push(answerWhen[qval] ? answerWhen[qval] : "");
+            }
+          });
+        }
+      }
+    });
+    this.selecttemplat.template.secs.forEach(sec => {
+      var dyMsg = "";
+      if (sec.dynamicData) {
+        if (this.quesSecId.indexOf(sec.secId) == -1) {
+          sec.dynamicData.quesList.forEach((q, index) => {
+            if (!q[1]) {
+              dyMsg += "Q" + (index + 1) + ",";
+            }
+          });
+        } else {
+          if (checkSecs.length > 0) {
+            checkSecs.forEach(checkSec => {
+              if (checkSec.indexOf(sec.secId) != -1) {
+                sec.dynamicData.quesList.forEach((q, index) => {
+                  if (!q[1]) {
+                    dyMsg += "Q" + (index + 1) + ",";
+                  }
+                });
+              }
+            })
+          }
+        }
+      }
+      if (dyMsg != "") {
+        dyMsg = sec.title + ":" + dyMsg;
+        dyMsg = dyMsg.slice(0, dyMsg.length - 1);
+        dyMsg = dyMsg + "<br>";
+        msg += dyMsg;      
+      }
+    })
+    return msg;
   }
 
 }
