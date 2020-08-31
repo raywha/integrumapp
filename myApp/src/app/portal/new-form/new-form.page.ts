@@ -596,7 +596,7 @@ export class NewFormPage implements OnInit {
             if (data[1] == "Yes") {
               tempscore = tempscore + 1
             }
-            if (data[1] == "N/A") {
+            if (data[1] == "N/A"||data[1] == "NA") {
               naNum = naNum + 1
             }
           } 
@@ -617,6 +617,41 @@ export class NewFormPage implements OnInit {
       }
     });
     return res;
+  }
+  comScores(dynamicDatas):any {  
+    for (let key in dynamicDatas) {
+      var dynamicData = dynamicDatas[key]["dynamicData"];
+      if (dynamicData) {
+        let tempscore = 0;
+        let naNum = 0;
+        let result = "";
+        let total = dynamicData.quesList.length;
+        let tolNoNa = 0;
+        let comResult = ""
+        dynamicData.quesList.forEach((data, index) => {
+          if (data.length > 1) {
+            if (data[1] == "Yes") {
+              tempscore = tempscore + 1
+            }
+            if (data[1] == "N/A") {
+              naNum = naNum + 1
+            }
+          }
+        });
+        if (total != 0) {
+          result = (tempscore * 100 / (total - naNum)).toFixed();
+          comResult =tempscore + "/" + (total-naNum) + "   (" + (result) + "%)";
+          tolNoNa = total-naNum;
+        }
+        var scoreList = []
+        scoreList.push(tempscore);
+        scoreList.push(tolNoNa);
+        scoreList.push(result);
+        scoreList.push(comResult);
+      }
+      dynamicDatas[key]["score"] = scoreList;
+    }   
+       
   }
 
   ngOnInit() {
@@ -734,6 +769,7 @@ export class NewFormPage implements OnInit {
             return false;
           }
         }
+        this.comScores(this.dynamicDatas);
         this.paraforsubmit.dynamicDatas = this.dynamicDatas;
         this.submit(this.paraforsubmit, actiontype)
         break;
@@ -779,7 +815,7 @@ export class NewFormPage implements OnInit {
             return false;
           }
         }
-        
+        this.comScores(this.dynamicDatas);
         this.paraforsubmit.dynamicDatas = this.dynamicDatas;
         this.submit(this.paraforsubmit, actiontype)
 
@@ -948,7 +984,7 @@ export class NewFormPage implements OnInit {
     }//End
     if(action=="submit"){
       msg = this.checkQuesMandatory(msg);
-      fieldError = true;
+      if(msg) fieldError = true;
     }
 
     return {fieldError,msg};
@@ -2505,7 +2541,7 @@ export class NewFormPage implements OnInit {
     this.selecttemplat.template.secs.forEach(sec => {
       var dyMsg = "";
       if (sec.dynamicData) {
-        if (this.quesSecId.indexOf(sec.secId) == -1) {
+        if (this.quesSecId.indexOf(sec.secId) == -1||!this.quesSecId) {
           sec.dynamicData.quesList.forEach((q, index) => {
             if (!q[1]) {
               dyMsg += "Q" + (index + 1) + ",";

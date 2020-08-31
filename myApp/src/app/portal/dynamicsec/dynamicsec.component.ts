@@ -18,13 +18,21 @@ export class DynamicsecComponent implements OnInit {
   public dynamicData: any;
   public attLists: any = [];
   public score:string;
+  public listModal:boolean = true;
+  public yColor:string = 'rgb(74,202,109)';
+  public nColor:string = 'rgb(240,60,0)';
+  public naColor:string = 'rgb(216,216,216)';
+  public cbgcolor:any;
 
   constructor(
     public platform: Platform,
     public actionSheetCtrl: ActionSheetController
 
   ) {
-    
+    if(localStorage.getItem("bgcolor")){
+      console.log('localStorage-->bgcolor:',localStorage.getItem('bgcolor'))
+      this.cbgcolor = localStorage.getItem('bgcolor');
+    }
    }
 
   ngOnInit() {
@@ -43,11 +51,11 @@ export class DynamicsecComponent implements OnInit {
       }
       if(e.xtype == "radio" || e.xtype == "select"){
         if(e.value == "Yes"){
-          e.color = "green";
+          e.color = "rgb(74,202,109)";
         }else if(e.value == "No"){
-          e.color = "red";
-        }else if(e.value == "N/A"){
-          e.color = "gray";
+          e.color = "rgb(240,60,0)";
+        }else if(e.value == "N/A"||e.value == "NA"){
+          e.color = "rgb(216,216,216)";
         }
       }     
     });
@@ -153,7 +161,7 @@ export class DynamicsecComponent implements OnInit {
       field.color = "rgb(74,202,109)";
     }else if(val == "No"){
       field.color = "rgb(240,60,0)";
-    }else if(val == "N/A"){
+    }else if(val == "N/A"||val == "NA"){
       field.color = "rgb(216,216,216)";
     }
     let index = this.index;
@@ -176,7 +184,7 @@ export class DynamicsecComponent implements OnInit {
             e.color = "rgb(74,202,109)";
           }else if(val == "No"){
             e.color = "rgb(240,60,0)";
-          }else if(val == "N/A"){
+          }else if(val == "N/A"||val == "NA"){
             e.color = "rgb(216,216,216)";
           } 
         }
@@ -196,7 +204,7 @@ export class DynamicsecComponent implements OnInit {
             if (data[1] == "Yes") {
               tempscore = tempscore + 1
             }
-            if (data[1] == "N/A") {
+            if (data[1] == "N/A"||data[1] == "NA") {
               naNum = naNum + 1
             }
           } 
@@ -213,5 +221,13 @@ export class DynamicsecComponent implements OnInit {
     this.fields.forEach((e,i)=>{
       this.dynamicData.quesList[index][i] = e.value;
     })
+  }
+  changeModal(i){
+    this.go(i)
+    if(this.listModal){
+      this.listModal = false;
+    }else{
+      this.listModal = true;
+    } 
   }
 }

@@ -1,5 +1,38 @@
+<div *ngIf="listModal && doctype=='edit'" id="edit" class="listModal">
+  <ion-list>
+    <ion-item (click)=changeModal(i+1) *ngFor="let ques of dynamicData.quesList;let i =index">
+      <div class="ques">
+        <ion-text class="item-text-wrap">{{ques[0]}}</ion-text>
+      </div>
+      <div class="null"></div>
+      <div class="ans">
+        <ion-label *ngIf="ques[1]=='Yes'" [ngStyle]="{background: yColor}">{{ques[1]}}</ion-label>
+        <ion-label *ngIf="ques[1]=='No'" [ngStyle]="{background: nColor}">{{ques[1]}}</ion-label>
+        <ion-label *ngIf="ques[1]=='N/A'||ques[1]=='NA'" [ngStyle]="{background: naColor}">{{ques[1]}}</ion-label>
+        <ion-label *ngIf="ques[1]!='Yes'&&ques[1]!='No'&&ques[1]!='N/A'&&ques[1]!='NA'">{{ques[1]}}</ion-label>
+      </div>
+    </ion-item>
+    <ion-item></ion-item>
+  </ion-list>
+</div>
+<div *ngIf="listModal && doctype=='open'" id="open" class="listModal">
+  <ion-list>
+    <ion-item *ngFor="let ques of dynamicData.quesList">
+      <div class="ques">
+        <ion-text>{{ques[0]}}</ion-text>
+      </div>
+      <div class="null"></div>
+      <div class="ans">
+        <ion-label *ngIf="ques[1]=='Yes'" [ngStyle]="{background: yColor}">{{ques[1]}}</ion-label>
+        <ion-label *ngIf="ques[1]=='No'" [ngStyle]="{background: nColor}">{{ques[1]}}</ion-label>
+        <ion-label *ngIf="ques[1]=='N/A'||ques[1]=='NA'" [ngStyle]="{background: naColor}">{{ques[1]}}</ion-label>
+        <ion-label *ngIf="ques[1]!='Yes'&&ques[1]!='No'&&ques[1]!='N/A'&&ques[1]!='NA'">{{ques[1]}}</ion-label>
+      </div>    
+    </ion-item>
+  </ion-list>
+</div>
 
-<ion-content style="height:550px;">
+<ion-content style="height:550px;" *ngIf="!listModal">
   <div class="form-container" id="edit" *ngIf="doctype=='edit'">
   <div *ngFor="let field of fields;let index = index;">
   <!--multiselectfield-->
@@ -11,7 +44,7 @@
       </ion-label>
     </ion-item>
     <ion-item lines="none">
-      <ion-select [(ngModel)]='field.value' multiple="true" name="field.name" [ngStyle]="{'color':cbgcolor}" placeholder="Select one or more option(s)">
+      <ion-select [(ngModel)]='field.value' multiple="true" name="field.name" [ngStyle]="{'color':cbgcolor}" [placeholder]="field.placeholder?field.placeholder:''">
         <!-- (ionChange)="getSublistOption(field,msection.secId,'change')"> -->
         <ion-select-option *ngFor="let option of field.options">{{option.text}}</ion-select-option>
       </ion-select>
@@ -27,7 +60,7 @@
             <span *ngIf="field.mandatory=='Y'" class="needfill">*</span>
           </ion-label>
         </div>
-        <div> <textarea (blur)="setDynamicData()" rows="4" [(ngModel)]='field.value' style="background-color:#fff;" [ngStyle]="{'color':cbgcolor}" placeholder="Enter a description"></textarea>
+        <div> <ion-textarea (blur)="setDynamicData()" rows="4" [(ngModel)]='field.value' style="background-color:#fff;" [ngStyle]="{'color':cbgcolor}" [placeholder]="field.placeholder?field.placeholder:''"></ion-textarea>
         </div>
       </div>
     </ion-item>
@@ -79,15 +112,15 @@
       
         <div *ngIf="field.daterange=='all'">
           <ion-datetime displayFormat="DD/MM/YYYY" [max]="maxYear" [(ngModel)]='field.value'
-          placeholder="Tap To Pick A Date" color="favorite" [ngStyle]="{'color':cbgcolor}"></ion-datetime>
+          [placeholder]="field.placeholder?field.placeholder:''" color="favorite" [ngStyle]="{'color':cbgcolor,'opacity':field.value?1:0.4}"></ion-datetime>
         </div>
         <div *ngIf="field.daterange=='future'">
           <ion-datetime displayFormat="DD/MM/YYYY" [min]="curDate" [max]="maxYear" [(ngModel)]='field.value'
-          placeholder="Tap To Pick A Date" color="favorite" [ngStyle]="{'color':cbgcolor}"></ion-datetime>
+          [placeholder]="field.placeholder?field.placeholder:''" color="favorite" [ngStyle]="{'color':cbgcolor,'opacity':field.value?1:0.4}"></ion-datetime>
         </div>
         <div *ngIf="field.daterange=='past'">
           <ion-datetime displayFormat="DD/MM/YYYY" [max]="curDate" [(ngModel)]='field.value'
-          placeholder="Tap To Pick A Date" color="favorite" [ngStyle]="{'color':cbgcolor}"></ion-datetime>
+          [placeholder]="field.placeholder?field.placeholder:''" color="favorite" [ngStyle]="{'color':cbgcolor,'opacity':field.value?1:0.4}"></ion-datetime>
         </div>
         <ion-icon slot="end" name="calendar" mode="md"></ion-icon>
       <!-- <span class="down">
@@ -159,7 +192,7 @@
     </ion-item>
     
     <ion-item style="background-color:#eee;">
-      <ion-datetime displayFormat="hh:mm A" pickerFormat="h:mm A" [(ngModel)]='field.value' [ngStyle]="{'color':cbgcolor}" placeholder="Tap To Pick A Time">
+      <ion-datetime displayFormat="hh:mm A" pickerFormat="h:mm A" [(ngModel)]='field.value' [ngStyle]="{'color':cbgcolor}" [placeholder]="field.placeholder?field.placeholder:''">
       </ion-datetime>
     </ion-item>
   </div>
@@ -258,7 +291,7 @@
         </ion-item>
         <ion-item  *ngIf="index > 0">
           <ion-input type="text" style="background-color:#FFF;" [ngStyle]="{'color':cbgcolor}" [(ngModel)]='field.value'
-            placeholder="Tap to enter"></ion-input>
+          [placeholder]="field.placeholder?field.placeholder:''"></ion-input>
       
         </ion-item>
         <ion-item *ngIf="index == 0">
@@ -275,7 +308,7 @@
     </ion-item>
     <ion-item>
       <ion-input type="number" style="background-color:#FFF;" [ngStyle]="{'color':cbgcolor}" [(ngModel)]='field.value'
-        placeholder="Tap to enter"></ion-input>
+      [placeholder]="field.placeholder?field.placeholder:''"></ion-input>
     </ion-item>
   </div>
   <!--checkboxfield-->
@@ -307,7 +340,7 @@
     </ion-item>
   </div> -->
   <!--radiofield-->
-  <div *ngIf="field.xtype==='radio'" [hidden]="field.hide">
+  <div *ngIf="field.xtype==='select'" [hidden]="field.hide">
     <ion-item style="margin-left:0px;padding-left:0px;padding-right:0px;">
       <div>
         <div  *ngIf="index > 1"class="row row-wrap item-calm">
@@ -335,7 +368,7 @@
 
   </div>
   <!--selectfield-->
-  <div *ngIf="field.xtype=='select'" [hidden]="field.hide">
+  <div *ngIf="field.xtype=='radio'" [hidden]="field.hide">
     <ion-item *ngIf="index > 1" style="margin-left:0px;padding-left:0px;padding-right:0px;">
       <ion-label style="margin-bottom:10px; " color="basic" stacked>
         {{field.label}}
@@ -466,7 +499,7 @@
             </ion-item>
             <ion-item  *ngIf="index > 0">
               <ion-input type="text" style="background-color:#FFF;" [ngStyle]="{'color':cbgcolor}" [(ngModel)]='field.value'
-                placeholder="Tap to enter"></ion-input>
+              [placeholder]="field.placeholder?field.placeholder:''"></ion-input>
           
             </ion-item>
             <ion-item *ngIf="index == 0">
@@ -489,21 +522,27 @@
     </div>
   </div>
   <ion-item class="quesoutline">
-    <ion-button size="middle"><ion-icon name="list"></ion-icon></ion-button>
-
-    <ion-button size="middle" (click)="go(index)" ><ion-icon name="chevron-back-circle-outline"></ion-icon></ion-button>
-    <div class="nulldiv2"></div> 
     
-    <span>Jump to:</span>
-    <div>
-      <ion-input type="number" class="numinp" [(ngModel)]="curque" min="1" maxlength="3" autocorrect="true" [max]="count"></ion-input>
+    <div class="up">
+      <ion-button size="middle" (click)="go(index)">
+        <ion-icon name="arrow-up-outline"></ion-icon>
+      </ion-button>
     </div>
-    <ion-button size="middle" (click)="go(curque)"><ion-icon name="arrow-forward-outline"></ion-icon></ion-button>
-
-    <div class="nulldiv2"></div>
-    <ion-button size="middle" (click)="go(index+2)"><ion-icon name="chevron-forward-circle-outline"></ion-icon></ion-button>
-    
-    <ion-badge color="success">{{index+1}} of {{count}}</ion-badge>
+    <div class="tap">
+      <ion-button (click)="changeModal()" size="middle">
+        <ion-icon name="list"></ion-icon>
+      </ion-button>
+    </div>
+    <div class="down">
+      <ion-button size="middle" (click)="go(index+2)">
+        <ion-icon name="arrow-down-outline"></ion-icon>
+      </ion-button>
+    </div>
+    <ion-badge size="middle" color="success">{{index+1}} of {{count}}</ion-badge>
+  
+    <!-- <span>Jump to:</span>
+    <ion-input type="number" class="numinp" [(ngModel)]="curque" min="1" maxlength="3" autocorrect="true" [max]="count"></ion-input> 
+    <ion-button size="middle" (click)="go(curque)"><ion-icon name="ios-arrow-round-forward"></ion-icon></ion-button>-->
   </ion-item>
  
 </ion-content>
