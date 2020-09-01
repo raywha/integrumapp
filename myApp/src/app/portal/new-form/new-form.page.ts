@@ -633,7 +633,7 @@ export class NewFormPage implements OnInit {
             if (data[1] == "Yes") {
               tempscore = tempscore + 1
             }
-            if (data[1] == "N/A") {
+            if (data[1] == "N/A"||data[1] == "NA") {
               naNum = naNum + 1
             }
           }
@@ -770,6 +770,7 @@ export class NewFormPage implements OnInit {
           }
         }
         this.comScores(this.dynamicDatas);
+        console.log("-----dynamicdatas----:",this.dynamicDatas);
         this.paraforsubmit.dynamicDatas = this.dynamicDatas;
         this.submit(this.paraforsubmit, actiontype)
         break;

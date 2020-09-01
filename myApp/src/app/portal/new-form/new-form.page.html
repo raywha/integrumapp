@@ -578,7 +578,7 @@
           
         </div>
         <div *ngIf="section.sectionType=='1' && section.dynamicData">
-          <app-dynamicsec *ngIf="section.dynamicData.quesList.length>0" [sec]="section" doctype="edit" #dynamicsec></app-dynamicsec>
+          <app-dynamicsec *ngIf="section.dynamicData.quesList.length>0" [sec]="section" doctype="edit" [unid]="formID" #dynamicsec></app-dynamicsec>
           <ion-item *ngIf="section.dynamicData.quesList.length==0">no question</ion-item>
         </div>
       </div>
@@ -775,7 +775,7 @@
             
           </div>
           <div *ngIf="section.sectionType=='1' && section.dynamicData">
-            <app-dynamicsec *ngIf="section.dynamicData.quesList.length>0" [sec]="section" doctype="open" #dynamicsec></app-dynamicsec>
+            <app-dynamicsec *ngIf="section.dynamicData.quesList.length>0" [sec]="section" doctype="open" [unid]="formID" #dynamicsec></app-dynamicsec>
             <ion-item *ngIf="section.dynamicData.quesList.length==0">no question</ion-item>
           </div>
         </div>

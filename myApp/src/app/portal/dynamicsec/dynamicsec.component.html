@@ -1,4 +1,4 @@
-<div *ngIf="listModal && doctype=='edit'" id="edit" class="listModal">
+<div *ngIf="listModal" id="edit" class="listModal">
   <ion-list>
     <ion-item (click)=changeModal(i+1) *ngFor="let ques of dynamicData.quesList;let i =index">
       <div class="ques">
@@ -15,7 +15,7 @@
     <ion-item></ion-item>
   </ion-list>
 </div>
-<div *ngIf="listModal && doctype=='open'" id="open" class="listModal">
+<!--<div *ngIf="listModal && doctype=='open'" id="open" class="listModal">
   <ion-list>
     <ion-item *ngFor="let ques of dynamicData.quesList">
       <div class="ques">
@@ -30,7 +30,7 @@
       </div>    
     </ion-item>
   </ion-list>
-</div>
+</div>-->
 
 <ion-content style="height:550px;" *ngIf="!listModal">
   <div class="form-container" id="edit" *ngIf="doctype=='edit'">
@@ -60,7 +60,7 @@
             <span *ngIf="field.mandatory=='Y'" class="needfill">*</span>
           </ion-label>
         </div>
-        <div> <ion-textarea (blur)="setDynamicData()" rows="4" [(ngModel)]='field.value' style="background-color:#fff;" [ngStyle]="{'color':cbgcolor}" [placeholder]="field.placeholder?field.placeholder:''"></ion-textarea>
+        <div> <ion-textarea (blur)="setDynamicData()" rows="3" [(ngModel)]='field.value' style="background-color:#fff;" [ngStyle]="{'color':cbgcolor}" [placeholder]="field.placeholder?field.placeholder:''"></ion-textarea>
         </div>
       </div>
     </ion-item>
@@ -282,7 +282,7 @@
     <ion-item [ngStyle]="{'color': cbgcolor}">{{field.value}}</ion-item>
   </div>
   <!--textfield-->
-  <div *ngIf="field.xtype==='text'||field.xtype==='headline'" class="text-number" [hidden]="field.hide">
+  <div *ngIf="field.xtype==='text'||field.xtype==='headline'" class="text-number" [hidden]="field.hide" [ngStyle]="{'margin-top':'15px'}">
         <ion-item *ngIf="index > 1">
           <ion-label style="margin-bottom:10px;max-width: 100%; " color="basic" stacked>
             {{field.label}}
@@ -430,8 +430,8 @@
                         <span *ngIf="field.mandatory=='Y'" class="needfill">*</span>
                       </ion-label>
                     </ion-item>
-                    <ion-item  lines="none">               
-                      <ion-text [ngStyle]="{'color': cbgcolor}">
+                    <ion-item  lines="none" [ngStyle]="{'margin-top':index==0?'15px':'0px'}">               
+                      <ion-text>
                         {{field.value}}
                       </ion-text>
                     </ion-item>

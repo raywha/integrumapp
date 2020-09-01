@@ -11,6 +11,7 @@ import { ActionSheetController, Platform } from '@ionic/angular';
 export class DynamicsecComponent implements OnInit {
   @Input() sec: any;
   @Input() doctype: string;
+  @Input() unid: string;
   public index: number = 0;
   public count: number = 0;
   public curque: number = 0;
@@ -38,6 +39,12 @@ export class DynamicsecComponent implements OnInit {
   ngOnInit() {
     console.log(this.sec)
     console.log('doctype:',this.doctype);
+    
+    this.unid = this.unid?this.unid:"";
+    if(!this.unid){
+      this.listModal = false;
+    }
+    console.log('unid',this.unid);
     this.fields = this.sec.fields;
     this.dynamicData = this.sec.dynamicData;
     this.index = this.sec.index || 0;
