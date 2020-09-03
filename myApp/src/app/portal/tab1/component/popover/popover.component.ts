@@ -60,6 +60,11 @@ export class PopoverComponent implements OnInit {
       // this.nav.navigateBack('add-action');
 
       this.nav.navigateBack('offline');
+    }else if (code == 4) {
+      this.Popover.dismiss()
+      // this.nav.navigateBack('add-action');
+
+      this.nav.navigateBack('lastrelease');
     }else{
       let paramsSet=this.params.get("portalTile")
       console.log(paramsSet)

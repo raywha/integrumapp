@@ -66,14 +66,14 @@
                 <ion-label>Switch to SSO:</ion-label>
                 <ion-toggle [(ngModel)]="sso" [ngModelOptions]="{standalone:true}" color="danger" checked="false" [disabled]="authform.value.code==''" (ionChange)="ssoToggle()"></ion-toggle>
               </ion-item>
-              <ion-item class="email" [hidden]="!sso">
+              <!-- <ion-item class="email" [hidden]="!sso">
                 <ion-label color="basic">SSO Provider:</ion-label>
               </ion-item>
               <ion-item class="email" [hidden]="!sso">
                 <ion-select [(ngModel)]="ssoserver" [ngModelOptions]="{standalone:true}" (ionChange)="ssologin()">
                   <ion-select-option *ngFor="let ssoser of ssoserverlist">{{ssoser}}</ion-select-option>
                 </ion-select>
-              </ion-item>
+              </ion-item> -->
             </ion-col> 
             <ion-col></ion-col>
         </ion-row>

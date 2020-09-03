@@ -1,0 +1,38 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="tabs/tab1" text="" color="dark"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{setting.lastrelease}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="account-box">
+    <ul>
+      <li>
+        <div class="account_title">
+            <img src="../../../assets/icon/account/activation.png" alt="">
+            <label>{{release.versionno}}</label>
+        </div>
+        <p class="account_content">{{versionno}}</p>
+      </li>
+      <li>
+          <div class="account_title">
+            <ion-icon name="today-outline"></ion-icon>
+              <label>{{release.releaseddate}}</label>
+          </div>
+          <p class="account_content">{{releaseddate}}</p>
+      </li>
+      <li>
+          <div class="account_title">
+            <ion-icon name="newspaper-outline"></ion-icon>
+              <label>{{release.whatnew}}</label>
+          </div>
+          <p class="account_content">{{whatnew}}</p>
+      </li>
+
+      
+    </ul>
+  </div>
+</ion-content>
