@@ -57,11 +57,16 @@ export class DynamicsecComponent implements OnInit {
         e.options = e.options.filter( ele => ele.value!='')
       }
       if(e.xtype == "radio" || e.xtype == "select"){
-        if(e.value == "Yes"){
+        let fval: any = e.value;
+    if(e.options){
+      const v = e.options.find(e => e.text == fval);
+      if(v) fval = v.value;
+    }
+        if(fval == "Yes"){
           e.color = "rgb(74,202,109)";
-        }else if(e.value == "No"){
+        }else if(fval == "No"){
           e.color = "rgb(240,60,0)";
-        }else if(e.value == "N/A"||e.value == "NA"){
+        }else if(fval == "N/A"||fval == "NA"){
           e.color = "rgb(216,216,216)";
         }
       }     
@@ -164,11 +169,16 @@ export class DynamicsecComponent implements OnInit {
     console.log('field:',field);
     console.log('val:',val)
     field.value = val;
-    if(val == "Yes"){
+    let fval: any = field.value;
+    if(field.options){
+      const v = field.options.find(e => e.text == fval);
+      if(v) fval = v.value;
+    }
+    if(fval == "Yes"){
       field.color = "rgb(74,202,109)";
-    }else if(val == "No"){
+    }else if(fval == "No"){
       field.color = "rgb(240,60,0)";
-    }else if(val == "N/A"||val == "NA"){
+    }else if(fval == "N/A"||fval == "NA"){
       field.color = "rgb(216,216,216)";
     }
     let index = this.index;
@@ -186,12 +196,18 @@ export class DynamicsecComponent implements OnInit {
         this.dynamicData.quesList[index][i] = e.value;
         const val = this.dynamicData.quesList[curque-1][i];
         e.value = val;
+
         if(e.xtype == "radio" || e.xtype == "select"){
-          if(val == "Yes"){
+          let fval: any = e.value;
+          if(e.options){
+            const v = e.options.find(ele => ele.text == fval);
+            if(v) fval = v.value;
+          }
+          if(fval == "Yes"){
             e.color = "rgb(74,202,109)";
-          }else if(val == "No"){
+          }else if(fval == "No"){
             e.color = "rgb(240,60,0)";
-          }else if(val == "N/A"||val == "NA"){
+          }else if(fval == "N/A"||fval == "NA"){
             e.color = "rgb(216,216,216)";
           } 
         }
@@ -206,12 +222,24 @@ export class DynamicsecComponent implements OnInit {
         let tempscore = 0;
         let naNum = 0;
         let total = sec.dynamicData.quesList.length;
+        let yesval: string = 'Yes';
+        let naval: string = "N/A";
+        let nval: string = "NA";
+
+        if(this.fields[1].options){
+          const v = this.fields[1].options.find(e => e.value == yesval);
+          if(v) yesval = v.text;
+          const nv = this.fields[1].options.find(e => e.value == naval);
+          if(nv) naval = nv.text;
+          const nav = this.fields[1].options.find(e => e.value == nval);
+          if(nav) nval = nav.text;
+        }
         sec.dynamicData.quesList.forEach((data,index) => {
           if(data.length>1){
-            if (data[1] == "Yes") {
+            if (data[1] == yesval) {
               tempscore = tempscore + 1
             }
-            if (data[1] == "N/A"||data[1] == "NA") {
+            if (data[1] == naval || data[1] == nval) {
               naNum = naNum + 1
             }
           } 
