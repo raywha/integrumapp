@@ -131,6 +131,7 @@ export class NewFormPage implements OnInit {
   public orderbyImg: string = 'assets/icon/sort_none.gif';
   public orderbyState: boolean;
   public dynamicDatas:any = {};
+  public status:string = "";
   constructor(
     private storage: Storage,
     public modal: ModalController,
@@ -193,12 +194,16 @@ export class NewFormPage implements OnInit {
         this.formID = res.unid
         console.log("旧文档")
         this.type = res.type
-        if (res.stat && res.stat!='false') {
+        /*if (res.stat && res.stat!='false') {
           this.title = res.title + " (" + res.stat + ")"
         } else {
           this.title = res.title
+        }*/
+        this.title = res.title;
+        if (res.stat && res.stat!='false') {
+          // this.status = "("+res.stat+")";
+          this.status = res.stat ;
         }
-        
         this.list = [
           { "show": false }
         ];
@@ -769,9 +774,10 @@ export class NewFormPage implements OnInit {
             return false;
           }
         }
-        this.comScores(this.dynamicDatas);
-        console.log("-----dynamicdatas----:",this.dynamicDatas);
-        this.paraforsubmit.dynamicDatas = this.dynamicDatas;
+        var saveDyDatas = this.saveDyDatas();
+        console.log(saveDyDatas);
+        this.comScores(saveDyDatas);
+        this.paraforsubmit.dynamicDatas = saveDyDatas;
         this.submit(this.paraforsubmit, actiontype)
         break;
       case "btnSubmit":
@@ -816,8 +822,10 @@ export class NewFormPage implements OnInit {
             return false;
           }
         }
-        this.comScores(this.dynamicDatas);
-        this.paraforsubmit.dynamicDatas = this.dynamicDatas;
+        var saveDyDatas = this.saveDyDatas();
+        console.log(saveDyDatas);
+        this.comScores(saveDyDatas);
+        this.paraforsubmit.dynamicDatas = saveDyDatas;
         this.submit(this.paraforsubmit, actiontype)
 
         break;
@@ -1004,7 +1012,12 @@ export class NewFormPage implements OnInit {
           if (this.subformflag) {
             this.router.navigate(["/new-form"], { queryParams: { unid: this.mainunid, aid: this.ulrs.aid, title: this.atitle, stat: this.ulrs.stat, type: actiontype, refresh: new Date().getTime(), cururl: this.lasturl } });
           } else {
-            this.router.navigateByUrl(this.lasturl)
+            if(!this.formID){
+              var temptitle = this.lasturl.slice(this.lasturl.indexOf("=")+1);
+              this.router.navigate(['/form-list'],{queryParams:{vid:"smformdata.nsf/"+this.ulrs.aid+"?Openview",vtitle:this.title,type:'formlist',formid:this.ulrs.aid,temptitle:temptitle}});
+            }else{
+              this.router.navigateByUrl(this.lasturl);
+            }
           }
 
         })
@@ -2526,25 +2539,8 @@ export class NewFormPage implements OnInit {
   }
   checkQuesMandatory(msg) {
     var checkSecs = [];
-    this.selecttemplat.template.secs.forEach(sec => {
+    checkSecs = this.isShowSec();
 
-      var quesFields = this.selecttemplat.template.quesFields;
-
-      for (let i = 0; i < quesFields.length; i++) {
-        const el = quesFields[i];
-        let answerWhen = el.answerWhen;
-        let qsecId = el.parentSecId;
-        let qfieldId = el.fieldId;
-        if (sec.secId == qsecId) {
-          sec.fields.forEach(f => {
-            if (f.name == qfieldId) {
-              let qval = f.value ? f.value : "";
-              if (qval) checkSecs.push(answerWhen[qval] ? answerWhen[qval] : "");
-            }
-          });
-        }
-      }
-    });
     this.selecttemplat.template.secs.forEach(sec => {
       var dyMsg = "";
       if (sec.dynamicData) {
@@ -2576,6 +2572,48 @@ export class NewFormPage implements OnInit {
       }
     })
     return msg;
+  }
+  isShowSec(){
+    var checkSecs = [];
+    this.selecttemplat.template.secs.forEach(sec => {
+      var quesFields = this.selecttemplat.template.quesFields;
+      for (let i = 0; i < quesFields.length; i++) {
+        const el = quesFields[i];
+        let answerWhen = el.answerWhen;
+        let qsecId = el.parentSecId;
+        let qfieldId = el.fieldId;
+        if (sec.secId == qsecId) {
+          sec.fields.forEach(f => {
+            if (f.name == qfieldId) {
+              let qval = f.value ? f.value : "";
+              if (qval) checkSecs.push(answerWhen[qval] ? answerWhen[qval] : "");
+            }
+          });
+        }
+      }
+    });
+    return checkSecs;
+  }
+  saveDyDatas() {
+    var isShowSecs = this.isShowSec();
+    var saveDyDatas = {};
+    for (var key in this.dynamicDatas) {
+      isShowSecs.forEach(showSec => {
+        if (showSec.indexOf(key) != -1) {
+          saveDyDatas[key] = this.dynamicDatas[key];
+        }
+      });
+    }
+    var isEmpty = function () {
+      for (var key in saveDyDatas) {
+        return false;
+      }
+      return true;
+    }
+    if (isEmpty()) {
+      saveDyDatas = this.dynamicDatas;
+    }
+    return saveDyDatas;
   }
 
 }

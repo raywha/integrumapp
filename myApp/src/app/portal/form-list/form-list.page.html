@@ -40,7 +40,7 @@
         </div>
         <div class="action">
           <ion-label>{{item.WFStatus}}</ion-label>
-          <ion-label>{{item.formMR}}&nbsp;</ion-label>
+          <ion-label>{{item.formMR?item.formMR:item.Initiator}}&nbsp;</ion-label>
           <!-- <ion-label>{{item.calendarDate | date:'dd/MM/yyyy'}}</ion-label> -->
           <ion-label>{{item.calendarDate}}</ion-label>
         </div>

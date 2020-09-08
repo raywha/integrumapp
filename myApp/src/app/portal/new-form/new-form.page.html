@@ -3,7 +3,12 @@
     <ion-buttons slot="start">
       <ion-back-button defaultHref="tabs/tab1"  (click)="goBack()" text="" color="dark"></ion-back-button>
     </ion-buttons>
-    <ion-title>{{title}}</ion-title>
+    <ion-title style="font-size:16px">
+      <ion-text *ngIf="status" style="position:relative;left:26px;top:-8px;">{{title}}</ion-text>
+      <ion-text *ngIf="!status">{{title}}</ion-text>
+      <ion-text style="position: relative;right: 66px;top:10px;">{{status}}</ion-text>
+      
+    </ion-title>
     <ion-buttons slot="end">
       <ion-button (click)="presentPopover($event)">
         <ion-icon style="color:#000;" name="menu"></ion-icon>
