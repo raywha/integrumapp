@@ -122,6 +122,7 @@ export class NewFormPage implements OnInit {
   public cameraTips:string = 'Tap image to see more options';
   public inheritMap:any;
   public atitle;
+  public vid;
   public mr2Type;
   public mr2Val;
   public mr2Label:string = 'Select Final Reviewer';
@@ -187,6 +188,7 @@ export class NewFormPage implements OnInit {
       this.portaltitle = res.temptitle
       this.subformflag = res.subform
       this.atitle = res.aTitle;
+      this.vid = res.vid;
       this.mainunid = res.mainunid
       if (res.unid) {
         this.lasturl = res.cururl
@@ -1012,9 +1014,8 @@ export class NewFormPage implements OnInit {
           if (this.subformflag) {
             this.router.navigate(["/new-form"], { queryParams: { unid: this.mainunid, aid: this.ulrs.aid, title: this.atitle, stat: this.ulrs.stat, type: actiontype, refresh: new Date().getTime(), cururl: this.lasturl } });
           } else {
-            if(!this.formID){
-              var temptitle = this.lasturl.slice(this.lasturl.indexOf("=")+1);
-              this.router.navigate(['/form-list'],{queryParams:{vid:"smformdata.nsf/"+this.ulrs.aid+"?Openview",vtitle:this.title,type:'formlist',formid:this.ulrs.aid,temptitle:temptitle}});
+            if(!this.formID){      
+              this.router.navigate(['/form-list'],{queryParams:{vid:this.vid,vtitle:this.title,type:'formlist',formid:this.ulrs.aid,temptitle:this.portaltitle}});
             }else{
               this.router.navigateByUrl(this.lasturl);
             }
