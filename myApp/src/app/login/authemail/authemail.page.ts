@@ -156,7 +156,7 @@ export class AuthemailPage implements OnInit {
               localStorage.setItem('bgcolor', result.color);
 
               var curtime = new Date();
-              console.log('-->starttime:', curtime.toLocaleTimeString());
+              console.log('---->starttime:', curtime.toLocaleTimeString());
 
               this.auth.updateUserInfo(this.loginDetails).pipe(first()).subscribe(
                 data => {
