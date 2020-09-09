@@ -272,21 +272,22 @@
               </ion-item>
             </div>
             <!--questionnaire quesType='multiple'-->
-            <div *ngIf="field.xtype==='questionnaire' && field.quesType==='true'" [hidden]="field.hide">
-              <ion-item style="margin-left:0px;padding-left:0px;padding-right:0px;">
+            <div *ngIf="field.xtype==='questionnaire' && field.quesType==='multiselect' " [hidden]="field.hide">
+              <ion-item>
                 <ion-label style="margin-bottom:10px; " color="basic" stacked>
                   {{field.label}}
                   <span *ngIf="field.mandatory=='Y'" class="needfill">*</span>
                 </ion-label>
               </ion-item>
               <ion-item>
-                <ion-select [(ngModel)]='field.value' multiple="true" [ngStyle]="{'color':cbgcolor}">
-                  <ion-item-option *ngFor="let option of field.options">{{option.text}}</ion-item-option>
+                <ion-select [(ngModel)]='field.value' interface="popover" multiple="true" [placeholder]="field.placeholder?field.placeholder:''" [ngStyle]="{'color':cbgcolor}"
+                  (ionChange)="change(field)">
+                  <ion-select-option *ngFor="let option of field.options">{{option.text}}</ion-select-option>
                 </ion-select>
               </ion-item>
             </div>
             <!--questionnaire quesType='single'-->
-            <div *ngIf="field.xtype==='questionnaire' " [hidden]="field.hide">
+            <div *ngIf="field.xtype==='questionnaire' && field.quesType==='singleselect' " [hidden]="field.hide">
               <ion-item>
                 <ion-label style="margin-bottom:10px; " color="basic" stacked>
                   {{field.label}}

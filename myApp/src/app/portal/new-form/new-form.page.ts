@@ -1077,8 +1077,15 @@ export class NewFormPage implements OnInit {
         let index: number = this.sections.findIndex(e => e.secId == element);
         if (index != -1) this.sections.splice(index, 1);
       });
-      if(field.value!=''){
-        let disSecId: any = v.answerWhen[field.value];
+      if (field.value != '' && field.value != ['']) {
+        let disSecId:any = [];
+        if(Array.isArray(field.value)){
+          field.value.forEach(e => {
+            disSecId = disSecId.concat(v.answerWhen[e]);
+          });
+        }else{
+          disSecId = v.answerWhen[field.value];
+        }
         let newArr:any = [];
         disSecId.forEach(e=>{
           let index = this.sectionsold.findIndex(el=>el.secId==e);
