@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Plugins, CameraResultType, CameraSource } from '@capacitor/core';
 import { ActionSheetController, Platform } from '@ionic/angular';
 
@@ -12,6 +12,8 @@ export class DynamicsecComponent implements OnInit {
   @Input() sec: any;
   @Input() doctype: string;
   @Input() unid: string;
+  @Output() outer = new EventEmitter();
+
   public index: number = 0;
   public count: number = 0;
   public curque: number = 0;
@@ -30,6 +32,7 @@ export class DynamicsecComponent implements OnInit {
     public actionSheetCtrl: ActionSheetController
 
   ) {
+    console.log('constructor')
     if(localStorage.getItem("bgcolor")){
       console.log('localStorage-->bgcolor:',localStorage.getItem('bgcolor'))
       this.cbgcolor = localStorage.getItem('bgcolor');
@@ -37,6 +40,7 @@ export class DynamicsecComponent implements OnInit {
    }
 
   ngOnInit() {
+    console.log('ngOnInit')
     console.log(this.sec)
     console.log('doctype:',this.doctype);
     
@@ -48,7 +52,6 @@ export class DynamicsecComponent implements OnInit {
     this.fields = this.sec.fields;
     this.dynamicData = this.sec.dynamicData;
     this.index = this.sec.index || 0;
-    this.curque = null;
     this.count = this.dynamicData.quesList.length;
     const curques = this.dynamicData.quesList[this.index];
     this.fields.forEach((e,i) => {
@@ -185,11 +188,11 @@ export class DynamicsecComponent implements OnInit {
     this.fields.forEach((e,i) => {
       if(i==1) this.dynamicData.quesList[index][i] = e.value;
     });
+    this.setDynamicData();
     this.comPercent(); 
   }
   go(curque: number){
     console.log('curque:',curque);
-    //const curque = this.curque;
     if(curque >= 1 && curque <= this.count){
       let index = this.index;
       this.fields.forEach((e,i) => {
@@ -213,8 +216,31 @@ export class DynamicsecComponent implements OnInit {
         }
       });
       this.index = curque-1;
-      this.curque = null;
+      this.setDynamicData();
     }
+  }
+  goto(curque: number){
+    const ques = this.dynamicData.quesList[curque-1];
+    console.log('ques:',ques)
+    ques.forEach((e,i) => {
+      this.fields[i].value = e;
+      if(this.fields[i].xtype == "radio" || this.fields[i].xtype == "select"){
+        let fval: any = e;
+        if(this.fields[i].options){
+          const v = this.fields[i].options.find(ele => ele.text == fval);
+          if(v) fval = v.value;
+        }
+        if(fval == "Yes"){
+          this.fields[i].color = "rgb(74,202,109)";
+        }else if(fval == "No"){
+          this.fields[i].color = "rgb(240,60,0)";
+        }else if(fval == "N/A"||fval == "NA"){
+          this.fields[i].color = "rgb(216,216,216)";
+        } 
+      }
+    });
+    this.index = curque-1;
+    this.setDynamicData();
   }
   comPercent(){  
       const sec = this.sec;
@@ -252,17 +278,19 @@ export class DynamicsecComponent implements OnInit {
       }
   }
   setDynamicData(){
-    let index = this.index;
-    this.fields.forEach((e,i)=>{
-      this.dynamicData.quesList[index][i] = e.value;
-    })
+    // let index = this.index;
+    // this.fields.forEach((e,i)=>{
+    //   this.dynamicData.quesList[index][i] = e.value;
+    // })
+    this.outer.emit({index:this.index,fields:this.fields});
   }
   changeModal(i){
-    this.go(i)
+    if(i) this.goto(i)
     if(this.listModal){
       this.listModal = false;
     }else{
       this.listModal = true;
     } 
   }
+  
 }

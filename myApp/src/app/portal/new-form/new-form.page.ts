@@ -33,7 +33,6 @@ import { MicrodbComponent } from '../microdb/microdb.component';
 })
 export class NewFormPage implements OnInit {
   @ViewChildren("testdom") testdom: QueryList<ElementRef>;
-  @ViewChild('dynamicsec') dynamicsec:any;
 
   public formType;
   public templates: any;
@@ -366,7 +365,7 @@ export class NewFormPage implements OnInit {
               }else if(data.xtype == 'questionnaire'){
                 let v = data.options[0];
                 if(v && v.value){
-                  if(v.value!='') data.options.unshift({value:'',text:''});
+                  if(v.value!='' && data.quesType==='singleselect') data.options.unshift({value:'',text:''});
                 }
               }else if(data.xtype == 'date'){
                 if(this.type != 'edit'){
@@ -550,7 +549,7 @@ export class NewFormPage implements OnInit {
         }else if(data.xtype == 'questionnaire'){
           let v = data.options[0];
           if(v && v.value){
-            if(v.value!='') data.options.unshift({value:'',text:''});
+            if(v.value!='' && data.quesType==='singleselect') data.options.unshift({value:'',text:''});
           }
         } else if(data.xtype == 'headline'){
           // if(this.findSameLabelname(this.selecttemplat.template.secs[i].fields,data.label,data.name)){
@@ -680,18 +679,6 @@ export class NewFormPage implements OnInit {
     this.showGuidance = !this.showGuidance;
     this.num = index;
     this.list[index].show = !this.list[index].show;
-    console.log('dynamicsec:',this.dynamicsec);
-    console.log('this.section',section);
-    if(this.dynamicsec){
-      const curindex = this.dynamicsec.index;
-      section.index = curindex;
-      if(section.dynamicData.quesList[curindex]){
-        const fields = section.fields;
-        fields.forEach((e,i) => {
-          section.dynamicData.quesList[curindex][i] = e.value;
-        });
-      }
-    }
   }
 
   getSwitchBtn(item) {
@@ -993,7 +980,7 @@ export class NewFormPage implements OnInit {
         }
       }
     }//End
-    if(action=="submit"){
+    if(action=="submit" || (action == "save" && this.skipMandatory == "0")){
       msg = this.checkQuesMandatory(msg);
       if(msg) fieldError = true;
     }
@@ -1684,7 +1671,7 @@ export class NewFormPage implements OnInit {
     this.sections.forEach(element => {
       // console.log(element)
       if (element.title == sectiontitle) {
-        console.log(element.fields)
+        //console.log(element.fields)
         element.fields.forEach(data => {
           if (field.name == data.name) {
             data.value = value
@@ -1703,7 +1690,7 @@ export class NewFormPage implements OnInit {
             }
           }
         });
-        console.log(this.templatid)
+        //console.log(this.templatid)
         if (num != 0 && this.templatid == "GMP_AU") {
           element.score = tempscore + "/" + num + "   (" + (tempscore / num * 100) + "%)"
         }
@@ -2546,7 +2533,7 @@ export class NewFormPage implements OnInit {
     return false;
   }
   checkQuesMandatory(msg) {
-    var checkSecs = [];
+    /*var checkSecs = [];
     checkSecs = this.isShowSec();
 
     this.selecttemplat.template.secs.forEach(sec => {
@@ -2579,49 +2566,47 @@ export class NewFormPage implements OnInit {
         msg += dyMsg;      
       }
     })
-    return msg;
-  }
-  isShowSec(){
-    var checkSecs = [];
-    this.selecttemplat.template.secs.forEach(sec => {
-      var quesFields = this.selecttemplat.template.quesFields;
-      for (let i = 0; i < quesFields.length; i++) {
-        const el = quesFields[i];
-        let answerWhen = el.answerWhen;
-        let qsecId = el.parentSecId;
-        let qfieldId = el.fieldId;
-        if (sec.secId == qsecId) {
-          sec.fields.forEach(f => {
-            if (f.name == qfieldId) {
-              let qval = f.value ? f.value : "";
-              if (qval) checkSecs.push(answerWhen[qval] ? answerWhen[qval] : "");
-            }
-          });
-        }
-      }
-    });
-    return checkSecs;
-  }
-  saveDyDatas() {
-    var isShowSecs = this.isShowSec();
-    var saveDyDatas = {};
-    for (var key in this.dynamicDatas) {
-      isShowSecs.forEach(showSec => {
-        if (showSec.indexOf(key) != -1) {
-          saveDyDatas[key] = this.dynamicDatas[key];
+    */
+   const sections = this.sections.filter(section => section.sectionType=='1' && section.dynamicData);
+   if(sections.length > 0 ){
+     
+     sections.forEach(sec => {
+      let dyMsg = '';
+      sec.dynamicData.quesList.forEach((q, index) => {
+        if (!q[1]) {
+          dyMsg += "Q" + (index + 1) + ",";
         }
       });
-    }
-    var isEmpty = function () {
-      for (var key in saveDyDatas) {
-        return false;
+      if (dyMsg != "") {
+        dyMsg = sec.title + ":" + dyMsg;
+        dyMsg = dyMsg.slice(0, dyMsg.length - 1);
+        dyMsg = dyMsg + "<br>";
+        msg += dyMsg;      
       }
-      return true;
-    }
-    if (isEmpty()) {
-      saveDyDatas = this.dynamicDatas;
+     });
+   }
+    return msg;
+  }
+  saveDyDatas() {
+    var saveDyDatas = {};
+    console.log('this.sections:',this.sections)
+    console.log('this.dynamicDatas:',this.dynamicDatas)
+    for (var key in this.dynamicDatas) {
+      const v = this.sections.find(e => e.secId == key);
+      if(v){
+        saveDyDatas[key] = this.dynamicDatas[key];
+      }
     }
     return saveDyDatas;
+  }
+  saveDynamicData(info,section){
+    const {index, fields} = info;
+    section.index = index;
+    console.log('info:',info)
+    fields.forEach((e,i) => {
+      section.dynamicData.quesList[index][i] = e.value;
+    });
+    console.log('saveDynamicData ---section:',section)
   }
 
 }

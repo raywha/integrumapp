@@ -60,7 +60,7 @@
             <span *ngIf="field.mandatory=='Y'" class="needfill">*</span>
           </ion-label>
         </div>
-        <div> <ion-textarea (blur)="setDynamicData()" rows="3" [(ngModel)]='field.value' style="background-color:#fff;opacity:0.7;" [ngStyle]="{'color':cbgcolor}" [placeholder]="field.placeholder?field.placeholder:''"></ion-textarea>
+        <div> <ion-textarea (ionBlur)="setDynamicData()" rows="3" [(ngModel)]='field.value' style="background-color:#fff;opacity:0.7;" [ngStyle]="{'color':cbgcolor}" [placeholder]="field.placeholder?field.placeholder:''"></ion-textarea>
         </div>
       </div>
     </ion-item>
