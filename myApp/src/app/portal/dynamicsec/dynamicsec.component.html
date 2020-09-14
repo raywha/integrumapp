@@ -1,20 +1,4 @@
-<div *ngIf="listModal" id="edit" class="listModal">
-  <ion-list>
-    <ion-item (click)=changeModal(i+1) *ngFor="let ques of dynamicData.quesList;let i =index">
-      <div class="ques">
-        <ion-text class="item-text-wrap">{{ques[0]}}</ion-text>
-      </div>
-      <div class="null"></div>
-      <div class="ans">
-        <ion-label *ngIf="ques[1]=='Yes'" [ngStyle]="{background: yColor}">{{ques[1]}}</ion-label>
-        <ion-label *ngIf="ques[1]=='No'" [ngStyle]="{background: nColor}">{{ques[1]}}</ion-label>
-        <ion-label *ngIf="ques[1]=='N/A'||ques[1]=='NA'" [ngStyle]="{background: naColor}">{{ques[1]}}</ion-label>
-        <ion-label *ngIf="ques[1]!='Yes'&&ques[1]!='No'&&ques[1]!='N/A'&&ques[1]!='NA'">{{ques[1]}}</ion-label>
-      </div>
-    </ion-item>
-    <ion-item></ion-item>
-  </ion-list>
-</div>
+
 <!--<div *ngIf="listModal && doctype=='open'" id="open" class="listModal">
   <ion-list>
     <ion-item *ngFor="let ques of dynamicData.quesList">
@@ -32,7 +16,25 @@
   </ion-list>
 </div>-->
 
-<ion-content style="height:550px;" *ngIf="!listModal">
+<ion-content style="height:550px;">
+  <div *ngIf="listModal" id="edit" class="listModal">
+    <ion-list>
+      <ion-item (click)=changeModal(i+1) *ngFor="let ques of dynamicData.quesList;let i =index">
+        <div class="ques">
+          <ion-text class="item-text-wrap">{{ques[0]}}</ion-text>
+        </div>
+        <div class="null"></div>
+        <div class="ans">
+          <ion-label *ngIf="ques[1]=='Yes'" [ngStyle]="{background: yColor}">{{ques[1]}}</ion-label>
+          <ion-label *ngIf="ques[1]=='No'" [ngStyle]="{background: nColor}">{{ques[1]}}</ion-label>
+          <ion-label *ngIf="ques[1]=='N/A'||ques[1]=='NA'" [ngStyle]="{background: naColor}">{{ques[1]}}</ion-label>
+          <ion-label *ngIf="ques[1]!='Yes'&&ques[1]!='No'&&ques[1]!='N/A'&&ques[1]!='NA'">{{ques[1]}}</ion-label>
+        </div>
+      </ion-item>
+      <ion-item></ion-item>
+    </ion-list>
+  </div>
+  <div *ngIf="!listModal">
   <div class="form-container" id="edit" *ngIf="doctype=='edit'">
   <div *ngFor="let field of fields;let index = index;">
   <!--multiselectfield-->
@@ -544,6 +546,6 @@
     <ion-input type="number" class="numinp" [(ngModel)]="curque" min="1" maxlength="3" autocorrect="true" [max]="count"></ion-input> 
     <ion-button size="middle" (click)="go(curque)"><ion-icon name="ios-arrow-round-forward"></ion-icon></ion-button>-->
   </ion-item>
- 
+</div>
 </ion-content>
 

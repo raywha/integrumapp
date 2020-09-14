@@ -221,7 +221,8 @@ export class DynamicsecComponent implements OnInit {
   }
   goto(curque: number){
     const ques = this.dynamicData.quesList[curque-1];
-    console.log('ques:',ques)
+    console.log('ques:',ques);
+    this.fields.forEach(field => field.value = null );
     ques.forEach((e,i) => {
       this.fields[i].value = e;
       if(this.fields[i].xtype == "radio" || this.fields[i].xtype == "select"){
