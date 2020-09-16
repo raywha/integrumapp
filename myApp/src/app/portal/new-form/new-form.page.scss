@@ -109,6 +109,13 @@ ion-item {
   .signature-popover .popover-content{
    width: 500px;
    }
+   ion-radio-group{
+      ion-item {
+         ion-label{
+            word-break: keep-all;
+         }
+      }
+   }
 
 
 
