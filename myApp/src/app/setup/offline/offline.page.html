@@ -3,17 +3,25 @@
       <ion-buttons slot="start">
           <ion-back-button defaultHref="tabs/tab1" text="" color="dark"></ion-back-button>
         </ion-buttons>
-    <ion-title>{{'public.offline' | translate}}</ion-title>
+    <ion-title *ngIf="offlineFlag">{{'public.online' | translate}}</ion-title>
+    <ion-title *ngIf="!offlineFlag">{{'public.offline' | translate}}</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
   <div class="account-box">
     <ion-item lines="none">
-      <ion-label>{{'offline.name' | translate}}</ion-label>
-      <ion-toggle [(ngModel)]="offlineFlag" mode="ios"></ion-toggle>
+      <ion-label *ngIf="offlineFlag">{{'online.name' | translate}}</ion-label>
+      <ion-label *ngIf="!offlineFlag">{{'offline.name' | translate}}</ion-label>
+      <ion-toggle [(ngModel)]="offlineFlag" mode="ios" (ionChange)="changeOffline()"></ion-toggle>
     </ion-item>
-    <div class="description">
+    <ion-item lines="none" *ngIf="!offlineFlag">
+      <ion-label>{{'online.btnSync' | translate}}</ion-label>
+      <ion-button size="middle" (click)="async()">      
+        <ion-icon name="sync"></ion-icon>    
+      </ion-button>
+    </ion-item>
+    <div class="description" *ngIf="offlineFlag">
       <p class="title">{{'offline.title' | translate}}:</p>
       <ul>
         <li>{{'offline.content' | translate}}</li>

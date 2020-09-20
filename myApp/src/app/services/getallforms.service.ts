@@ -63,9 +63,53 @@ export class GetallformsService {
       };
       console.log('para:',para)
       
-      return from(this.httpnative.post(logindetail.server+'/'+logindetail.folder+'/integrumws.nsf/xp_App.xsp/submitFormV2',data,options));
+      return from(this.httpnative.post(logindetail.server+'/'+logindetail.folder+'/integrumws.nsf/xp_App.xsp/submitFormV2',data,options).catch(e=>{
+          console.log("----eeee---:",e);
+          if(e.status==-6) return {"status":"offline"};
+        }
+      ));
     }
-    return from(this.httpnative.post(logindetail.server+'/'+logindetail.folder+'/integrumws.nsf/xp_App.xsp/submitFormV2',data,''));
+    return from(this.httpnative.post(logindetail.server+'/'+logindetail.folder+'/integrumws.nsf/xp_App.xsp/submitFormV2',data,'').catch(e=>{
+      console.log("----eeee---:",e);
+      if(e.status==-6) return {"status":"offline"};
+    }
+  ));
+  }
+  syncSave(logindetail:any,para:any ):Observable<any>{
+    let  data=para
+    this.httpnative.setDataSerializer("json");
+    if(logindetail.username && logindetail.password){
+      let auth='Basic '+btoa(logindetail.username+':'+logindetail.password);
+      let unid=para.unid
+      const options = {
+          "Content-Type":"application/json; charset=utf-8",
+          "Authorization":auth
+      };
+      console.log('para:',para)
+      
+      return from(this.httpnative.post(logindetail.server+'/'+logindetail.folder+'/integrumws.nsf/xp_App.xsp/syncSave',data,options));
+    }
+    return from(this.httpnative.post(logindetail.server+'/'+logindetail.folder+'/integrumws.nsf/xp_App.xsp/syncSave',data,''));
+  }
+  isOnline(logindetail:any): Observable<any> {
+
+    let  data={
+      "Code": ""
+    }
+    if(logindetail.username && logindetail.password){
+      let auth='Basic '+btoa(logindetail.username+':'+logindetail.password);
+      const options = {
+          "Content-Type":"application/json; charset=utf-8",
+          "Authorization":auth 
+      };
+      return from(this.httpnative.post(logindetail.server+'/'+logindetail.folder+'/integrumws.nsf/doLoginSuccessAuth?OpenPage',data,options).catch(e=>{
+        if(e.status==-6) return {data:"{\"returnResponse\":\"offline\"}"};
+      }));
+    }
+    return from(this.httpnative.post(logindetail.server+'/'+logindetail.folder+'/integrumws.nsf/doLoginSuccessAuth?OpenPage',data,'').catch(e=>{
+      if(e.status==-6) return {data:"{\"returnResponse\":\"offline\"}"};
+    }));
+
   }
   getLoopupOptions(logindetail:any,para:any):Observable<any>{
     let key=para.key;

@@ -618,11 +618,14 @@
           <ion-label color="basic" stacked>{{field.label}}</ion-label>
         </ion-item>
         <ion-item>
+          <ion-text *ngIf="field.name=='Initiator'" [ngStyle]="{'color': cbgcolor}">
+            {{field.value?field.value:initiator}}
+          </ion-text>
           <ion-text *ngIf="field.name=='formRoleMR'" (click)="getPeopleByRole(field.value)" [ngStyle]="{'color': cbgcolor}">
             {{field.value}}
           </ion-text>
           <ion-icon *ngIf="field.name=='formRoleMR'" (click)="getPeopleByRole(field.value)" slot="end" name="help-circle-outline"></ion-icon>
-          <ion-text *ngIf="field.name!='formRoleMR'" [ngStyle]="{'color': cbgcolor}">
+          <ion-text *ngIf="field.name!='formRoleMR' && field.name!='Initiator'" [ngStyle]="{'color': cbgcolor}">
             {{field.value}}
           </ion-text>
         </ion-item>

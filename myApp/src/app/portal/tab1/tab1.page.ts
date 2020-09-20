@@ -14,6 +14,7 @@ import { GetousService } from "../../services/getous.service";
 import {AppConfig } from '../../config';
 import { Router } from '@angular/router';
 import { GetallformsService } from "../../services/getallforms.service";
+import { AuthenticationService } from '../../services/authentication.service';
 
 @Component({
   selector: 'app-tab1',
@@ -38,6 +39,8 @@ export class Tab1Page {
   public sdomain:string;
   public folder:string;
   public cbgcolor = "#B81321";
+  public offlineFlag: boolean = true;
+
   constructor(
     public popoverController: PopoverController,
     public Nav: NavController,
@@ -50,6 +53,7 @@ export class Tab1Page {
     public translate: TranslateService,
     private getallforms:GetallformsService,
     private getou:GetousService,
+    private auth: AuthenticationService,
     private router:Router
   ) {
     if(localStorage.getItem("bgcolor")){
@@ -58,6 +62,7 @@ export class Tab1Page {
     }else{
       console.log('not bgcolor:')
     }
+    this.offlineFlag = localStorage.getItem('offlineFlag')?(localStorage.getItem('offlineFlag')=="false"?false:true):false;
     console.log('---router url:',this.router.url)
     this.sdomain = AppConfig.domain;
     this.folder = AppConfig.folder;
@@ -83,7 +88,11 @@ export class Tab1Page {
                  
                 this.processHide();
             })
-
+            this.auth.getOfflineMultiData().pipe(first()).subscribe(
+              data => {
+                console.log('getOfflineMultiData----data...:', JSON.parse(data.data))
+                this.storage.set('offlinemuitldata', data.data);
+              })
             
             }
             this.geapp.getPortalInfo(data).pipe(first())

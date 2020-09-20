@@ -35,6 +35,8 @@ export class FormListPage implements OnInit {
   public portaltitle:string ;
   public cbgcolor = "#b81321";
   public isMyView: boolean = false;
+  public offlineFlag: boolean;
+
   constructor(
     private storage: Storage,
     public geapp: GetAppPortalService,
@@ -53,7 +55,12 @@ export class FormListPage implements OnInit {
     })
 
 
-    this.getData();
+    this.offlineFlag = localStorage.getItem('offlineFlag') ? (localStorage.getItem('offlineFlag') == "false" ? false : true) : false;
+    if(this.offlineFlag){
+      this.getLocalViewData();
+    }else{
+      this.getData();
+    }
     this.cururl=this.router.url;
 
 
@@ -264,4 +271,28 @@ export class FormListPage implements OnInit {
       })
     }
   };
+  getLocalViewData(){
+    this.activeRoute.queryParams.subscribe(res => {
+      console.log('getLocalViewData:',res);
+      this.commonCtrl.show();
+      setTimeout(() => {
+        if (res) {
+          this.stype = res.type
+          this.formid = res.formid
+          this.vtitle = res.vtitle
+          const templateID: string = res.formid;
+          const file = localStorage.getItem(templateID);
+          console.log('file:',file)
+          if(file){
+            this.databak = JSON.parse(file);
+            this.data = JSON.parse(file);
+            console.log('this.data:',this.data)
+          }
+        
+          this.commonCtrl.hide();
+        }
+      });
+      
+    })
+  }
 }

@@ -29,6 +29,9 @@ import { HTTP } from '@ionic-native/http/ngx';
 import { commonCtrl } from "./common/common";
 import { CustomTranslateLoader } from "../app/services/trans-loader";
 
+import { FormDrafts } from './common/form-draft';
+
+
 //导出加载函数
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -56,6 +59,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     QRScanner,
     CustomTranslateLoader,
     commonCtrl,
+    FormDrafts,
     HTTP,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
   ],

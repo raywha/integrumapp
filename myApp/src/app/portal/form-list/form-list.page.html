@@ -35,7 +35,7 @@
             <a [routerLink]="['/new-form']" [ngStyle]="{'color':cbgcolor}" [queryParams]="{unid:item.unid,aid:formid,title:item.DocRefNumber,stat:item.WFStatus,type:'open',cururl:cururl}"> {{item.title}}</a>
           </span>
           <span *ngIf="item.title===''||!item.title">
-              <a [routerLink]="['/new-form']" [ngStyle]="{'color':cbgcolor}" [queryParams]="{unid:item.unid,aid:formid,title:item.DocRefNumber,stat:item.WFStatus,type:'open',cururl:cururl}">  {{item.DocRefNumber}}</a>
+              <a [routerLink]="['/new-form']" [ngStyle]="{'color':cbgcolor}" [queryParams]="{unid:item.unid,aid:formid,title:item.DocRefNumber,stat:item.WFStatus,type:'open',cururl:cururl,docname:item.name}">  {{item.DocRefNumber}}</a>
           </span>
         </div>
         <div class="action">

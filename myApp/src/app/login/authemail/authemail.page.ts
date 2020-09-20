@@ -212,6 +212,11 @@ export class AuthemailPage implements OnInit {
                     data = JSON.parse(data.data);
                     this.storage.set('allforms', JSON.stringify(data));
                   })
+                  this.auth.getOfflineMultiData().pipe(first()).subscribe(
+                    data => {
+                      console.log('getOfflineMultiData----data...:', JSON.parse(data.data))
+                      this.storage.set('offlinemuitldata', data.data);
+                    })
                   this.getou.getous(this.user, this.pass, this.server, this.folder).pipe(first()).subscribe(
                     data => {
                       const otime = new Date();

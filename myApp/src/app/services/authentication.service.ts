@@ -74,4 +74,10 @@ export class AuthenticationService {
     console.log("for bt oauth sso ??????", url + addiUrl);
     return from(this.httpnative.get(url + addiUrl,'',''));
   }
+  getOfflineMultiData(): Observable<any> {
+    const lan = this.translate.getDefaultLang() || localStorage.getItem("lan");
+    const curl:string = `${AppConfig.domain}/${AppConfig.folder}/appmgt.nsf/xp_ws.xsp/multiLan?lan=${encodeURIComponent(lan)}`;
+
+    return from(this.httpnative.get(curl,'',''));
+  }
 }
