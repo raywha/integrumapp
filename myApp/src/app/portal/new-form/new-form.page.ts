@@ -1060,7 +1060,8 @@ export class NewFormPage implements OnInit {
           actiontype = "edit"
           this.router.navigate(["/new-form"], { queryParams: { unid: this.mainunid, aid: this.ulrs.aid, title: this.atitle, stat: this.ulrs.stat, type: actiontype, refresh: new Date().getTime(), cururl: this.lasturl } });
         } else {
-          this.router.navigateByUrl(this.lasturl)
+          //this.router.navigateByUrl(this.lasturl)
+          this.router.navigate(['/form-list'],{queryParams:{vid:this.vid,vtitle:this.title,type:'formlist',formid:this.ulrs.aid,temptitle:this.portaltitle}});
         }
 
         break;
@@ -1080,7 +1081,9 @@ export class NewFormPage implements OnInit {
                     filesArray = filesArray.filter( e => e.name != this.draftDocName);
                     localStorage.setItem(this.templatid,JSON.stringify(filesArray))
                   }
-                  this.router.navigateByUrl(this.lasturl)
+                  //this.router.navigateByUrl(this.lasturl)
+                  this.router.navigate(['/form-list'],{queryParams:{vid:this.vid,vtitle:this.title,type:'formlist',formid:this.ulrs.aid,temptitle:this.portaltitle}});
+              
                 }
               },{
                 text: 'No',
