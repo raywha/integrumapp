@@ -7,6 +7,8 @@ import { commonCtrl } from "../../common/common";
 import { NavController } from '@ionic/angular'; 
 import { Router } from '@angular/router';
 import * as moment from 'moment';
+import { AlertController } from '@ionic/angular';
+
 @Component({
   selector: 'app-form-list',
   templateUrl: './form-list.page.html',
@@ -44,7 +46,7 @@ export class FormListPage implements OnInit {
     public commonCtrl: commonCtrl,
     public nav:NavController,
     public router:Router,
-    
+    public alertController: AlertController
   ) {
     if(localStorage.getItem("bgcolor")){
       this.cbgcolor = localStorage.getItem("bgcolor");
@@ -174,44 +176,74 @@ export class FormListPage implements OnInit {
   getData() {
     this.searchkey.start=1
     this.activeRoute.queryParams.subscribe(res => {
-      console.log(res);
+      console.log('getData res:',res);
       this.commonCtrl.processShow('loading....')
       if (res) {
         this.stype = res.type
         this.formid=res.formid
         if (this.stype === "formlist") {
-          if(res.vid && res.vid!='') this.vid = res.vid.split("/")[1].split("?")[0]
-          this.vtitle = res.vtitle
-          if(this.vid.startsWith('my_') || this.vid.startsWith('My_')) this.isMyView = true;
-          this.storage.get("loginDetails").then(data => {
-            //if(data.code=="kn001") this.cbgcolor = "#3880ff";
-            this.para.key = this.vid;
-            this.para.count = this.searchkey.count
-            this.para.curpage = this.searchkey.start
-            this.geapp.getViewData(data, this.para).pipe(first())
-              .subscribe(data => {
-                // console.log(data)
-                data = JSON.parse(data.data);
-                console.log('getdata:',data)
-                let tempdate;
-                data.data.forEach(element => {
-                  // tempdate = new Date(element.calendarDate.replace("ZE8", ""))
-                  // //this.draftime = tempdate.getFullYear() + "/" + (tempdate.getMonth() + 1) + "/" + tempdate.getDate()
-                  // this.draftime = tempdate.getDate() + "/" + (tempdate.getMonth() + 1) + "/" + tempdate.getFullYear()
-                  // element.calendarDate = this.draftime;
-                  if(element.calendarDate!='') element.calendarDate = moment(`${element.calendarDate}`,'YYYY-MM-DD').format('DD/MM/YYYY');
-                });
-                if(this.isMyView){
-                  this.myviewdata = data.data;
-                  this.data = data.data.slice(0,this.searchkey.count);
-                  this.databak = this.data;
-                }else{
-                  this.data = data.data
-                  this.databak =this.data
-                }
-                this.commonCtrl.processHide();
-              })
-          })
+          if(res.vid && res.vid!=''){
+            this.vid = res.vid.split("/")[1].split("?")[0];
+            this.vtitle = res.vtitle
+            if(this.vid.startsWith('my_') || this.vid.startsWith('My_')) this.isMyView = true;
+            this.storage.get("loginDetails").then(data => {
+              //if(data.code=="kn001") this.cbgcolor = "#3880ff";
+              this.para.key = this.vid;
+              this.para.count = this.searchkey.count
+              this.para.curpage = this.searchkey.start
+              this.geapp.getViewData(data, this.para).pipe(first())
+                .subscribe(data => {
+                  // console.log(data)
+                  data = JSON.parse(data.data);
+                  console.log('getdata:',data)
+                  console.log('data.returnResponse:',data.returnResponse,'  ',data.returnResponse == "offline")
+                  if (data.returnResponse == "offline") {
+                    this.storage.get('offlinemuitldata').then( d => {
+                      d = JSON.parse(d);
+                      console.log('d:',d)
+                      this.presentAlert(`${d.online.offlineTip}<br/>${d.online.ischangeOffline}`, "", [{
+                        text: 'Yes',
+                        handler: () => {
+                          this.offlineFlag = true;
+                          localStorage.setItem('offlineFlag', this.offlineFlag + '');
+                          this.goBack();
+                        }
+                      },{
+                        text: 'No',
+                        handler: () => {
+                          
+                        }
+                      }
+                    ]);
+                    })
+                    
+                  }else{
+                    let tempdate;
+                    data.data.forEach(element => {
+                      // tempdate = new Date(element.calendarDate.replace("ZE8", ""))
+                      // //this.draftime = tempdate.getFullYear() + "/" + (tempdate.getMonth() + 1) + "/" + tempdate.getDate()
+                      // this.draftime = tempdate.getDate() + "/" + (tempdate.getMonth() + 1) + "/" + tempdate.getFullYear()
+                      // element.calendarDate = this.draftime;
+                      if(element.calendarDate!='') element.calendarDate = moment(`${element.calendarDate}`,'YYYY-MM-DD').format('DD/MM/YYYY');
+                    });
+                    if(this.isMyView){
+                      this.myviewdata = data.data;
+                      this.data = data.data.slice(0,this.searchkey.count);
+                      this.databak = this.data;
+                    }else{
+                      this.data = data.data
+                      this.databak =this.data
+                    }
+                    
+                  }
+                  this.commonCtrl.processHide();
+                })
+            })
+          }else{
+            console.log('no data.');
+            this.commonCtrl.processHide();
+          }
+          
         }else{
           //getass
           this.vid=res.vid
@@ -294,5 +326,15 @@ export class FormListPage implements OnInit {
       });
       
     })
+  }
+  async presentAlert(msg: string, header: string, btn: any) {
+    const alert = await this.alertController.create({
+      header: header,
+      subHeader: '',
+      message: msg,
+      buttons: btn
+    });
+
+    await alert.present();
   }
 }

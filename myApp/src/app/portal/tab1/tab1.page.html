@@ -4,8 +4,10 @@
       <ion-button (click)="presentPopover($event)">
         <ion-icon slot="start" name="settings" color="dark"></ion-icon>
       </ion-button>
-      <ion-icon slot="start" *ngIf="offlineFlag" name="radio" color="danger"></ion-icon>
-      <ion-icon slot="start" *ngIf="!offlineFlag" name="wifi" color="success"></ion-icon>
+      <!-- <ion-icon slot="start" *ngIf="offlineFlag" name="radio" color="danger"></ion-icon>
+      <ion-icon slot="start" *ngIf="!offlineFlag" name="wifi" color="success"></ion-icon> -->
+      <ion-img slot="start" *ngIf="offlineFlag" class="offline" src="/assets/offline.png"></ion-img>
+      <ion-img slot="start" *ngIf="!offlineFlag" class="offline" src="/assets/online.png"></ion-img>
     </ion-buttons>
     <ion-title class="welcome-card">
         <ion-img [src]="titlelog"></ion-img>

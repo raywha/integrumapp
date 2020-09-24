@@ -14,14 +14,14 @@ export class GetAppPortalService {
   constructor(public translate :TranslateService,private http: HttpClient,private common:CommonService,private httpnative: HTTP) { }
 
   getPortalInfo(logindetail:any, lan?:string): Observable<any> {
-    console.log('getProtalInfo---->',logindetail)
+    //console.log('getProtalInfo---->',logindetail)
     let email = logindetail.email && logindetail.email!=''?logindetail.email:localStorage.getItem('email');
     let browerLang=this.translate.getDefaultLang();
     if(lan){
       browerLang = lan;
     }
     let params:string = `${logindetail.server}/${logindetail.folder}/integrumws.nsf/xp_App.xsp/getAppPortal?&email=${encodeURIComponent(logindetail.email)}&lan=${browerLang}`;
-console.log('getProtalInfo url:',params)
+    //console.log('getProtalInfo url:',params)
     if(logindetail.username && logindetail.password){
       
       let auth='Basic '+btoa(logindetail.username+':'+logindetail.password);
@@ -30,9 +30,13 @@ console.log('getProtalInfo url:',params)
           "Authorization":auth
       };
       
-      return from(this.httpnative.get(params,"",options));
+      return from(this.httpnative.get(params,"",options).catch(e=>{
+        if(e.status==-6) return {data:"{\"returnResponse\":\"offline\"}"};
+      }));
     }
-    return from(this.httpnative.get(params,"",''));
+    return from(this.httpnative.get(params,"",'').catch(e=>{
+      if(e.status==-6) return {data:"{\"returnResponse\":\"offline\"}"};
+    }));
 
     
     
@@ -66,9 +70,13 @@ console.log('getProtalInfo url:',params)
           "Content-Type":"application/json; charset=utf-8",
           "Authorization":auth
       };
-      return from(this.httpnative.get(params,'',options));
+      return from(this.httpnative.get(params,'',options).catch(e=>{
+        if(e.status==-6) return {data:"{\"returnResponse\":\"offline\"}"};
+      }));
     }
-    return from(this.httpnative.get(params,'',''));
+    return from(this.httpnative.get(params,'','').catch(e=>{
+      if(e.status==-6) return {data:"{\"returnResponse\":\"offline\"}"};
+    }));
   }
 
   getActDocsAssoForms(logindetail:any,para:any ):Observable<any>{
@@ -79,8 +87,12 @@ console.log('getProtalInfo url:',params)
           "Content-Type":"application/json; charset=utf-8",
           "Authorization":auth
       };
-      return from(this.httpnative.get(logindetail.server+'/'+logindetail.folder+'/integrumws.nsf/xp_App.xsp/getActDocsAssoForms?unid='+encodeURIComponent(key),'',options));
+      return from(this.httpnative.get(logindetail.server+'/'+logindetail.folder+'/integrumws.nsf/xp_App.xsp/getActDocsAssoForms?unid='+encodeURIComponent(key),'',options).catch(e=>{
+        if(e.status==-6) return {data:"{\"returnResponse\":\"offline\"}"};
+      }));
     }
-    return from(this.httpnative.get(logindetail.server+'/'+logindetail.folder+'/integrumws.nsf/xp_App.xsp/getActDocsAssoForms?unid='+encodeURIComponent(key),'',''));
+    return from(this.httpnative.get(logindetail.server+'/'+logindetail.folder+'/integrumws.nsf/xp_App.xsp/getActDocsAssoForms?unid='+encodeURIComponent(key),'','').catch(e=>{
+      if(e.status==-6) return {data:"{\"returnResponse\":\"offline\"}"};
+    }));
   }
 }

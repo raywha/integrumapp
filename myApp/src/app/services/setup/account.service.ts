@@ -14,14 +14,11 @@ export class AccountService {
 
   constructor(public http: HttpClient,private common:CommonService,private httpnative: HTTP, private platform: Platform) { }
   
-  getAccount(userid: string,pass:string,email:string,domain:string,folder:string): Observable<any> {
-    //let auth='Basic '+btoa(userid+':'+pass);
-    //const options = {
-    //    "Content-Type":"application/json; charset=utf-8",
-    //    "Authorization":auth
-    //};
-    let url:string = `${AppConfig.domain}/${AppConfig.folder}/appmgt.nsf/xp_ws.xsp/getMyAccount?email=${email}`;
-    return from(this.httpnative.get(url,'',''));
+  getAccount(email: string): Observable<any> {
+    const url:string = `${AppConfig.domain}/${AppConfig.folder}/appmgt.nsf/xp_ws.xsp/getMyAccount?email=${email}`;
+    return from(this.httpnative.get(url,'','').catch(e=>{
+      if(e.status==-6) return {data:"{\"returnResponse\":\"offline\"}"};
+    }));
    
   };
   getReleaseInfo(): Observable<any> {
@@ -30,7 +27,9 @@ export class AccountService {
       os = "iOS";
     }
     let url:string = `${AppConfig.domain}/${AppConfig.folder}/appmgt.nsf/xp_ws.xsp/getReleaseInfo?os=${os}`;
-    return from(this.httpnative.get(url,'',''));
+    return from(this.httpnative.get(url,'','').catch(e=>{
+      if(e.status==-6) return {data:"{\"returnResponse\":\"offline\"}"};
+    }));
    
   };
   

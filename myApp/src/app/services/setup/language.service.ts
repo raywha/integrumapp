@@ -18,9 +18,13 @@ export class LanguageService {
           "Content-Type":"application/json; charset=utf-8",
           "Authorization":auth
       };
-      return from(this.httpnative.get(domain+'/'+folder+'/integrumws.nsf/xp_App.xsp/getAppTranslation','',options))
+      return from(this.httpnative.get(domain+'/'+folder+'/integrumws.nsf/xp_App.xsp/getAppTranslation','',options).catch(e=>{
+        if(e.status==-6) return {data:"{\"returnResponse\":\"offline\"}"};
+      }));
     }
-    return from(this.httpnative.get(domain+'/'+folder+'/integrumws.nsf/xp_App.xsp/getAppTranslation','',''))
+    return from(this.httpnative.get(domain+'/'+folder+'/integrumws.nsf/xp_App.xsp/getAppTranslation','','').catch(e=>{
+      if(e.status==-6) return {data:"{\"returnResponse\":\"offline\"}"};
+    }));
   }
 
   private handleError (error: Response | any) {

@@ -25,9 +25,13 @@ export class GetallformsService {
           "Content-Type":"application/json; charset=utf-8",
           "Authorization":auth
       };
-      return from(this.httpnative.get(url,'',options));
+      return from(this.httpnative.get(url,'',options).catch(e=>{
+        if(e.status==-6) return {data:"{\"returnResponse\":\"offline\"}"};
+      }));
     }
-    return from(this.httpnative.get(url,'',''));
+    return from(this.httpnative.get(url,'','').catch(e=>{
+      if(e.status==-6) return {data:"{\"returnResponse\":\"offline\"}"};
+    }));
   }
 
 
@@ -47,12 +51,19 @@ export class GetallformsService {
           "Content-Type":"application/json; charset=utf-8",
           "Authorization":auth
       };
-      return from(this.httpnative.get(param,'',options));
+      return from(this.httpnative.get(param,'',options).catch(e=>{
+        if(e.status==-6) return {data:"{\"returnResponse\":\"offline\"}"};
+      }));
     }
-    return from(this.httpnative.get(param,'',''));
+    return from(this.httpnative.get(param,'','').catch(e=>{
+      if(e.status==-6) return {data:"{\"returnResponse\":\"offline\"}"};
+    }));
   }
   submit(logindetail:any,para:any ):Observable<any>{
-    let  data=para
+    let  data=para;
+    console.log("------before decode---",data);
+    data = {"data":escape(JSON.stringify(data))};
+    console.log("------after decode---",data);
     this.httpnative.setDataSerializer("json");
     if(logindetail.username && logindetail.password){
       let auth='Basic '+btoa(logindetail.username+':'+logindetail.password);
@@ -64,16 +75,12 @@ export class GetallformsService {
       console.log('para:',para)
       
       return from(this.httpnative.post(logindetail.server+'/'+logindetail.folder+'/integrumws.nsf/xp_App.xsp/submitFormV2',data,options).catch(e=>{
-          console.log("----eeee---:",e);
-          if(e.status==-6) return {"status":"offline"};
-        }
-      ));
+        if(e.status==-6) return {data:"{\"returnResponse\":\"offline\"}"};
+      }));
     }
     return from(this.httpnative.post(logindetail.server+'/'+logindetail.folder+'/integrumws.nsf/xp_App.xsp/submitFormV2',data,'').catch(e=>{
-      console.log("----eeee---:",e);
-      if(e.status==-6) return {"status":"offline"};
-    }
-  ));
+      if(e.status==-6) return {data:"{\"returnResponse\":\"offline\"}"};
+    }));
   }
   syncSave(logindetail:any,para:any ):Observable<any>{
     let  data=para
@@ -87,9 +94,13 @@ export class GetallformsService {
       };
       console.log('para:',para)
       
-      return from(this.httpnative.post(logindetail.server+'/'+logindetail.folder+'/integrumws.nsf/xp_App.xsp/syncSave',data,options));
+      return from(this.httpnative.post(logindetail.server+'/'+logindetail.folder+'/integrumws.nsf/xp_App.xsp/syncSave',data,options).catch(e=>{
+        if(e.status==-6) return {data:"{\"returnResponse\":\"offline\"}"};
+      }));
     }
-    return from(this.httpnative.post(logindetail.server+'/'+logindetail.folder+'/integrumws.nsf/xp_App.xsp/syncSave',data,''));
+    return from(this.httpnative.post(logindetail.server+'/'+logindetail.folder+'/integrumws.nsf/xp_App.xsp/syncSave',data,'').catch(e=>{
+      if(e.status==-6) return {data:"{\"returnResponse\":\"offline\"}"};
+    }));
   }
   isOnline(logindetail:any): Observable<any> {
 
@@ -125,9 +136,13 @@ export class GetallformsService {
         "Content-Type":"application/json; charset=utf-8",
         "Authorization":auth
       };
-      return from(this.httpnative.get(param,'',options));
+      return from(this.httpnative.get(param,'',options).catch(e=>{
+        if(e.status==-6) return {data:"{\"returnResponse\":\"offline\"}"};
+      }));
     }
-    return from(this.httpnative.get(param,'',''));
+    return from(this.httpnative.get(param,'','').catch(e=>{
+      if(e.status==-6) return {data:"{\"returnResponse\":\"offline\"}"};
+    }));
   }
   doDeleteDoc(logindetail:any,para:any):Observable<any>{
     const unid:string = para.unid;
@@ -140,9 +155,13 @@ export class GetallformsService {
         "Content-Type":"application/json; charset=utf-8",
         "Authorization":auth
       };
-      return from(this.httpnative.get(param,'',options));
+      return from(this.httpnative.get(param,'',options).catch(e=>{
+        if(e.status==-6) return {data:"{\"returnResponse\":\"offline\"}"};
+      }));
     }
-    return from(this.httpnative.get(param,'',''));
+    return from(this.httpnative.get(param,'','').catch(e=>{
+      if(e.status==-6) return {data:"{\"returnResponse\":\"offline\"}"};
+    }));
 
   }
   inheritValue(logindetail:any,para:any):Observable<any>{
@@ -155,9 +174,13 @@ export class GetallformsService {
           "Content-Type":"application/json; charset=utf-8",
           "Authorization":auth
       };
-      return from(this.httpnative.get(param,'',options));
+      return from(this.httpnative.get(param,'',options).catch(e=>{
+        if(e.status==-6) return {data:"{\"returnResponse\":\"offline\"}"};
+      }));
     }
-    return from(this.httpnative.get(param,'',''));       
+    return from(this.httpnative.get(param,'','').catch(e=>{
+      if(e.status==-6) return {data:"{\"returnResponse\":\"offline\"}"};
+    }));       
   }
   submitToMr2(logindetail:any,para:any ):Observable<any>{
     let { unid,mr2 } = para;
@@ -169,9 +192,13 @@ export class GetallformsService {
           "Content-Type":"application/json; charset=utf-8",
           "Authorization":auth
       };
-      return from(this.httpnative.get(url,'',options));
+      return from(this.httpnative.get(url,'',options).catch(e=>{
+        if(e.status==-6) return {data:"{\"returnResponse\":\"offline\"}"};
+      }));
     }
-    return from(this.httpnative.get(url,'',''));
+    return from(this.httpnative.get(url,'','').catch(e=>{
+      if(e.status==-6) return {data:"{\"returnResponse\":\"offline\"}"};
+    }));
   
   }
   doReAssign(logindetail:any,para:any):Observable<any>{
@@ -185,9 +212,13 @@ export class GetallformsService {
           "Content-Type":"application/json; charset=utf-8",
           "Authorization":auth
       };
-      return from(this.httpnative.get(url,'',options));
+      return from(this.httpnative.get(url,'',options).catch(e=>{
+        if(e.status==-6) return {data:"{\"returnResponse\":\"offline\"}"};
+      }));
     }
-    return from(this.httpnative.get(url,'',''));
+    return from(this.httpnative.get(url,'','').catch(e=>{
+      if(e.status==-6) return {data:"{\"returnResponse\":\"offline\"}"};
+    }));
     
   }
   doApprove(logindetail:any,para:any):Observable<any>{
@@ -200,9 +231,13 @@ export class GetallformsService {
           "Content-Type":"application/json; charset=utf-8",
           "Authorization":auth
       };
-      return from(this.httpnative.get(url,'',options));
+      return from(this.httpnative.get(url,'',options).catch(e=>{
+        if(e.status==-6) return {data:"{\"returnResponse\":\"offline\"}"};
+      }));
     }
-    return from(this.httpnative.get(url,'',''));
+    return from(this.httpnative.get(url,'','').catch(e=>{
+      if(e.status==-6) return {data:"{\"returnResponse\":\"offline\"}"};
+    }));
     
   }
   doReject(logindetail:any,para:any):Observable<any>{
@@ -215,9 +250,13 @@ export class GetallformsService {
           "Content-Type":"application/json; charset=utf-8",
           "Authorization":auth
       };
-      return from(this.httpnative.get(url,'',options));
+      return from(this.httpnative.get(url,'',options).catch(e=>{
+        if(e.status==-6) return {data:"{\"returnResponse\":\"offline\"}"};
+      }));
     }
-    return from(this.httpnative.get(url,'',''));
+    return from(this.httpnative.get(url,'','').catch(e=>{
+      if(e.status==-6) return {data:"{\"returnResponse\":\"offline\"}"};
+    }));
     
   }
   doReopen(logindetail:any,para:any):Observable<any>{
@@ -230,9 +269,13 @@ export class GetallformsService {
           "Content-Type":"application/json; charset=utf-8",
           "Authorization":auth
       };
-      return from(this.httpnative.get(url,'',options));
+      return from(this.httpnative.get(url,'',options).catch(e=>{
+        if(e.status==-6) return {data:"{\"returnResponse\":\"offline\"}"};
+      }));
     }
-    return from(this.httpnative.get(url,'',''));
+    return from(this.httpnative.get(url,'','').catch(e=>{
+      if(e.status==-6) return {data:"{\"returnResponse\":\"offline\"}"};
+    }));
     
   }
   getPeopleByRole(logindetail:any,role:any):Observable<any>{
@@ -244,9 +287,13 @@ export class GetallformsService {
           "Content-Type":"application/json; charset=utf-8",
           "Authorization":auth
       };
-      return from(this.httpnative.get(param,'',options));
+      return from(this.httpnative.get(param,'',options).catch(e=>{
+        if(e.status==-6) return {data:"{\"returnResponse\":\"offline\"}"};
+      }));
     }
-    return from(this.httpnative.get(param,'',''));
+    return from(this.httpnative.get(param,'','').catch(e=>{
+      if(e.status==-6) return {data:"{\"returnResponse\":\"offline\"}"};
+    }));
   }
   getDocData(logindetail:any,unid: string ):Observable<any>{
     let param:string = logindetail.server+'/'+logindetail.folder+'/integrumws.nsf/xp_App.xsp/getFormData?key='+encodeURIComponent(unid);
@@ -257,9 +304,13 @@ export class GetallformsService {
           "Content-Type":"application/json; charset=utf-8",
           "Authorization":auth
       };
-      return from(this.httpnative.get(param,'',options));
+      return from(this.httpnative.get(param,'',options).catch(e=>{
+        if(e.status==-6) return {data:"{\"returnResponse\":\"offline\"}"};
+      }));
     }
-    return from(this.httpnative.get(param,'',''));
+    return from(this.httpnative.get(param,'','').catch(e=>{
+      if(e.status==-6) return {data:"{\"returnResponse\":\"offline\"}"};
+    }));
     
   }
   removeDoc(logindetail:any,unid: string ):Observable<any>{
@@ -271,9 +322,13 @@ export class GetallformsService {
           "Content-Type":"application/json; charset=utf-8",
           "Authorization":auth
       };
-      return from(this.httpnative.get(param,'',options));
+      return from(this.httpnative.get(param,'',options).catch(e=>{
+        if(e.status==-6) return {data:"{\"returnResponse\":\"offline\"}"};
+      }));
     }
-    return from(this.httpnative.get(param,'',''));
+    return from(this.httpnative.get(param,'','').catch(e=>{
+      if(e.status==-6) return {data:"{\"returnResponse\":\"offline\"}"};
+    }));
   }
   saveMicrodbDoc(logindetail:any,para:any ):Observable<any>{
     let  data=para;
@@ -287,9 +342,13 @@ export class GetallformsService {
       };
       console.log('para:',para)
       
-      return from(this.httpnative.post(logindetail.server+'/'+logindetail.folder+'/integrumws.nsf/xp_App.xsp/saveMicroData',data,options));
+      return from(this.httpnative.post(logindetail.server+'/'+logindetail.folder+'/integrumws.nsf/xp_App.xsp/saveMicroData',data,options).catch(e=>{
+        if(e.status==-6) return {data:"{\"returnResponse\":\"offline\"}"};
+      }));
     }
-    return from(this.httpnative.post(logindetail.server+'/'+logindetail.folder+'/integrumws.nsf/xp_App.xsp/saveMicroData',data,''));
+    return from(this.httpnative.post(logindetail.server+'/'+logindetail.folder+'/integrumws.nsf/xp_App.xsp/saveMicroData',data,'').catch(e=>{
+      if(e.status==-6) return {data:"{\"returnResponse\":\"offline\"}"};
+    }));
   }
   getFieldValue(logindetail:any,fields: string, fullname: string):Observable<any>{
     const url = `${logindetail.server}/${logindetail.folder}/integrumws.nsf/xp_App.xsp/getFieldsValue?fields=${encodeURIComponent(fields)}&fullname=${encodeURIComponent(fullname)}`;
@@ -300,8 +359,12 @@ export class GetallformsService {
           "Content-Type":"application/json; charset=utf-8",
           "Authorization":auth
       };
-      return from(this.httpnative.get(url,'',options));
+      return from(this.httpnative.get(url,'',options).catch(e=>{
+        if(e.status==-6) return {data:"{\"returnResponse\":\"offline\"}"};
+      }));
     }
-    return from(this.httpnative.get(url,'',''));
+    return from(this.httpnative.get(url,'','').catch(e=>{
+      if(e.status==-6) return {data:"{\"returnResponse\":\"offline\"}"};
+    }));
   }
 }

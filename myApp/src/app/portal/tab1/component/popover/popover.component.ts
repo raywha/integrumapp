@@ -1,8 +1,10 @@
 import { Component, OnInit} from '@angular/core';
-import { PopoverController, NavParams } from '@ionic/angular';
+import { PopoverController, NavParams, AlertController } from '@ionic/angular';
 import { NavController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { Router } from '@angular/router';
+import { Storage } from '@ionic/storage';
+
 @Component({
   selector: 'app-popover',
   templateUrl: './popover.component.html',
@@ -13,8 +15,12 @@ export class PopoverComponent implements OnInit {
   public type: string;
   public portalList: any = [];
   public selectPortalIndex: number = 0;
+  public offlineFlag: boolean = true;
+
   constructor(public nav: NavController, public Popover: PopoverController, public translate: TranslateService,
     public params: NavParams,
+    private storage: Storage,
+    public alertController: AlertController,
     public router:Router
   ) {
     this.translate.get('setting').subscribe(res => {
@@ -69,14 +75,38 @@ export class PopoverComponent implements OnInit {
       let paramsSet=this.params.get("portalTile")
       console.log(paramsSet)
      // let lan=this.translate.getDefaultLang();
-      this.nav.navigateRoot('loginpass');
-      localStorage.setItem('hasLogged', "false");
-      this.Popover.dismiss()
+      if(this.offlineFlag){
+        this.storage.get('offlinemuitldata').then(d => {
+          d = JSON.parse(d);
+          console.log('d:', d)
+          this.presentAlert(`${d.online.notLogout}<br/>${d.online.logoutTip}`, "", [{
+            text: 'OK',
+            handler: () => {
+              this.Popover.dismiss();
+            }
+          }]);
+        })
+      } else {
+        this.nav.navigateRoot('loginpass');
+        localStorage.setItem('hasLogged', "false");
+        this.Popover.dismiss();
+      }
     }
   }
   getPortalLink(data,title){
     this.router.navigate(['tabs/tab1'], {queryParams: {key:data,title:title}});
     this.Popover.dismiss()
+  }
+  async presentAlert(msg: string, header: string, btn: any) {
+
+    const alert = await this.alertController.create({
+      header: header,
+      subHeader: '',
+      message: msg,
+      buttons: btn
+    });
+
+    await alert.present();
   }
 }
 

@@ -106,13 +106,16 @@ export class OfflinePage implements OnInit {
               }
             );
           } else if (result.returnResponse == "offline") {
-            this.presentAlert("Failed to connect to server, your internet connection could be down.", "", [{
-              text: 'Ok',
-              handler: () => {
-                this.offlineFlag = true;
-                localStorage.setItem('offlineFlag', this.offlineFlag + '');
-              }
-            }]);
+            this.storage.get('offlinemuitldata').then( d => {
+              d = JSON.parse(d);
+              this.presentAlert(`${d.online.offlineTip}`, "", [{
+                text: 'Ok',
+                handler: () => {
+                  this.offlineFlag = true;
+                  localStorage.setItem('offlineFlag', this.offlineFlag + '');
+                }
+              }]);
+            })    
           }
 
         })

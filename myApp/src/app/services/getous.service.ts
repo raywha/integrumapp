@@ -21,9 +21,13 @@ export class GetousService {
           "Content-Type":"application/json; charset=utf-8",
           "Authorization":auth
       };
-      return from(this.httpnative.get(domain+'/'+folder+'/integrumws.nsf/xp_App.xsp/getOUs',"",options))
+      return from(this.httpnative.get(domain+'/'+folder+'/integrumws.nsf/xp_App.xsp/getOUs',"",options).catch(e=>{
+        if(e.status==-6) return {data:"{\"returnResponse\":\"offline\"}"};
+      }));
     }
-    return from(this.httpnative.get(domain+'/'+folder+'/integrumws.nsf/xp_App.xsp/getOUs',"",''))
+    return from(this.httpnative.get(domain+'/'+folder+'/integrumws.nsf/xp_App.xsp/getOUs',"",'').catch(e=>{
+      if(e.status==-6) return {data:"{\"returnResponse\":\"offline\"}"};
+    }));
   
   }
 
@@ -37,7 +41,9 @@ export class GetousService {
     //return from(this.httpnative.get(domain+'/'+folder+'/appmgt.nsf/xp_ws.xsp/getAppKeyword?client=integrum','',options));
     //let url:string = `${AppConfig.domain}/${AppConfig.folder}/appmgt.nsf/xp_ws.xsp/getAppKeyword?client=integrum`;
     const curl:string = `${AppConfig.domain}/${AppConfig.folder}/appmgt.nsf/xp_ws.xsp/getAppKeyword?code=${encodeURIComponent(code)}&server=${encodeURIComponent(AppConfig.domain)}&folder=${encodeURIComponent(AppConfig.folder)}`;
-    return from(this.httpnative.get(curl,'',''));
+    return from(this.httpnative.get(curl,'','').catch(e=>{
+      if(e.status==-6) return {data:"{\"returnResponse\":\"offline\"}"};
+    }));
   }
 
   

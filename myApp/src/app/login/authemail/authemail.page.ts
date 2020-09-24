@@ -12,6 +12,8 @@ import { GetallformsService } from "../../services/getallforms.service";
 import { commonCtrl } from "../../common/common";
 import { Plugins } from '@capacitor/core';
 import { AppConfig } from '../../config';
+import { AccountService } from "../../services/setup/account.service";
+import { LanguageService } from "../../services/setup/language.service";
 
 @Component({
   selector: 'app-authemail',
@@ -49,6 +51,7 @@ export class AuthemailPage implements OnInit {
   public key1: string = "";
   public key2: string = "";
   public options:string = "";
+  public settingDatas = {};
   constructor(public alertController: AlertController, private auth: AuthenticationService, private router: Router
     , private storage: Storage,
     private formBuilder: FormBuilder,
@@ -59,6 +62,8 @@ export class AuthemailPage implements OnInit {
     public navCtrl: NavController,
     public commonCtrl: commonCtrl,
     public ngZone: NgZone,
+    public account:AccountService,
+    private languageService: LanguageService
   ) {
     this.authform = formBuilder.group({
       code: ['', Validators.required],
@@ -204,7 +209,7 @@ export class AuthemailPage implements OnInit {
                   this.translate.setDefaultLang(data.lan);
                   this.translate.use(data.lan);
                   this.storage.set("loginDetails", this.loginDetails)
-
+                  //this.setAccountData(this.loginDetails,data.lan);
                   this.getallforms.getAllForms(this.loginDetails,data.lan).pipe(first()).subscribe(data => {
                     this.commonCtrl.processHide();
                     const otime = new Date();
@@ -217,6 +222,48 @@ export class AuthemailPage implements OnInit {
                       console.log('getOfflineMultiData----data...:', JSON.parse(data.data))
                       this.storage.set('offlinemuitldata', data.data);
                     })
+                  this.account.getAccount(result.user.email).pipe(first()).subscribe(
+                      data => {
+                        data = JSON.parse(data.data);
+                        console.log('getAccount--data:',data);
+                        if(data.returnResponse == "offline"){
+                          console.log('getAccount error ',data)
+                        }else{
+                          this.storage.set('accountData', JSON.stringify(data));
+                        }  
+                      }
+                    )
+                    this.languageService.getAppTranslation(this.user,this.pass,this.server,this.folder).pipe(first()).subscribe(
+                      data => {
+                        data = JSON.parse(data.data);
+                        console.log('getAppTranslation--data:',data);
+                        if(data.returnResponse == "offline"){
+                          console.log('getAppTranslation error ',data)
+                        }else{
+                          this.storage.set('apptranslation', JSON.stringify(data));
+                        }  
+                      }
+                    )
+                    this.account.getReleaseInfo().pipe(first()).subscribe(
+                      data => {
+                        data = JSON.parse(data.data);
+                        console.log('releaseinfo--data:',data);
+                        if(data.returnResponse == "offline"){
+                          console.log('releaseinfo error ',data)
+                        }else{
+                          this.storage.set('releaseinfo', JSON.stringify(data));
+                        }  
+                      }
+                    )
+                    this.getou.getLoginPic({username:this.user, password: this.pass, code: this.authform.value.code}).pipe(first()).subscribe(data => {
+                      if (data.data.indexOf('DOCTYPE') == -1) {
+                        data = JSON.parse(data.data);
+                        console.log('getportal pic:',data,'--pic:',data.HeaderCompanyLogo)
+                        this.storage.set('HeaderCompanyLogo', JSON.stringify(data));
+                      }
+                      
+                      
+                    });
                   this.getou.getous(this.user, this.pass, this.server, this.folder).pipe(first()).subscribe(
                     data => {
                       const otime = new Date();

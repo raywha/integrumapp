@@ -216,6 +216,9 @@ export class NewFormPage implements OnInit {
         }
       }else{
         if (res.unid) {
+          this.newdoc = false;
+          this.serverdoc = true;
+
           this.lasturl = res.cururl
           this.fields = [];
           this.formID = res.unid
@@ -236,12 +239,31 @@ export class NewFormPage implements OnInit {
           ];
   
           this.commonCtrl.show();
-          if (this.offlineFlag) {
-            
-          }else{
-            this.getFormData(res.unid, res.type).then((data: any) => {
-              // console.log(formdata)
-              //this.storage.get("allforms").then(data => {
+          this.getFormData(res.unid, res.type).then((data: any) => {
+            console.log('getFormData: data:',data);
+            if (data.returnResponse == "offline") {
+              this.commonCtrl.hide();
+              this.storage.get('offlinemuitldata').then( d => {
+                d = JSON.parse(d);
+                console.log('d:',d)
+                this.presentAlert(`${d.online.offlineTip}<br/>${d.online.ischangeOffline}`, "", [{
+                  text: 'Yes',
+                  handler: () => {
+                    this.offlineFlag = true;
+                    localStorage.setItem('offlineFlag', this.offlineFlag + '');
+                    this.nav.navigateBack('/tabs/tab1',{queryParams:{title:this.portaltitle}});
+                  }
+                },{
+                  text: 'No',
+                  handler: () => {
+                    
+                  }
+                }
+              ]);
+              })
+              
+            }else{  //online mode
+                //this.storage.get("allforms").then(data => {
               // console.log(JSON.parse(data))
               //this.templates = JSON.parse(data).templates
               this.templates = data.templates
@@ -379,18 +401,18 @@ export class NewFormPage implements OnInit {
                       if(data.value){
                         let cehckvalues=data.value.split(",")
                         data.options.forEach(option =>{
-                           let flag=cehckvalues.some(v =>{
-                             return v==option.value
-                           })
-                           if(flag){
-                             option.ischeck=true
-                           }else{
+                          let flag=cehckvalues.some(v =>{
+                            return v==option.value
+                          })
+                          if(flag){
+                            option.ischeck=true
+                          }else{
                             option.ischeck=false
-                           }
+                          }
                         })
                       }
                     
-                     
+                    
                   }else if(data.xtype == 'questionnaire'){
                     let v = data.options[0];
                     if(v && v.value){
@@ -465,11 +487,14 @@ export class NewFormPage implements OnInit {
                 this.change({ "label": "Severity", "value": this.severityvalue })
               }
               this.comPercents();
-              //})
-            })
-          }
+            }
+            
+            //})
+          })
           
         } else {
+          this.newdoc = true;
+          this.serverdoc = false;
           this.getTemplateByAllForms(res);      
         }
       }
@@ -508,26 +533,7 @@ export class NewFormPage implements OnInit {
         // this.btnBox = menubar;
         if(res.docname){
           this.type = res.type;
-          this.storage.get('offlinemuitldata').then( d =>{
-            d = JSON.parse(d);
-            if(this.type == 'open'){
-              this.btnBox = {
-                "result": [
-                  { "btnType": "btnEdit", "btnLabel": d.online.btnedit?d.online.btnedit:'Edit' },
-                  { "btnType": "btnDelete", "btnLabel": d.online.btndelete?d.online.btndelete:'Delete' },
-                  { "btnType": "btnClose", "btnLabel": d.online.btnclose?d.online.btnclose:"Close" }
-                ]
-              };
-            }else{
-              this.btnBox = {
-                "result": [
-                  { "btnType": "btnSave", "btnLabel": d.online.btnsave?d.online.btnsave:'Save' },
-                  { "btnType": "btnDelete", "btnLabel": d.online.btndelete?d.online.btndelete:'Delete' },
-                  { "btnType": "btnClose", "btnLabel": d.online.btnclose?d.online.btnclose:"Close" }
-                ]
-              };
-            }
-          })
+          
           console.log('this.templatid:',this.templatid);
           this.title = res.title;
           this.status = res.stat;
@@ -535,6 +541,51 @@ export class NewFormPage implements OnInit {
             data = JSON.parse(data);
             const allfields: any = data.fields;
             const createTime: any = data.createTime;
+            const app_offline_Update = data.app_offline_Update;
+            if(app_offline_Update && app_offline_Update == '1'){
+              this.serverdoc = true;
+              this.storage.get('offlinemuitldata').then( d =>{
+                d = JSON.parse(d);
+                if(this.type == 'open'){
+                  this.btnBox = {
+                    "result": [
+                      { "btnType": "btnEdit", "btnLabel": d.online.btnedit?d.online.btnedit:'Edit' },
+                      //{ "btnType": "btnDelete", "btnLabel": d.online.btndelete?d.online.btndelete:'Delete' },
+                      { "btnType": "btnClose", "btnLabel": d.online.btnclose?d.online.btnclose:"Close" }
+                    ]
+                  };
+                }else{
+                  this.btnBox = {
+                    "result": [
+                      { "btnType": "btnSave", "btnLabel": d.online.btnsave?d.online.btnsave:'Save' },
+                      //{ "btnType": "btnDelete", "btnLabel": d.online.btndelete?d.online.btndelete:'Delete' },
+                      { "btnType": "btnClose", "btnLabel": d.online.btnclose?d.online.btnclose:"Close" }
+                    ]
+                  };
+                }
+              })
+            }else{
+              this.storage.get('offlinemuitldata').then( d =>{
+                d = JSON.parse(d);
+                if(this.type == 'open'){
+                  this.btnBox = {
+                    "result": [
+                      { "btnType": "btnEdit", "btnLabel": d.online.btnedit?d.online.btnedit:'Edit' },
+                      { "btnType": "btnDelete", "btnLabel": d.online.btndelete?d.online.btndelete:'Delete' },
+                      { "btnType": "btnClose", "btnLabel": d.online.btnclose?d.online.btnclose:"Close" }
+                    ]
+                  };
+                }else{
+                  this.btnBox = {
+                    "result": [
+                      { "btnType": "btnSave", "btnLabel": d.online.btnsave?d.online.btnsave:'Save' },
+                      { "btnType": "btnDelete", "btnLabel": d.online.btndelete?d.online.btndelete:'Delete' },
+                      { "btnType": "btnClose", "btnLabel": d.online.btnclose?d.online.btnclose:"Close" }
+                    ]
+                  };
+                }
+              })
+            }
             const secs: any = this.selecttemplat.template.secs;
             for (let i = 0; i < secs.length; i++) {
               const fields = secs[i].fields;
@@ -714,9 +765,33 @@ export class NewFormPage implements OnInit {
     this.type = "edit"
     if(res.subform && res.mainunid && res.mainunid!=""){
       this.inheritValue({"mainunid":res.mainunid}).then((result: any) => {
-        this.inheritMap = result;
-        console.log("-------ssss:",this.inheritMap);
-        this.getAllForms(res);
+        if (result.returnResponse == "offline") {
+          this.storage.get('offlinemuitldata').then( d => {
+            d = JSON.parse(d);
+            console.log('d:',d)
+            this.presentAlert(`${d.online.offlineTip}<br/>${d.online.ischangeOffline}`, "", [{
+              text: 'Yes',
+              handler: () => {
+                this.offlineFlag = true;
+                localStorage.setItem('offlineFlag', this.offlineFlag + '');
+
+                this.getAllForms(res);
+              }
+            },{
+              text: 'No',
+              handler: () => {
+                //this.goBack();
+              }
+            }
+          ]);
+          })
+          
+        }else{
+          this.inheritMap = result;
+          console.log("-------ssss:",this.inheritMap);
+          this.getAllForms(res);
+        }
+        
       })    
     }else{
       this.getAllForms(res);     
@@ -989,11 +1064,38 @@ export class NewFormPage implements OnInit {
         }
 
         break;
-        case "btnDelete":
+      case "btnDelete":
           console.log("操作删除")
-          this.presentModal('delete');
+          if(this.offlineFlag){
+            this.storage.get('offlinemuitldata').then( d => {
+              d = JSON.parse(d);
+              console.log('d:',d)
+              this.presentAlert(`${d.online.deletetip}`, "", [{
+                text: 'Yes',
+                handler: () => {
+                  this.storage.remove(this.draftDocName);
+                  let file: any = localStorage.getItem(this.templatid);
+                  if (file) {
+                    let filesArray: any = JSON.parse(file);
+                    filesArray = filesArray.filter( e => e.name != this.draftDocName);
+                    localStorage.setItem(this.templatid,JSON.stringify(filesArray))
+                  }
+                  this.router.navigateByUrl(this.lasturl)
+                }
+              },{
+                text: 'No',
+                handler: () => {
+                  
+                }
+              }
+              ]);
+            })
+          }else{
+            this.presentModal('delete');
+          }
+          
           break;
-          case 'btnSendForRv':
+      case 'btnSendForRv':
         if(this.mr2Type){
           console.log('mr2type:',this.mr2Type)
           if(this.mr2Type=='template'){
@@ -1148,19 +1250,53 @@ export class NewFormPage implements OnInit {
         //this.getforms.getFormData(logindata, { "unid": "EBE27D0FEC6AEFF9482584D90020DCE6" }).pipe(first()).subscribe(data => {
         this.getforms.submit(logindata, para).pipe(first()).subscribe(data => {
           console.log('this.getforms.submit:', data)
-          //data = JSON.parse(data.data);
-          console.log('this.getforms.submit:', JSON.parse(data.data))
+          data = JSON.parse(data.data);
           this.commonCtrl.processHide();
-          //this.router.navigate(["/new-form"], { queryParams: { unid:  this.ulrs.unid, aid: this.ulrs.aid, title: this.ulrs.title, stat: this.ulrs.stat, type: actiontype, refresh: new Date().getTime() } });
-          if (this.subformflag) {
-            this.router.navigate(["/new-form"], { queryParams: { unid: this.mainunid, aid: this.ulrs.aid, title: this.atitle, stat: this.ulrs.stat, type: actiontype, refresh: new Date().getTime(), cururl: this.lasturl } });
-          } else {
-            if(!this.formID){      
-              this.router.navigate(['/form-list'],{queryParams:{vid:this.vid,vtitle:this.title,type:'formlist',formid:this.ulrs.aid,temptitle:this.portaltitle}});
-            }else{
-              this.router.navigateByUrl(this.lasturl);
+          //console.log('this.getforms.submit:', JSON.parse(data.data));
+          if (data.returnResponse == "offline") {
+            this.storage.get('offlinemuitldata').then( d => {
+              d = JSON.parse(d);
+              console.log('d:',d)
+              this.presentAlert(`${d.online.offlineTip}<br/>${d.online.ischangeOffline}`, "", [{
+                text: 'Yes',
+                handler: () => {
+                  this.offlineFlag = true;
+                  localStorage.setItem('offlineFlag', this.offlineFlag + '');
+
+                  if(this.newdoc){
+                    this.paraforsubmit.app_offline_NewForm = "1";
+                  }else{
+                    if(this.serverdoc){
+                      this.paraforsubmit.app_offline_Update = "1";
+                    }else{
+                      this.paraforsubmit.app_offline_NewForm = "1";
+                    }
+                  }
+                  this.offlineSave(this.paraforsubmit);
+                }
+              },{
+                text: 'No',
+                handler: () => {
+                  this.goBack();
+                }
+              }
+            ]);
+            })
+            
+          }else{
+            if (this.subformflag) {
+              this.router.navigate(["/new-form"], { queryParams: { unid: this.mainunid, aid: this.ulrs.aid, title: this.atitle, stat: this.ulrs.stat, type: actiontype, refresh: new Date().getTime(), cururl: this.lasturl } });
+            } else {
+              if(!this.formID){      
+                this.router.navigate(['/form-list'],{queryParams:{vid:this.vid,vtitle:this.title,type:'formlist',formid:this.ulrs.aid,temptitle:this.portaltitle}});
+              }else{
+                this.router.navigateByUrl(this.lasturl);
+              }
             }
           }
+          
+          //this.router.navigate(["/new-form"], { queryParams: { unid:  this.ulrs.unid, aid: this.ulrs.aid, title: this.ulrs.title, stat: this.ulrs.stat, type: actiontype, refresh: new Date().getTime() } });
+          
 
         })
         //resolve(data)
@@ -1700,30 +1836,54 @@ export class NewFormPage implements OnInit {
         column
       }
       this.getLookupOptions(obj).then((data: any) => {
-        if (data.status == "success") {
-          let options: any = [];
-          options.push({ value: '', text: '' })
-          for (let i = 0; i < data.data.length; i++) {
-            let element = data.data[i];
-            options.push({ value: element, text: element })
-          }
+        if (data.returnResponse == "offline") {
+          this.storage.get('offlinemuitldata').then( d => {
+            d = JSON.parse(d);
+            console.log('d:',d)
+            this.presentAlert(`${d.online.offlineTip}<br/>${d.online.ischangeOffline}`, "", [{
+              text: 'Yes',
+              handler: () => {
+                this.offlineFlag = true;
+                localStorage.setItem('offlineFlag', this.offlineFlag + '');
 
-          let tobj: object = {
-            secId,
-            view,
-            lastval: val,
-            options: options
-          }
-          if (this['lookupOptins' + column]) {
-            let index: number = this['lookupOptins' + column].findIndex(e => e.secId == secId && e.view == view);
-            if (index == -1) {
-              this['lookupOptins' + column].push(tobj);
-            } else {
-              this['lookupOptins' + column].splice(index, 1, tobj);
+                
+              }
+            },{
+              text: 'No',
+              handler: () => {
+                //this.goBack();
+              }
             }
+          ]);
+          })
+          
+        }else{
+          if (data.status == "success") {
+            let options: any = [];
+            options.push({ value: '', text: '' })
+            for (let i = 0; i < data.data.length; i++) {
+              let element = data.data[i];
+              options.push({ value: element, text: element })
+            }
+  
+            let tobj: object = {
+              secId,
+              view,
+              lastval: val,
+              options: options
+            }
+            if (this['lookupOptins' + column]) {
+              let index: number = this['lookupOptins' + column].findIndex(e => e.secId == secId && e.view == view);
+              if (index == -1) {
+                this['lookupOptins' + column].push(tobj);
+              } else {
+                this['lookupOptins' + column].splice(index, 1, tobj);
+              }
+            }
+  
           }
-
         }
+        
       });
       let v = this.sections.find(e=>e.secId == secId);
       if(v){
@@ -2389,11 +2549,44 @@ export class NewFormPage implements OnInit {
         //this.getforms.getFormData(logindata, { "unid": "EBE27D0FEC6AEFF9482584D90020DCE6" }).pipe(first()).subscribe(data => {
         this.getforms.submitToMr2(logindata, para).pipe(first()).subscribe(data => {
           data = JSON.parse(data.data);
-          if(data.status=='success'){
-            this.router.navigateByUrl(this.lasturl)
+          if (data.returnResponse == "offline") {
+            this.storage.get('offlinemuitldata').then( d => {
+              d = JSON.parse(d);
+              console.log('d:',d)
+              this.presentAlert(`${d.online.offlineTip}<br/>${d.online.ischangeOffline}`, "", [{
+                text: 'Yes',
+                handler: () => {
+                  this.offlineFlag = true;
+                  localStorage.setItem('offlineFlag', this.offlineFlag + '');
+
+                  if(this.newdoc){
+                    this.paraforsubmit.app_offline_NewForm = "1";
+                  }else{
+                    if(this.serverdoc){
+                      this.paraforsubmit.app_offline_Update = "1";
+                    }else{
+                      this.paraforsubmit.app_offline_NewForm = "1";
+                    }
+                  }
+                  this.offlineSave(this.paraforsubmit);
+                }
+              },{
+                text: 'No',
+                handler: () => {
+                  this.goBack();
+                }
+              }
+            ]);
+            })
+            
           }else{
-            this.presentAlert("Error:<br/>" + data.reason, "", ["OK"])
+            if(data.status=='success'){
+              this.router.navigateByUrl(this.lasturl)
+            }else{
+              this.presentAlert("Error:<br/>" + data.reason, "", ["OK"])
+            }
           }
+          
           
 
         })
@@ -2412,11 +2605,44 @@ export class NewFormPage implements OnInit {
     this.storage.get('loginDetails').then(logindata => {
       this.getforms.doDeleteDoc(logindata, para).pipe(first()).subscribe(data => {
         data = JSON.parse(data.data);
-        if (data.status == 'success') {
-          this.router.navigateByUrl(this.lasturl);
-        } else {
-          this.presentAlert("failed!Error:" + data.result, "", "OK")
+        if (data.returnResponse == "offline") {
+          this.storage.get('offlinemuitldata').then( d => {
+            d = JSON.parse(d);
+            console.log('d:',d)
+            this.presentAlert(`${d.online.offlineTip}<br/>${d.online.ischangeOffline}`, "", [{
+              text: 'Yes',
+              handler: () => {
+                this.offlineFlag = true;
+                localStorage.setItem('offlineFlag', this.offlineFlag + '');
+
+                if(this.newdoc){
+                  this.paraforsubmit.app_offline_NewForm = "1";
+                }else{
+                  if(this.serverdoc){
+                    this.paraforsubmit.app_offline_Update = "1";
+                  }else{
+                    this.paraforsubmit.app_offline_NewForm = "1";
+                  }
+                }
+                this.offlineSave(this.paraforsubmit);
+              }
+            },{
+              text: 'No',
+              handler: () => {
+                this.goBack();
+              }
+            }
+          ]);
+          })
+          
+        }else{
+          if (data.status == 'success') {
+            this.router.navigateByUrl(this.lasturl);
+          } else {
+            this.presentAlert("failed!Error:" + data.result, "", "OK")
+          }
         }
+        
       })
     })
   }
@@ -2426,11 +2652,44 @@ export class NewFormPage implements OnInit {
     this.storage.get('loginDetails').then(logindata => {
       this.getforms.doReAssign(logindata, para).pipe(first()).subscribe(data => {
         data = JSON.parse(data.data);
-        if (data.status == 'success') {
-          this.router.navigateByUrl(this.lasturl);
-        } else {
-          this.presentAlert("failed!Error:" + data.result, "", "OK")
+        if (data.returnResponse == "offline") {
+          this.storage.get('offlinemuitldata').then( d => {
+            d = JSON.parse(d);
+            console.log('d:',d)
+            this.presentAlert(`${d.online.offlineTip}<br/>${d.online.ischangeOffline}`, "", [{
+              text: 'Yes',
+              handler: () => {
+                this.offlineFlag = true;
+                localStorage.setItem('offlineFlag', this.offlineFlag + '');
+
+                if(this.newdoc){
+                  this.paraforsubmit.app_offline_NewForm = "1";
+                }else{
+                  if(this.serverdoc){
+                    this.paraforsubmit.app_offline_Update = "1";
+                  }else{
+                    this.paraforsubmit.app_offline_NewForm = "1";
+                  }
+                }
+                this.offlineSave(this.paraforsubmit);
+              }
+            },{
+              text: 'No',
+              handler: () => {
+                this.goBack();
+              }
+            }
+          ]);
+          })
+          
+        }else{
+          if (data.status == 'success') {
+            this.router.navigateByUrl(this.lasturl);
+          } else {
+            this.presentAlert("failed!Error:" + data.result, "", "OK")
+          }
         }
+        
       })
     })
   }
@@ -2442,11 +2701,44 @@ export class NewFormPage implements OnInit {
       this.getforms.doApprove(logindata, para).pipe(first()).subscribe(data => {
         data = JSON.parse(data.data);
         this.commonCtrl.processHide();
-        if (data.status == 'success') {
-          this.router.navigateByUrl(this.lasturl);
-        } else {
-          this.presentAlert("failed!Error:" + data.result, "", "OK")
+        if (data.returnResponse == "offline") {
+          this.storage.get('offlinemuitldata').then( d => {
+            d = JSON.parse(d);
+            console.log('d:',d)
+            this.presentAlert(`${d.online.offlineTip}<br/>${d.online.ischangeOffline}`, "", [{
+              text: 'Yes',
+              handler: () => {
+                this.offlineFlag = true;
+                localStorage.setItem('offlineFlag', this.offlineFlag + '');
+
+                if(this.newdoc){
+                  this.paraforsubmit.app_offline_NewForm = "1";
+                }else{
+                  if(this.serverdoc){
+                    this.paraforsubmit.app_offline_Update = "1";
+                  }else{
+                    this.paraforsubmit.app_offline_NewForm = "1";
+                  }
+                }
+                this.offlineSave(this.paraforsubmit);
+              }
+            },{
+              text: 'No',
+              handler: () => {
+                this.goBack();
+              }
+            }
+          ]);
+          })
+          
+        }else{
+          if (data.status == 'success') {
+            this.router.navigateByUrl(this.lasturl);
+          } else {
+            this.presentAlert("failed!Error:" + data.result, "", "OK")
+          }
         }
+        
       })
     })
   }
@@ -2456,11 +2748,44 @@ export class NewFormPage implements OnInit {
     this.storage.get('loginDetails').then(logindata => {
       this.getforms.doReject(logindata, para).pipe(first()).subscribe(data => {
         data = JSON.parse(data.data);
-        if (data.status == 'success') {
-          this.router.navigateByUrl(this.lasturl);
-        } else {
-          this.presentAlert("failed!Error:" + data.result, "", "OK")
+        if (data.returnResponse == "offline") {
+          this.storage.get('offlinemuitldata').then( d => {
+            d = JSON.parse(d);
+            console.log('d:',d)
+            this.presentAlert(`${d.online.offlineTip}<br/>${d.online.ischangeOffline}`, "", [{
+              text: 'Yes',
+              handler: () => {
+                this.offlineFlag = true;
+                localStorage.setItem('offlineFlag', this.offlineFlag + '');
+
+                if(this.newdoc){
+                  this.paraforsubmit.app_offline_NewForm = "1";
+                }else{
+                  if(this.serverdoc){
+                    this.paraforsubmit.app_offline_Update = "1";
+                  }else{
+                    this.paraforsubmit.app_offline_NewForm = "1";
+                  }
+                }
+                this.offlineSave(this.paraforsubmit);
+              }
+            },{
+              text: 'No',
+              handler: () => {
+                this.goBack();
+              }
+            }
+          ]);
+          })
+          
+        }else{
+          if (data.status == 'success') {
+            this.router.navigateByUrl(this.lasturl);
+          } else {
+            this.presentAlert("failed!Error:" + data.result, "", "OK")
+          }
         }
+        
       })
     })
   }
@@ -2471,11 +2796,44 @@ export class NewFormPage implements OnInit {
       this.getforms.doReopen(logindata, para).pipe(first()).subscribe(data => {
         data = JSON.parse(data.data);
         console.log('reopen:',data)
-        if (data.status == 'success') {
-          this.router.navigateByUrl(this.lasturl);
-        } else {
-          this.presentAlert("failed!Error:" + data.reason, "", "OK")
+        if (data.returnResponse == "offline") {
+          this.storage.get('offlinemuitldata').then( d => {
+            d = JSON.parse(d);
+            console.log('d:',d)
+            this.presentAlert(`${d.online.offlineTip}<br/>${d.online.ischangeOffline}`, "", [{
+              text: 'Yes',
+              handler: () => {
+                this.offlineFlag = true;
+                localStorage.setItem('offlineFlag', this.offlineFlag + '');
+
+                if(this.newdoc){
+                  this.paraforsubmit.app_offline_NewForm = "1";
+                }else{
+                  if(this.serverdoc){
+                    this.paraforsubmit.app_offline_Update = "1";
+                  }else{
+                    this.paraforsubmit.app_offline_NewForm = "1";
+                  }
+                }
+                this.offlineSave(this.paraforsubmit);
+              }
+            },{
+              text: 'No',
+              handler: () => {
+                this.goBack();
+              }
+            }
+          ]);
+          })
+          
+        }else{
+          if (data.status == 'success') {
+            this.router.navigateByUrl(this.lasturl);
+          } else {
+            this.presentAlert("failed!Error:" + data.reason, "", "OK")
+          }
         }
+        
       })
     })
   }
@@ -2484,15 +2842,48 @@ export class NewFormPage implements OnInit {
       this.storage.get("loginDetails").then(data => {
         this.getforms.getPeopleByRole(data, para).pipe(first()).subscribe(data => {
           data = JSON.parse(data.data);
-          if (data.status == 'success') {
-            var rolelist=""
-            for(var i=0;i<data.res.length;i++){
-              rolelist=rolelist+"<ion-item>"+data.res[i]+"</ion-item>";
+          if (data.returnResponse == "offline") {
+            this.storage.get('offlinemuitldata').then( d => {
+              d = JSON.parse(d);
+              console.log('d:',d)
+              this.presentAlert(`${d.online.offlineTip}<br/>${d.online.ischangeOffline}`, "", [{
+                text: 'Yes',
+                handler: () => {
+                  this.offlineFlag = true;
+                  localStorage.setItem('offlineFlag', this.offlineFlag + '');
+  
+                  if(this.newdoc){
+                    this.paraforsubmit.app_offline_NewForm = "1";
+                  }else{
+                    if(this.serverdoc){
+                      this.paraforsubmit.app_offline_Update = "1";
+                    }else{
+                      this.paraforsubmit.app_offline_NewForm = "1";
+                    }
+                  }
+                  this.offlineSave(this.paraforsubmit);
+                }
+              },{
+                text: 'No',
+                handler: () => {
+                  this.goBack();
+                }
+              }
+            ]);
+            })
+            
+          }else{
+            if (data.status == 'success') {
+              var rolelist=""
+              for(var i=0;i<data.res.length;i++){
+                rolelist=rolelist+"<ion-item>"+data.res[i]+"</ion-item>";
+              }
+              this.presentAlert("<div>"+rolelist+"</div>", "", ["Close"]);
+            } else {
+              this.presentAlert("failed!Error:" + data.res, "", "OK")
             }
-            this.presentAlert("<div>"+rolelist+"</div>", "", ["Close"]);
-          } else {
-            this.presentAlert("failed!Error:" + data.res, "", "OK")
           }
+          
         })
       })
     })
@@ -2627,12 +3018,36 @@ export class NewFormPage implements OnInit {
       this.getforms.removeDoc(logindata, unid).pipe(first()).subscribe(data => {
         data = JSON.parse(data.data);
         console.log('removeMicroDoc:',data)
-        if (data.result == 'success') {
-          console.log('***this.microdbdata:',this.microdbData);
-          this.updateMicrodbData(secId, unid);
-        } else {
-          this.presentAlert("failed!Error:" + data.result, "", "OK")
+        if (data.returnResponse == "offline") {
+          this.commonCtrl.hide();
+          this.storage.get('offlinemuitldata').then( d => {
+            d = JSON.parse(d);
+            console.log('d:',d)
+            this.presentAlert(`${d.online.offlineTip}<br/>${d.online.ischangeOffline}`, "", [{
+              text: 'Yes',
+              handler: () => {
+                this.offlineFlag = true;
+                localStorage.setItem('offlineFlag', this.offlineFlag + '');
+                this.nav.navigateBack('/tabs/tab1',{queryParams:{title:this.portaltitle}});
+              }
+            },{
+              text: 'No',
+              handler: () => {
+                
+              }
+            }
+          ]);
+          })
+          
+        }else{  //online mode
+          if (data.result == 'success') {
+            console.log('***this.microdbdata:',this.microdbData);
+            this.updateMicrodbData(secId, unid);
+          } else {
+            this.presentAlert("failed!Error:" + data.result, "", "OK")
+          }
         }
+        
       })
     })
   }

@@ -18,8 +18,12 @@ getpersoninfo(userid: string,pass:string,domain:string,folder:string): Observabl
         "Content-Type":"application/json; charset=utf-8",
         "Authorization":auth
     };
-    return from(this.httpnative.get(domain+'/'+folder+'/integrumws.nsf/xp_webservices.xsp/getPersonInfo?username='+encodeURIComponent(userid),'',options));
+    return from(this.httpnative.get(domain+'/'+folder+'/integrumws.nsf/xp_webservices.xsp/getPersonInfo?username='+encodeURIComponent(userid),'',options).catch(e=>{
+      if(e.status==-6) return {data:"{\"returnResponse\":\"offline\"}"};
+    }));
   }
-  return from(this.httpnative.get(domain+'/'+folder+'/integrumws.nsf/xp_webservices.xsp/getPersonInfo?username='+encodeURIComponent(userid),'',''));
+  return from(this.httpnative.get(domain+'/'+folder+'/integrumws.nsf/xp_webservices.xsp/getPersonInfo?username='+encodeURIComponent(userid),'','').catch(e=>{
+    if(e.status==-6) return {data:"{\"returnResponse\":\"offline\"}"};
+  }));
   }
 }

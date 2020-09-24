@@ -26,9 +26,13 @@ export class AuthenticationService {
           "Content-Type":"application/json; charset=utf-8",
           "Authorization":auth 
       };
-      return from(this.httpnative.post(domain+'/'+folder+'/integrumws.nsf/doLoginSuccessAuth?OpenPage',data,options))
+      return from(this.httpnative.post(domain+'/'+folder+'/integrumws.nsf/doLoginSuccessAuth?OpenPage',data,options).catch(e=>{
+        if(e.status==-6) return {data:"{\"returnResponse\":\"offline\"}"};
+      }));
     }
-    return from(this.httpnative.post(domain+'/'+folder+'/integrumws.nsf/doLoginSuccessAuth?OpenPage',data,''))
+    return from(this.httpnative.post(domain+'/'+folder+'/integrumws.nsf/doLoginSuccessAuth?OpenPage',data,'').catch(e=>{
+      if(e.status==-6) return {data:"{\"returnResponse\":\"offline\"}"};
+    }));
 
   }
 
@@ -64,7 +68,9 @@ export class AuthenticationService {
     console.log('updateUserInfo---service---->',logindetail)
     console.log('url:',AppConfig.domain+'/'+AppConfig.folder+'/appmgt.nsf/xp_ws.xsp/updateUserInfo')
     console.log('data...',data)
-    return from(this.httpnative.post(AppConfig.domain+'/'+AppConfig.folder+'/appmgt.nsf/xp_ws.xsp/updateUserInfo',data,""))
+    return from(this.httpnative.post(AppConfig.domain+'/'+AppConfig.folder+'/appmgt.nsf/xp_ws.xsp/updateUserInfo',data,"").catch(e=>{
+      if(e.status==-6) return {data:"{\"returnResponse\":\"offline\"}"};
+    }));
     
   }
   ssoData(serverAddr, serverFolder, data): Observable<any> {
@@ -72,12 +78,16 @@ export class AuthenticationService {
     let addiUrl = '/integrumws.nsf/ssoAuth.xsp?' + 'key1=' + data.key1 + '&key2=' + data.key2 + '&timestamp=' + Date.now();
     // let addiUrl='/integrumws.nsf/doLoginSuccessAuth?openpage&'+'key1='+data.key1+'&key2='+data.key2+'&timestamp='+Date.now();
     console.log("for bt oauth sso ??????", url + addiUrl);
-    return from(this.httpnative.get(url + addiUrl,'',''));
+    return from(this.httpnative.get(url + addiUrl,'','').catch(e=>{
+      if(e.status==-6) return {data:"{\"returnResponse\":\"offline\"}"};
+    }));
   }
   getOfflineMultiData(): Observable<any> {
     const lan = this.translate.getDefaultLang() || localStorage.getItem("lan");
     const curl:string = `${AppConfig.domain}/${AppConfig.folder}/appmgt.nsf/xp_ws.xsp/multiLan?lan=${encodeURIComponent(lan)}`;
 
-    return from(this.httpnative.get(curl,'',''));
+    return from(this.httpnative.get(curl,'','').catch(e=>{
+      if(e.status==-6) return {data:"{\"returnResponse\":\"offline\"}"};
+    }));
   }
 }
