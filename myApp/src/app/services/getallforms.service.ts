@@ -84,6 +84,7 @@ export class GetallformsService {
   }
   syncSave(logindetail:any,para:any ):Observable<any>{
     let  data=para
+    data = {"data":escape(JSON.stringify(data))};
     this.httpnative.setDataSerializer("json");
     if(logindetail.username && logindetail.password){
       let auth='Basic '+btoa(logindetail.username+':'+logindetail.password);

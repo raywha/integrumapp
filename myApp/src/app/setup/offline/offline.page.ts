@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AlertController } from '@ionic/angular';
+import { AlertController,NavController } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
 import { GetallformsService } from "../../services/getallforms.service";
 import { first, catchError } from 'rxjs/operators';
@@ -17,6 +17,7 @@ export class OfflinePage implements OnInit {
     private storage: Storage,
     private getforms: GetallformsService,
     public alertController: AlertController,
+    public nav: NavController,
     private commonCtrl: commonCtrl) {
     if (localStorage.getItem('offlineFlag')) {
       this.offlineFlag = localStorage.getItem('offlineFlag') == "false" ? false : true;
@@ -31,12 +32,20 @@ export class OfflinePage implements OnInit {
   changeOffline() {
     localStorage.setItem('offlineFlag', this.offlineFlag + '');
   }
+  gotoHomePage(){
+    if(this.offlineFlag){
+      this.async();
+    }else{
+      this.nav.navigateBack('/tabs/tab1');
+    }
+  }
   async() {
     console.log("---in async doc----");
     const allTemplateID: any = localStorage.getItem('allTemplateID');
     if (!allTemplateID) {
-      console.log('no data!')
-      this.presentAlert("There is no data needs to be synchronized.", "",['Ok']);
+      console.log('no data!');
+      this.nav.navigateBack('/tabs/tab1');
+      //this.presentAlert("There is no data needs to be synchronized.", "",['Ok']);
     } else {
       this.storage.get("loginDetails").then(logindata => {
         this.getforms.isOnline(logindata).pipe(first()).subscribe(result => {
@@ -93,16 +102,26 @@ export class OfflinePage implements OnInit {
                 localStorage.removeItem("allTemplateID");
 
                 this.commonCtrl.processHide();
-                this.presentAlert("Data synced with server. You are in online mode now.", "",['Ok']);
+                this.storage.get('offlinemuitldata').then(d => {
+                  d = JSON.parse(d);
+                  this.presentAlert(`${d.online.syncEnd}`, "", [{
+                    text: 'Ok',
+                    handler: () => {
+                      this.nav.navigateBack('/tabs/tab1');
+                    }
+                  }]);
+                })         
               }, error => {
                 console.log('had error: ', error);
                 this.commonCtrl.processHide();
                 console.log('status:', error.status);
+                this.nav.navigateBack('/tabs/tab1');
               })
             }).catch(
               e => {
                 console.log("---promise all error---", e);
                 this.commonCtrl.processHide();
+                this.nav.navigateBack('/tabs/tab1');
               }
             );
           } else if (result.returnResponse == "offline") {
@@ -113,6 +132,7 @@ export class OfflinePage implements OnInit {
                 handler: () => {
                   this.offlineFlag = true;
                   localStorage.setItem('offlineFlag', this.offlineFlag + '');
+                  this.nav.navigateBack('/tabs/tab1');
                 }
               }]);
             })    

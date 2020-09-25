@@ -541,6 +541,7 @@ export class NewFormPage implements OnInit {
             data = JSON.parse(data);
             const allfields: any = data.fields;
             const createTime: any = data.createTime;
+            const dynamicDatas: any = data.dynamicDatas;
             const app_offline_Update = data.app_offline_Update;
             if(app_offline_Update && app_offline_Update == '1'){
               this.serverdoc = true;
@@ -588,6 +589,10 @@ export class NewFormPage implements OnInit {
             }
             const secs: any = this.selecttemplat.template.secs;
             for (let i = 0; i < secs.length; i++) {
+              if(dynamicDatas && dynamicDatas[secs[i].secId]){
+                secs[i].dynamicData = dynamicDatas[secs[i].secId].dynamicData;
+                secs[i].seore = dynamicDatas[secs[i].secId]['score'][3];
+              }
               const fields = secs[i].fields;
               for (let j = 0; j < fields.length; j++) {
                 const field = fields[j];
@@ -697,11 +702,20 @@ export class NewFormPage implements OnInit {
             const quesFields: any = this.selecttemplat.template.quesFields;
             const qfield: any = quesFields.find(e => e.fieldId == data.name);
             if(qfield){
-              const qsec: any = qfield.answerWhen[val];
+              let qsec: any = [];
+              if(data.quesType==='singleselect'){
+                qsec = qfield.answerWhen[val];
+              }else{
+                for (let i = 0; i < val.length; i++) {
+                  const ele = val[i];
+                  qsec = qsec.concat(qfield.answerWhen[ele]);
+                }
+              }
               for (let i = 0; i < qsec.length; i++) {
                 const secId = qsec[i];
-                const index: number = this.quesSecId.findIndex(e => e == secId);
-                if (index != -1) this.quesSecId.splice(index, 1);
+                //const index: number = this.quesSecId.findIndex(e => e == secId);
+                //if (index != -1) this.quesSecId.splice(index, 1);
+                this.quesSecId = this.quesSecId.filter(e => e!=secId)
               }
             }
           }
@@ -974,14 +988,15 @@ export class NewFormPage implements OnInit {
           if (fieldError) {
             console.log("必填了")
             console.log(msg)
-            this.presentAlert("The follow fields are mandatory:<br/>" + msg, "", ["OK"])
-            return false;
+            //this.presentAlert("The follow fields are mandatory:<br/>" + msg, "", ["OK"])
+            //return false;
           }
         }
         var saveDyDatas = this.saveDyDatas();
         console.log(saveDyDatas);
         this.comScores(saveDyDatas);
         this.paraforsubmit.dynamicDatas = saveDyDatas;
+        console.log('this.paraforsubmit:',this.paraforsubmit)
         if (this.offlineFlag) {
           console.log('offline save');
           if(this.newdoc){
@@ -1967,6 +1982,23 @@ export class NewFormPage implements OnInit {
       this.router.navigate(["/new-form"], { queryParams: { unid: this.mainunid, aid: this.ulrs.aid, title: this.atitle, stat: this.ulrs.stat, type: actiontype, refresh: new Date().getTime(), cururl: this.lasturl } });
     } else {
       this.router.navigateByUrl(this.lasturl)
+      //this.nav.navigateBack('/tabs/tab1',{queryParams:{title:this.portaltitle}});
+    }
+
+
+  }
+  goBackView() {
+    // this.nav.back()
+    console.log(this.subformflag)
+    if (this.subformflag) {
+      let actiontype = "edit"
+      this.router.navigate(["/new-form"], { queryParams: { unid: this.mainunid, aid: this.ulrs.aid, title: this.atitle, stat: this.ulrs.stat, type: actiontype, refresh: new Date().getTime(), cururl: this.lasturl } });
+    } else {
+      if(this.offlineFlag){
+        this.router.navigate(['/form-list'],{queryParams:{vid:this.vid,vtitle:this.title,type:'formlist',formid:this.ulrs.aid,temptitle:this.portaltitle}});
+      }else{
+        this.router.navigateByUrl(this.lasturl)
+      }
       //this.nav.navigateBack('/tabs/tab1',{queryParams:{title:this.portaltitle}});
     }
 

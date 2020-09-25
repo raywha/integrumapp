@@ -23,6 +23,7 @@ export class PopoverComponent implements OnInit {
     public alertController: AlertController,
     public router:Router
   ) {
+    this.offlineFlag = localStorage.getItem('offlineFlag')?(localStorage.getItem('offlineFlag')=="false"?false:true):false;
     this.translate.get('setting').subscribe(res => {
       this.setting = res;
     })
