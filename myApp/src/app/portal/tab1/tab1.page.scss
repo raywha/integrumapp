@@ -2,9 +2,20 @@ ion-title ion-img{
   height: 40px;
 }
 .offline{
-  width:47px;
+  width:30px;
+  height:30px;
   border-radius: 50%;
   overflow: hidden;
+  ion-img{
+    width: 100%;
+    height:100%;
+  }
+  .bgdoff{
+    background-color: #FF4647;
+  }
+  .bgdon{
+    background-color:#65AB64;
+  }
 }
 .portal-box{
   padding: 1.5rem;

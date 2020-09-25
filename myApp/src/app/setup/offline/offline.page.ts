@@ -30,10 +30,16 @@ export class OfflinePage implements OnInit {
   ngOnInit() {
   }
   changeOffline() {
+    if(this.offlineFlag){
+      this.offlineFlag = false;
+    }else{
+      this.offlineFlag = true;
+    }
     localStorage.setItem('offlineFlag', this.offlineFlag + '');
+    this.gotoHomePage();
   }
   gotoHomePage(){
-    if(this.offlineFlag){
+    if(!this.offlineFlag){
       this.async();
     }else{
       this.nav.navigateBack('/tabs/tab1');
