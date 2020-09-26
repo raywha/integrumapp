@@ -139,6 +139,7 @@ export class NewFormPage implements OnInit {
   public newdoc: boolean = true;
   public serverdoc: boolean = false;
   public lastres: any;
+  public draftDocCreateTime: any;
 
   constructor(
     private storage: Storage,
@@ -539,8 +540,11 @@ export class NewFormPage implements OnInit {
           this.status = res.stat;
           this.storage.get(this.draftDocName).then(data => {
             data = JSON.parse(data);
+            console.log('draft:',data,'this.draftDocName:',this.draftDocName);
             const allfields: any = data.fields;
+            this.formID = data.docId;
             const createTime: any = data.createTime;
+            this.draftDocCreateTime = createTime;
             const dynamicDatas: any = data.dynamicDatas;
             const app_offline_Update = data.app_offline_Update;
             if(app_offline_Update && app_offline_Update == '1'){
@@ -988,8 +992,8 @@ export class NewFormPage implements OnInit {
           if (fieldError) {
             console.log("必填了")
             console.log(msg)
-            //this.presentAlert("The follow fields are mandatory:<br/>" + msg, "", ["OK"])
-            //return false;
+            this.presentAlert("The follow fields are mandatory:<br/>" + msg, "", ["OK"])
+            return false;
           }
         }
         var saveDyDatas = this.saveDyDatas();
@@ -2594,15 +2598,22 @@ export class NewFormPage implements OnInit {
                   this.offlineFlag = true;
                   localStorage.setItem('offlineFlag', this.offlineFlag + '');
 
-                  if(this.newdoc){
-                    this.paraforsubmit.app_offline_NewForm = "1";
-                  }else{
-                    if(this.serverdoc){
-                      this.paraforsubmit.app_offline_Update = "1";
-                    }else{
-                      this.paraforsubmit.app_offline_NewForm = "1";
-                    }
+                  // if(this.newdoc){
+                  //   this.paraforsubmit.app_offline_NewForm = "1";
+                  // }else{
+                  //   if(this.serverdoc){
+                  //     this.paraforsubmit.app_offline_Update = "1";
+                  //   }else{
+                  //     this.paraforsubmit.app_offline_NewForm = "1";
+                  //   }
+                  // }
+                  this.paraforsubmit = {
+                    "tempid": this.templatid,
+                    "formAction": "save",
+                    "docId": this.formID,
+                    "fields": this.fields
                   }
+                  this.paraforsubmit.app_offline_Update = "1";
                   this.offlineSave(this.paraforsubmit);
                 }
               },{
@@ -2650,15 +2661,22 @@ export class NewFormPage implements OnInit {
                 this.offlineFlag = true;
                 localStorage.setItem('offlineFlag', this.offlineFlag + '');
 
-                if(this.newdoc){
-                  this.paraforsubmit.app_offline_NewForm = "1";
-                }else{
-                  if(this.serverdoc){
-                    this.paraforsubmit.app_offline_Update = "1";
-                  }else{
-                    this.paraforsubmit.app_offline_NewForm = "1";
-                  }
+                // if(this.newdoc){
+                //   this.paraforsubmit.app_offline_NewForm = "1";
+                // }else{
+                //   if(this.serverdoc){
+                //     this.paraforsubmit.app_offline_Update = "1";
+                //   }else{
+                //     this.paraforsubmit.app_offline_NewForm = "1";
+                //   }
+                // }
+                this.paraforsubmit = {
+                  "tempid": this.templatid,
+                  "formAction": "save",
+                  "docId": this.formID,
+                  "fields": this.fields
                 }
+                this.paraforsubmit.app_offline_Update = "1";
                 this.offlineSave(this.paraforsubmit);
               }
             },{
@@ -2697,15 +2715,22 @@ export class NewFormPage implements OnInit {
                 this.offlineFlag = true;
                 localStorage.setItem('offlineFlag', this.offlineFlag + '');
 
-                if(this.newdoc){
-                  this.paraforsubmit.app_offline_NewForm = "1";
-                }else{
-                  if(this.serverdoc){
-                    this.paraforsubmit.app_offline_Update = "1";
-                  }else{
-                    this.paraforsubmit.app_offline_NewForm = "1";
-                  }
+                // if(this.newdoc){
+                //   this.paraforsubmit.app_offline_NewForm = "1";
+                // }else{
+                //   if(this.serverdoc){
+                //     this.paraforsubmit.app_offline_Update = "1";
+                //   }else{
+                //     this.paraforsubmit.app_offline_NewForm = "1";
+                //   }
+                // }
+                this.paraforsubmit = {
+                  "tempid": this.templatid,
+                  "formAction": "save",
+                  "docId": this.formID,
+                  "fields": this.fields
                 }
+                this.paraforsubmit.app_offline_Update = "1";
                 this.offlineSave(this.paraforsubmit);
               }
             },{
@@ -2746,15 +2771,22 @@ export class NewFormPage implements OnInit {
                 this.offlineFlag = true;
                 localStorage.setItem('offlineFlag', this.offlineFlag + '');
 
-                if(this.newdoc){
-                  this.paraforsubmit.app_offline_NewForm = "1";
-                }else{
-                  if(this.serverdoc){
-                    this.paraforsubmit.app_offline_Update = "1";
-                  }else{
-                    this.paraforsubmit.app_offline_NewForm = "1";
-                  }
+                // if(this.newdoc){
+                //   this.paraforsubmit.app_offline_NewForm = "1";
+                // }else{
+                //   if(this.serverdoc){
+                //     this.paraforsubmit.app_offline_Update = "1";
+                //   }else{
+                //     this.paraforsubmit.app_offline_NewForm = "1";
+                //   }
+                // }
+                this.paraforsubmit = {
+                  "tempid": this.templatid,
+                  "formAction": "save",
+                  "docId": this.formID,
+                  "fields": this.fields
                 }
+                this.paraforsubmit.app_offline_Update = "1";
                 this.offlineSave(this.paraforsubmit);
               }
             },{
@@ -2793,15 +2825,22 @@ export class NewFormPage implements OnInit {
                 this.offlineFlag = true;
                 localStorage.setItem('offlineFlag', this.offlineFlag + '');
 
-                if(this.newdoc){
-                  this.paraforsubmit.app_offline_NewForm = "1";
-                }else{
-                  if(this.serverdoc){
-                    this.paraforsubmit.app_offline_Update = "1";
-                  }else{
-                    this.paraforsubmit.app_offline_NewForm = "1";
-                  }
+                // if(this.newdoc){
+                //   this.paraforsubmit.app_offline_NewForm = "1";
+                // }else{
+                //   if(this.serverdoc){
+                //     this.paraforsubmit.app_offline_Update = "1";
+                //   }else{
+                //     this.paraforsubmit.app_offline_NewForm = "1";
+                //   }
+                // }
+                this.paraforsubmit = {
+                  "tempid": this.templatid,
+                  "formAction": "save",
+                  "docId": this.formID,
+                  "fields": this.fields
                 }
+                this.paraforsubmit.app_offline_Update = "1";
                 this.offlineSave(this.paraforsubmit);
               }
             },{
@@ -2841,15 +2880,22 @@ export class NewFormPage implements OnInit {
                 this.offlineFlag = true;
                 localStorage.setItem('offlineFlag', this.offlineFlag + '');
 
-                if(this.newdoc){
-                  this.paraforsubmit.app_offline_NewForm = "1";
-                }else{
-                  if(this.serverdoc){
-                    this.paraforsubmit.app_offline_Update = "1";
-                  }else{
-                    this.paraforsubmit.app_offline_NewForm = "1";
-                  }
+                // if(this.newdoc){
+                //   this.paraforsubmit.app_offline_NewForm = "1";
+                // }else{
+                //   if(this.serverdoc){
+                //     this.paraforsubmit.app_offline_Update = "1";
+                //   }else{
+                //     this.paraforsubmit.app_offline_NewForm = "1";
+                //   }
+                // }
+                this.paraforsubmit = {
+                  "tempid": this.templatid,
+                  "formAction": "save",
+                  "docId": this.formID,
+                  "fields": this.fields
                 }
+                this.paraforsubmit.app_offline_Update = "1";
                 this.offlineSave(this.paraforsubmit);
               }
             },{
@@ -2887,16 +2933,7 @@ export class NewFormPage implements OnInit {
                   this.offlineFlag = true;
                   localStorage.setItem('offlineFlag', this.offlineFlag + '');
   
-                  if(this.newdoc){
-                    this.paraforsubmit.app_offline_NewForm = "1";
-                  }else{
-                    if(this.serverdoc){
-                      this.paraforsubmit.app_offline_Update = "1";
-                    }else{
-                      this.paraforsubmit.app_offline_NewForm = "1";
-                    }
-                  }
-                  this.offlineSave(this.paraforsubmit);
+                  
                 }
               },{
                 text: 'No',
@@ -3222,6 +3259,8 @@ export class NewFormPage implements OnInit {
     let ifFileExist: boolean = false;
 
     const draftLists = this.draftCtrl.getSavedFiles(this.templatid);
+    let offlineUpdate: boolean = false;
+    if(paraforsubmit.app_offline_Update && paraforsubmit.app_offline_Update == "1") offlineUpdate = true; 
     //check if file exist
     for (let p = 0; p < draftLists.length; p++) {
 
@@ -3245,6 +3284,11 @@ export class NewFormPage implements OnInit {
       //draftSavedTime = formduedate;
     }
     if (ifFileExist) {
+      if(offlineUpdate){
+        paraforsubmit["docId"] = this.formID;
+      }
+      paraforsubmit.createTime = this.draftDocCreateTime;
+      console.log('==============================paraforsubmit:',paraforsubmit)
       this.storage.set(oldFilename, JSON.stringify(paraforsubmit)).then((data) => {
         const status: string = this.getStatusText(this.status);
         console.log('status:',status,'----this.status:',this.status)
@@ -3253,9 +3297,12 @@ export class NewFormPage implements OnInit {
           this.router.navigate(["/new-form"], { queryParams: { unid: this.mainunid, aid: this.ulrs.aid, title: this.atitle, stat: this.ulrs.stat, type: 'edit', refresh: new Date().getTime(), cururl: this.lasturl } });
         } else {
           if(!this.formID){      
-            this.router.navigate(['/form-list'],{queryParams:{vid:this.vid,vtitle:this.title,type:'formlist',formid:this.ulrs.aid,temptitle:this.portaltitle}});
+            console.log("-----aaa")
+            
+              this.router.navigate(['/form-list'],{queryParams:{vid:this.vid,vtitle:this.title,type:'formlist',formid:this.ulrs.aid,temptitle:this.portaltitle}});
           }else{
-            this.router.navigateByUrl(this.lasturl);
+            //this.router.navigateByUrl(this.lasturl);
+            this.nav.navigateBack('/tabs/tab1',{queryParams:{title:this.portaltitle}});
           }
         }
 
@@ -3264,11 +3311,23 @@ export class NewFormPage implements OnInit {
     }
     else {
       //this.storage.ready().then(db=>{
-        paraforsubmit.createTime = moment(new Date()).format('DD-MM-YYYY HH:mm');
-        console.log('newfilename:',newFileName,'paramer:',paraforsubmit)
+        let status: string = 'ka_Draft';
+        let WFStatus: string = 'Draft';
+        let refNo: any;
+        if(offlineUpdate){
+          WFStatus = this.status;
+          status = this.getStatusText(this.status);
+          refNo = this.title;
+          paraforsubmit["docId"] = this.formID;
+        }else{
+          paraforsubmit.createTime = moment(new Date()).format('DD-MM-YYYY HH:mm');
+
+        }
+        console.log('newfilename:',newFileName,'paramer:',paraforsubmit);
+        //this.paraforsubmit.app_offline_Update = "1";
+
         this.storage.set(newFileName, JSON.stringify(paraforsubmit));
-          const status: string = 'ka_Draft';
-          const WFStatus: string = 'Draft';
+          
           if(localStorage.getItem('allTemplateID')){
             const templateIDs = JSON.parse(localStorage.getItem('allTemplateID'));
             const n = templateIDs.findIndex(e => e == this.templatid);
@@ -3282,7 +3341,7 @@ export class NewFormPage implements OnInit {
             localStorage.setItem('allTemplateID',JSON.stringify(templateIDs));
           }
           console.log('**************************222')
-          this.draftCtrl.saveFiletoBepersisted(newFileName, status, this.templatid, this.vid, draftSavedTime, initiatorOrMR, WFStatus);
+          this.draftCtrl.saveFiletoBepersisted(newFileName, status, this.templatid, this.vid, draftSavedTime, initiatorOrMR, WFStatus, refNo);
           console.log('onffline save this.lasturl:',this.lasturl)
           if (this.subformflag) {
             this.router.navigate(["/new-form"], { queryParams: { unid: this.mainunid, aid: this.ulrs.aid, title: this.atitle, stat: this.ulrs.stat, type: "edit", refresh: new Date().getTime(), cururl: this.lasturl } });
@@ -3290,14 +3349,11 @@ export class NewFormPage implements OnInit {
             if(!this.formID){      
               this.router.navigate(['/form-list'],{queryParams:{vid:this.vid,vtitle:this.title,type:'formlist',formid:this.ulrs.aid,temptitle:this.portaltitle}});
             }else{
-              this.router.navigateByUrl(this.lasturl);
+              //this.router.navigateByUrl(this.lasturl);
+              this.nav.navigateBack('/tabs/tab1',{queryParams:{title:this.portaltitle}});
             }
           }
-          // this.navCtrl.pop();
-          // this.draftCtrl.clearRiskMatrixObj();
-          // this.microDbName = '';
-          // this.draftCtrl.clearMicroFileName();
-          // this.clearInput();
+          
 
      // })
       

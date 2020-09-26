@@ -23,6 +23,10 @@ const routes: Routes = [
     path: 'lastrelease',
     loadChildren: () => import('./setup/lastrelease/lastrelease.module').then( m => m.LastreleasePageModule)
   },
+  {
+    path: 'online',
+    loadChildren: () => import('./setup/online/online.module').then( m => m.OnlinePageModule)
+  },
 
 
 

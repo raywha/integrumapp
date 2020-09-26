@@ -32,7 +32,7 @@ export class FormDrafts {
 
   };
 
-  saveFiletoBepersisted(newFiles, status, templateId, vid, draftSavedTime,initiatorOrMR,WFStatus, draftOtherInfo?) {
+  saveFiletoBepersisted(newFiles, status, templateId, vid, draftSavedTime,initiatorOrMR,WFStatus,refno?, draftOtherInfo?) {
     console.log('Hello FormDrafts Provider saveFiletoBepersisted ========', newFiles, status, templateId, draftSavedTime);
 
     let filesArray = [];
@@ -40,7 +40,13 @@ export class FormDrafts {
     if (file) {
       filesArray = JSON.parse(file);
     }
-    const retNo: string = this.createRefNo(templateId);
+    let retNo: any;
+    if(refno){
+      retNo = refno;
+    }else{
+      retNo = this.createRefNo(templateId);
+    }
+    
     filesArray.unshift({ name: newFiles, status: status, WFStatus, formMR:initiatorOrMR, calendarDate: draftSavedTime, draftOtherInfo: draftOtherInfo, DocRefNumber: retNo, vid  });
 
     //localStorage.setItem(this.FILE_STORAGE_KEY, JSON.stringify(this.filesArray));

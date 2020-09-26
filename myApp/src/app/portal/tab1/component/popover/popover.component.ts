@@ -65,8 +65,12 @@ export class PopoverComponent implements OnInit {
     } else if (code == 3) {
       this.Popover.dismiss()
       // this.nav.navigateBack('add-action');
-
-      this.nav.navigateBack('offline');
+      if(this.offlineFlag){
+        this.nav.navigateBack('offline');
+      }else{
+        this.nav.navigateBack('online');
+      }
+      
     }else if (code == 4) {
       this.Popover.dismiss()
       // this.nav.navigateBack('add-action');
