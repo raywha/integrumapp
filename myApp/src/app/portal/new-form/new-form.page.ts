@@ -641,7 +641,7 @@ export class NewFormPage implements OnInit {
         this.quesSecId = this.quesSecId.concat(answerWhen[key]);
       }
     }
-
+    let selectSecId: any = [];
     for (let i = 0; i < this.selecttemplat.template.secs.length; i++) {
       this.selecttemplat.template.secs[i].fields.forEach(data => {
         
@@ -741,7 +741,12 @@ export class NewFormPage implements OnInit {
         //this.selectScore(data,data.value,this.selecttemplat.template.secs[i].title)
       })
       // console .log(this.selecttemplat.template.secs[i])
-      if (this.quesSecId.indexOf(this.selecttemplat.template.secs[i].secId) == -1) this.sections.push(this.selecttemplat.template.secs[i])
+      if (this.quesSecId.indexOf(this.selecttemplat.template.secs[i].secId) == -1){
+        this.sections.push(this.selecttemplat.template.secs[i]);
+        //if(this.offlineFlag){
+          selectSecId.push(this.selecttemplat.template.secs[i].secId);
+        //}
+      } 
       this.sectionsold.push(this.selecttemplat.template.secs[i])
       this.list.push({ "show": false })
       if(this.selecttemplat.template.secs[i].dynamicData){
@@ -761,8 +766,10 @@ export class NewFormPage implements OnInit {
         };
         this.selecttemplat.template.secs.push(section);
         this.sections.push(section);
+        selectSecId.push('AuditTrail');
       }
     }
+    this.selecttemplat.sectionids = selectSecId;
     this.initHasSubfield('change');
     let flag = this.sections.some(function (obj, index) {
       //console.log(obj.title)
@@ -807,13 +814,289 @@ export class NewFormPage implements OnInit {
         }else{
           this.inheritMap = result;
           console.log("-------ssss:",this.inheritMap);
-          this.getAllForms(res);
+          this.getAllForms(res);    
+          
         }
         
       })    
     }else{
-      this.getAllForms(res);     
+      if(this.offlineFlag && res.docname){
+        this.getOfflineTemplate(res);
+      }else{
+        this.getAllForms(res);
+      } 
     }
+  }
+  getOfflineTemplate(res: any){
+    this.type = res.type;
+          
+    this.title = res.title;
+    this.status = res.stat;
+    this.storage.get(this.draftDocName).then(data => {
+      data = JSON.parse(data);
+      console.log('draft:', data, 'this.draftDocName:', this.draftDocName);
+
+      
+      this.selecttemplat = data.template;
+      console.log('new selecttemplate:',this.selecttemplat)
+      this.mandatoryWhenApprove = this.selecttemplat.mandatoryWhenApprove?this.selecttemplat.mandatoryWhenApprove:"0";
+      this.skipMandatory = this.selecttemplat.skipMandatory?this.selecttemplat.skipMandatory:"0";
+      //this.title = this.selecttemplat.template.templateTitle;
+      this.sysfields = this.selecttemplat.template.secs[0].fields;
+      this.mandafields = this.selecttemplat.template.mandaFields;
+      this.templatid = this.selecttemplat.templateId;
+      console.log('this.templatid:', this.templatid);
+
+      const allfields: any = data.fields;
+      this.formID = data.docId;
+      const savedOfflineDoc: any = data.createTime;
+      // const createTime: any = data.createTime;
+      // this.draftDocCreateTime = createTime;
+      const dynamicDatas: any = data.dynamicDatas;
+      const app_offline_Update = data.app_offline_Update;
+      let offlineUpdate: boolean = false;
+      if(app_offline_Update && app_offline_Update == '1'){
+        offlineUpdate = true;
+      }
+      let selectSecId: any = this.selecttemplat.sectionids ? this.selecttemplat.sectionids : [];
+
+      if (offlineUpdate) {
+        this.serverdoc = true;
+        
+        this.storage.get('offlinemuitldata').then(d => {
+          d = JSON.parse(d);
+          if (this.type == 'open') {
+            this.btnBox = {
+              "result": [
+                { "btnType": "btnEdit", "btnLabel": d.online.btnedit ? d.online.btnedit : 'Edit' },
+                //{ "btnType": "btnDelete", "btnLabel": d.online.btndelete?d.online.btndelete:'Delete' },
+                { "btnType": "btnClose", "btnLabel": d.online.btnclose ? d.online.btnclose : "Close" }
+              ]
+            };
+          } else {
+            this.btnBox = {
+              "result": [
+                { "btnType": "btnSave", "btnLabel": d.online.btnsave ? d.online.btnsave : 'Save' },
+                //{ "btnType": "btnDelete", "btnLabel": d.online.btndelete?d.online.btndelete:'Delete' },
+                { "btnType": "btnClose", "btnLabel": d.online.btnclose ? d.online.btnclose : "Close" }
+              ]
+            };
+          }
+        })
+      } else {
+        this.storage.get('offlinemuitldata').then(d => {
+          d = JSON.parse(d);
+          if (this.type == 'open') {
+            this.btnBox = {
+              "result": [
+                { "btnType": "btnEdit", "btnLabel": d.online.btnedit ? d.online.btnedit : 'Edit' },
+                { "btnType": "btnDelete", "btnLabel": d.online.btndelete ? d.online.btndelete : 'Delete' },
+                { "btnType": "btnClose", "btnLabel": d.online.btnclose ? d.online.btnclose : "Close" }
+              ]
+            };
+          } else {
+            this.btnBox = {
+              "result": [
+                { "btnType": "btnSave", "btnLabel": d.online.btnsave ? d.online.btnsave : 'Save' },
+                { "btnType": "btnDelete", "btnLabel": d.online.btndelete ? d.online.btndelete : 'Delete' },
+                { "btnType": "btnClose", "btnLabel": d.online.btnclose ? d.online.btnclose : "Close" }
+              ]
+            };
+          }
+        })
+      }
+      
+      selectSecId = ['FormMr'].concat(selectSecId);
+      if (!this.selecttemplat) {
+        console.log('Not find selecttemplat!');
+        return false;
+      }
+      if (this.selecttemplat.secondFormMR && this.selecttemplat.secondFormMR.mrType) {
+        this.mr2Type = this.selecttemplat.secondFormMR.mrType;
+        if (this.selecttemplat.secondFormMR.value) this.mr2Val = this.selecttemplat.secondFormMR.value;
+        if (this.selecttemplat.secondFormMR.label) this.mr2Label = this.selecttemplat.secondFormMR.label;
+      }
+
+      let quesFields: any = this.selecttemplat.template.quesFields;
+      for (let i = 0; i < quesFields.length; i++) {
+        const element = quesFields[i];
+        let answerWhen = element.answerWhen;
+        for (let key in answerWhen) {
+          this.quesSecId = this.quesSecId.concat(answerWhen[key]);
+        }
+      }
+      console.log('selecttemplate:', this.selecttemplat.template)
+      for (let i = 0; i < this.selecttemplat.template.secs.length; i++) {
+        if (this.selecttemplat.template.secs[i].fields && this.selecttemplat.template.secs[i].sectionType != '1') {
+          this.selecttemplat.template.secs[i].fields.forEach(data => {
+
+            //data.value = formdata[data.name]
+            if (data.name == "GMP_SEV_GMP_SH") {
+              this.severityvalue = data.value
+            }
+
+            if (data.xtype == "radio" || data.xtype == "select") {
+              if (data.xtype == "radio") data.options = data.options.filter(function (obj) { return obj.value != "" })
+              //data.options = data.options.filter(function (obj) { return obj.value != "" })
+              if (data.xtype == "select") {
+                let secId = this.selecttemplat.template.secs[i].secId;
+                if (this.selecttemplat.template.subListFields.length > 0) {
+                  let fieldname = data.name;
+                  let fieldId = fieldname.split(secId + '_')[1];
+                  let v = this.selecttemplat.template.subListFields.find(e => e.parentSecId == secId &&
+                    e.options && e.options.subfieldlist && e.options.subfieldlist.pfieldid && e.options.subfieldlist.pfieldid == fieldId)
+                  if (v) {
+                    data.hasSubfield = true;
+                    data.fieldId = fieldId;
+                    this.getSublistOption(data, secId, 'open');
+                  }
+
+                }
+                if (data.lookup && data.lookup.view) {
+                  this.getSublistOption(data, secId, 'open');
+                }
+              }
+            } else if (data.xtype == 'multiou' || data.xtype == 'singleou') {
+              let obj: any = this.getOuLevelAndGroupId(data.name, this.selecttemplat.template.secs[i].secId);
+              let level: number = obj.level;
+              let ouGroupId: string = obj.ouGroupId;
+
+              if (data.value) {
+                // let iou:any = data.value.split('/');
+                // let tmp:any = '';
+                // for(let m=0;m<level;m++){
+                //   if(tmp==''){
+                //     if(iou[m]) tmp=iou[m];
+                //   }else{
+                //     if(iou[m]) tmp+="/"+iou[m];
+                //   }
+                // }
+                this.getOUSublistdetails(data.name, data.value, this.selecttemplat.template.secs[i].secId);
+                //data.value = tmp;
+              }
+
+            } else if (data.xtype == 'riskmatrix') {
+              if (this.riskname) {
+                if (this.riskname == data.name) {
+                  data.value = this.riskmatrixvalue;
+                }
+              } else {
+                if (data.value && data.value.ResultColor) {
+                  let ResultColor: string = data.value.ResultColor;
+                  if (ResultColor.indexOf('.jpg') != -1) {
+                    let corlor: string = ResultColor.split('.jpg')[0];
+                    if (corlor.indexOf('riskrank_') != -1) {
+                      data.value['ResultColor'] = corlor.split('riskrank_')[1];
+                    }
+                  }
+                }
+              }
+            } else if (data.xtype == 'checkbox') {
+              if (data.value) {
+                let cehckvalues = data.value.split(",")
+                data.options.forEach(option => {
+                  let flag = cehckvalues.some(v => {
+                    return v == option.value
+                  })
+                  if (flag) {
+                    option.ischeck = true
+                  } else {
+                    option.ischeck = false
+                  }
+                })
+              }
+
+
+            } else if (data.xtype == 'questionnaire') {
+              let v = data.options[0];
+              if (v && v.value) {
+                if (v.value != '' && data.quesType === 'singleselect') data.options.unshift({ value: '', text: '' });
+              }
+            } else if (data.xtype == 'date') {
+              if (this.type != 'edit') {
+                if (data.value && data.value != '') data.value = moment(`${data.value}`, 'YYYY-MM-DD').format('DD/MM/YYYY');
+              }
+            } else if (data.xtype == 'time') {
+              //if(this.type != 'edit'){
+              if (data.value && data.value != '') data.value = moment(`${data.value}`, 'YYYY-MM-DD hh:mm:ss').format('HH:mm:ss');
+              //}
+            } else if (data.xtype == 'signature') {
+              data.value = this.sanitizer.bypassSecurityTrustResourceUrl(data.value);
+            } else if (data.xtype == 'headline') {
+              console.log('data.label:', data.label)
+              if (data.name == 'hsi_IncidentDetails_hsi_headlineCFOrg' || data.name == 'hsi_IncidentDetails_hsi_headlineCFHuman' || data.name == 'hsi_IncidentDetails_hsi_headlineCFTech') data.hide = true;
+              // if(this.findSameLabelname(this.selecttemplat.template.secs[i].fields,data.label,data.name)){
+              //   data.hide = true;
+              // }
+            }
+            this.fields.push(data) //
+            // this.selectScore(data,data.value,this.selecttemplat.template.secs[i].title)
+          })
+        } else if (this.selecttemplat.template.secs[i].secId == "AuditTrail") {
+          if (this.selecttemplat.template.secs[i].secInfoContent && this.selecttemplat.template.secs[i].secInfoContent != '') {
+
+            let secInfoContent = this.selecttemplat.template.secs[i].secInfoContent;
+            secInfoContent = secInfoContent.replace(/\n/g, '<br/>');
+            this.selecttemplat.template.secs[i].secInfoContent = secInfoContent
+            selectSecId.push('AuditTrail');
+          }
+        }
+        if (this.selecttemplat.template.secs[i].sectionType == '1') {
+          //TODO
+          // console.log('this.selecttemplat.template.secs[i]:', this.selecttemplat.template.secs[i])
+          // const { secId, title, fields, enableHideRemoveButton, IsMircroSort, microData: { IsSupperUser, dcData } } = this.selecttemplat.template.secs[i];
+          // console.log('this.microdbData:', this.microdbData);
+          // const microsec = this.selecttemplat.template.secs[i];
+          // if (IsMircroSort == 'ka_Yes') {
+          //   const sortField = microsec.sortField;
+          //   microsec.sortFieldName = sortField;
+          //   if (sortField.includes(' ')) microsec.sortFieldName = sortField.split(' ')[0];
+          //   microsec.sortStatus = 'N';
+
+          //   const sortIndex = microsec.dispFields.findIndex(e => e.id == microsec.sortFieldName);
+          //   microsec.sortIndex = sortIndex;
+          // }
+          // this.microdbData.push({ secId, title, fields, enableHideRemoveButton, IsMircroSort, IsSupperUser, dcData });
+        }
+        // console .log(this.selecttemplat.template.secs[i])
+        // console.log(this.selecttemplat.template.secs[i].secId)
+        if (selectSecId.indexOf(this.selecttemplat.template.secs[i].secId) != -1) this.sections.push(this.selecttemplat.template.secs[i])
+        if(savedOfflineDoc){
+          const auditSec: any = this.selecttemplat.template.secs.find(sec => sec.secId == "AuditTrail");
+          if(!auditSec){
+            const section: any = {
+              secId: "AuditTrail",
+              secInfoContent: `***** Created by ${this.initiator} from offline mode on ${savedOfflineDoc} *****`,
+              title: "Audit Trail"
+            };
+            this.selecttemplat.template.secs.push(section);
+            //this.sections.push(section);
+            selectSecId.push('AuditTrail');
+          }
+        }
+        //if(this.quesSecId.indexOf(this.selecttemplat.template.secs[i].secId)==-1) this.sections.push(this.selecttemplat.template.secs[i])
+        this.sectionsold.push(this.selecttemplat.template.secs[i])
+        if (this.selecttemplat.template.secs[i].dynamicData) {
+          let dynamicJson = {};
+          dynamicJson["fields"] = this.selecttemplat.template.secs[i].fields;
+          dynamicJson["dynamicData"] = this.selecttemplat.template.secs[i].dynamicData;
+          this.dynamicDatas[this.selecttemplat.template.secs[i].secId] = dynamicJson;
+        }
+        this.list.push({ "show": false })
+        this.commonCtrl.hide()
+      }
+      this.initHasSubfield('open');
+      // console.log(this.list)
+      let flag = this.sections.some(function (obj, index) {
+        return obj.title == "Severity"
+      })
+      if (flag) {
+        this.change({ "label": "Severity", "value": this.severityvalue })
+      }
+      this.comPercents();
+    }).catch(e => {
+      console.log(this.draftDocName, ' error:', e);
+    })
   }
   comPercents(){  
     const secs = this.selecttemplat.template.secs;
@@ -993,7 +1276,7 @@ export class NewFormPage implements OnInit {
             console.log("必填了")
             console.log(msg)
             this.presentAlert("The follow fields are mandatory:<br/>" + msg, "", ["OK"])
-            return false;
+           return false;
           }
         }
         var saveDyDatas = this.saveDyDatas();
@@ -1409,6 +1692,12 @@ export class NewFormPage implements OnInit {
             this.initHasSubfield('open');
           }
         });
+        let selectIds: any = [];
+        this.sections.forEach(e => {
+          selectIds.push(e.secId);
+        })
+        this.selecttemplat.sectionids = selectIds;
+        
       }
       
 
@@ -1862,7 +2151,7 @@ export class NewFormPage implements OnInit {
           this.storage.get('offlinemuitldata').then( d => {
             d = JSON.parse(d);
             console.log('d:',d)
-            this.presentAlert(`${d.online.offlineTip}<br/>${d.online.ischangeOffline}`, "", [{
+            /*this.presentAlert(`${d.online.offlineTip}<br/>${d.online.ischangeOffline}`, "", [{
               text: 'Yes',
               handler: () => {
                 this.offlineFlag = true;
@@ -1876,7 +2165,7 @@ export class NewFormPage implements OnInit {
                 //this.goBack();
               }
             }
-          ]);
+          ]);*/
           })
           
         }else{
@@ -3283,6 +3572,8 @@ export class NewFormPage implements OnInit {
     if(formduedate){
       //draftSavedTime = formduedate;
     }
+    paraforsubmit.template = this.selecttemplat;
+    paraforsubmit.template.templateId = this.templatid;
     if (ifFileExist) {
       if(offlineUpdate){
         paraforsubmit["docId"] = this.formID;
@@ -3296,14 +3587,7 @@ export class NewFormPage implements OnInit {
         if (this.subformflag) {
           this.router.navigate(["/new-form"], { queryParams: { unid: this.mainunid, aid: this.ulrs.aid, title: this.atitle, stat: this.ulrs.stat, type: 'edit', refresh: new Date().getTime(), cururl: this.lasturl } });
         } else {
-          if(!this.formID){      
-            console.log("-----aaa")
-            
-              this.router.navigate(['/form-list'],{queryParams:{vid:this.vid,vtitle:this.title,type:'formlist',formid:this.ulrs.aid,temptitle:this.portaltitle}});
-          }else{
-            //this.router.navigateByUrl(this.lasturl);
-            this.nav.navigateBack('/tabs/tab1',{queryParams:{title:this.portaltitle}});
-          }
+          this.router.navigate(['/form-list'],{queryParams:{vid:this.vid,vtitle:this.title,type:'formlist',formid:this.ulrs.aid,temptitle:this.portaltitle}});
         }
 
       });
@@ -3315,11 +3599,13 @@ export class NewFormPage implements OnInit {
         let WFStatus: string = 'Draft';
         let refNo: any;
         if(offlineUpdate){
+          console.log("---------1111111:",this.title);
           WFStatus = this.status;
           status = this.getStatusText(this.status);
           refNo = this.title;
           paraforsubmit["docId"] = this.formID;
         }else{
+          console.log("---------22222222:",this.title);
           paraforsubmit.createTime = moment(new Date()).format('DD-MM-YYYY HH:mm');
 
         }

@@ -216,6 +216,11 @@ export class AuthemailPage implements OnInit {
                     console.log('getAllForms--otime.toLocaleTimeString:', otime.toLocaleTimeString(), '-->starttime:', curtime.toLocaleTimeString());
                     data = JSON.parse(data.data);
                     this.storage.set('allforms', JSON.stringify(data));
+                    this.commonCtrl.processHide();
+                    this.ngZone.run(() => {
+
+                      this.router.navigate(['tabs/tab1'], { queryParams: { lan: data.lan } })
+                    })
                   })
                   this.auth.getOfflineMultiData().pipe(first()).subscribe(
                     data => {
@@ -270,12 +275,12 @@ export class AuthemailPage implements OnInit {
                       console.log('getous--otime.toLocaleTimeString:', otime.toLocaleTimeString(), '-->starttime:', curtime.toLocaleTimeString());
                       data = JSON.parse(data.data);
                       this.storage.set('ous', JSON.stringify(data));
-                      this.commonCtrl.processHide();
-                  this.ngZone.run(() => {
+                      // this.commonCtrl.processHide();
+                      // this.ngZone.run(() => {
 
-                    this.router.navigate(['tabs/tab1'],{ queryParams: { lan: data.lan } })
-                  })
-                  
+                      //   this.router.navigate(['tabs/tab1'], { queryParams: { lan: data.lan } })
+                      // })
+
                     }
                   )
                   
