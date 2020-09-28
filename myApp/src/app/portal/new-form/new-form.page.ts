@@ -248,14 +248,14 @@ export class NewFormPage implements OnInit {
                 d = JSON.parse(d);
                 console.log('d:',d)
                 this.presentAlert(`${d.online.offlineTip}<br/>${d.online.ischangeOffline}`, "", [{
-                  text: 'Yes',
+                  text: d.online.yes,
                   handler: () => {
                     this.offlineFlag = true;
                     localStorage.setItem('offlineFlag', this.offlineFlag + '');
                     this.nav.navigateBack('/tabs/tab1',{queryParams:{title:this.portaltitle}});
                   }
                 },{
-                  text: 'No',
+                  text: d.online.no,
                   handler: () => {
                     
                   }
@@ -795,7 +795,7 @@ export class NewFormPage implements OnInit {
             d = JSON.parse(d);
             console.log('d:',d)
             this.presentAlert(`${d.online.offlineTip}<br/>${d.online.ischangeOffline}`, "", [{
-              text: 'Yes',
+              text: d.online.yes,
               handler: () => {
                 this.offlineFlag = true;
                 localStorage.setItem('offlineFlag', this.offlineFlag + '');
@@ -803,7 +803,7 @@ export class NewFormPage implements OnInit {
                 this.getAllForms(res);
               }
             },{
-              text: 'No',
+              text: d.online.no,
               handler: () => {
                 //this.goBack();
               }
@@ -1374,7 +1374,7 @@ export class NewFormPage implements OnInit {
               d = JSON.parse(d);
               console.log('d:',d)
               this.presentAlert(`${d.online.deletetip}`, "", [{
-                text: 'Yes',
+                text: d.online.yes,
                 handler: () => {
                   this.storage.remove(this.draftDocName);
                   let file: any = localStorage.getItem(this.templatid);
@@ -1388,7 +1388,7 @@ export class NewFormPage implements OnInit {
               
                 }
               },{
-                text: 'No',
+                text: d.online.no,
                 handler: () => {
                   
                 }
@@ -1563,7 +1563,7 @@ export class NewFormPage implements OnInit {
               d = JSON.parse(d);
               console.log('d:',d)
               this.presentAlert(`${d.online.offlineTip}<br/>${d.online.ischangeOffline}`, "", [{
-                text: 'Yes',
+                text: d.online.yes,
                 handler: () => {
                   this.offlineFlag = true;
                   localStorage.setItem('offlineFlag', this.offlineFlag + '');
@@ -1580,7 +1580,7 @@ export class NewFormPage implements OnInit {
                   this.offlineSave(this.paraforsubmit);
                 }
               },{
-                text: 'No',
+                text: d.online.no,
                 handler: () => {
                   this.goBack();
                 }
@@ -2882,7 +2882,7 @@ export class NewFormPage implements OnInit {
               d = JSON.parse(d);
               console.log('d:',d)
               this.presentAlert(`${d.online.offlineTip}<br/>${d.online.ischangeOffline}`, "", [{
-                text: 'Yes',
+                text: d.online.yes,
                 handler: () => {
                   this.offlineFlag = true;
                   localStorage.setItem('offlineFlag', this.offlineFlag + '');
@@ -2906,7 +2906,7 @@ export class NewFormPage implements OnInit {
                   this.offlineSave(this.paraforsubmit);
                 }
               },{
-                text: 'No',
+                text: d.online.no,
                 handler: () => {
                   this.goBack();
                 }
@@ -2945,7 +2945,7 @@ export class NewFormPage implements OnInit {
             d = JSON.parse(d);
             console.log('d:',d)
             this.presentAlert(`${d.online.offlineTip}<br/>${d.online.ischangeOffline}`, "", [{
-              text: 'Yes',
+              text: d.online.yes,
               handler: () => {
                 this.offlineFlag = true;
                 localStorage.setItem('offlineFlag', this.offlineFlag + '');
@@ -2969,7 +2969,7 @@ export class NewFormPage implements OnInit {
                 this.offlineSave(this.paraforsubmit);
               }
             },{
-              text: 'No',
+              text: d.online.no,
               handler: () => {
                 this.goBack();
               }
@@ -2999,7 +2999,7 @@ export class NewFormPage implements OnInit {
             d = JSON.parse(d);
             console.log('d:',d)
             this.presentAlert(`${d.online.offlineTip}<br/>${d.online.ischangeOffline}`, "", [{
-              text: 'Yes',
+              text: d.online.yes,
               handler: () => {
                 this.offlineFlag = true;
                 localStorage.setItem('offlineFlag', this.offlineFlag + '');
@@ -3023,7 +3023,7 @@ export class NewFormPage implements OnInit {
                 this.offlineSave(this.paraforsubmit);
               }
             },{
-              text: 'No',
+              text: d.online.no,
               handler: () => {
                 this.goBack();
               }
@@ -3055,7 +3055,7 @@ export class NewFormPage implements OnInit {
             d = JSON.parse(d);
             console.log('d:',d)
             this.presentAlert(`${d.online.offlineTip}<br/>${d.online.ischangeOffline}`, "", [{
-              text: 'Yes',
+              text: d.online.yes,
               handler: () => {
                 this.offlineFlag = true;
                 localStorage.setItem('offlineFlag', this.offlineFlag + '');
@@ -3079,7 +3079,7 @@ export class NewFormPage implements OnInit {
                 this.offlineSave(this.paraforsubmit);
               }
             },{
-              text: 'No',
+              text: d.online.no,
               handler: () => {
                 this.goBack();
               }
@@ -3109,7 +3109,7 @@ export class NewFormPage implements OnInit {
             d = JSON.parse(d);
             console.log('d:',d)
             this.presentAlert(`${d.online.offlineTip}<br/>${d.online.ischangeOffline}`, "", [{
-              text: 'Yes',
+              text: d.online.yes,
               handler: () => {
                 this.offlineFlag = true;
                 localStorage.setItem('offlineFlag', this.offlineFlag + '');
@@ -3133,7 +3133,7 @@ export class NewFormPage implements OnInit {
                 this.offlineSave(this.paraforsubmit);
               }
             },{
-              text: 'No',
+              text: d.online.no,
               handler: () => {
                 this.goBack();
               }
@@ -3164,7 +3164,7 @@ export class NewFormPage implements OnInit {
             d = JSON.parse(d);
             console.log('d:',d)
             this.presentAlert(`${d.online.offlineTip}<br/>${d.online.ischangeOffline}`, "", [{
-              text: 'Yes',
+              text: d.online.yes,
               handler: () => {
                 this.offlineFlag = true;
                 localStorage.setItem('offlineFlag', this.offlineFlag + '');
@@ -3188,7 +3188,7 @@ export class NewFormPage implements OnInit {
                 this.offlineSave(this.paraforsubmit);
               }
             },{
-              text: 'No',
+              text: d.online.no,
               handler: () => {
                 this.goBack();
               }
@@ -3217,7 +3217,7 @@ export class NewFormPage implements OnInit {
               d = JSON.parse(d);
               console.log('d:',d)
               this.presentAlert(`${d.online.offlineTip}<br/>${d.online.ischangeOffline}`, "", [{
-                text: 'Yes',
+                text: d.online.yes,
                 handler: () => {
                   this.offlineFlag = true;
                   localStorage.setItem('offlineFlag', this.offlineFlag + '');
@@ -3225,7 +3225,7 @@ export class NewFormPage implements OnInit {
                   
                 }
               },{
-                text: 'No',
+                text: d.online.no,
                 handler: () => {
                   this.goBack();
                 }
@@ -3385,14 +3385,14 @@ export class NewFormPage implements OnInit {
             d = JSON.parse(d);
             console.log('d:',d)
             this.presentAlert(`${d.online.offlineTip}<br/>${d.online.ischangeOffline}`, "", [{
-              text: 'Yes',
+              text: d.online.yes,
               handler: () => {
                 this.offlineFlag = true;
                 localStorage.setItem('offlineFlag', this.offlineFlag + '');
                 this.nav.navigateBack('/tabs/tab1',{queryParams:{title:this.portaltitle}});
               }
             },{
-              text: 'No',
+              text: d.online.no,
               handler: () => {
                 
               }

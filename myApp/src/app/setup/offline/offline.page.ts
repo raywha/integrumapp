@@ -103,6 +103,7 @@ export class OfflinePage implements OnInit {
                       }
                     }
                     localStorage.removeItem(templateID);
+                    localStorage.removeItem(templateID+"_refno");
                   }
                 }
                 localStorage.removeItem("allTemplateID");
@@ -111,7 +112,7 @@ export class OfflinePage implements OnInit {
                 this.storage.get('offlinemuitldata').then(d => {
                   d = JSON.parse(d);
                   this.presentAlert(`${d.online.syncEnd}`, "", [{
-                    text: 'Ok',
+                    text: d.online.ok,
                     handler: () => {
                       this.nav.navigateBack('/tabs/tab1');
                     }
@@ -134,7 +135,7 @@ export class OfflinePage implements OnInit {
             this.storage.get('offlinemuitldata').then( d => {
               d = JSON.parse(d);
               this.presentAlert(`${d.online.offlineTip}`, "", [{
-                text: 'Ok',
+                text: d.online.ok,
                 handler: () => {
                   this.offlineFlag = true;
                   localStorage.setItem('offlineFlag', this.offlineFlag + '');

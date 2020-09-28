@@ -53,6 +53,13 @@ export class FormDrafts {
     localStorage.setItem(templateId, JSON.stringify(filesArray));
   };
   createRefNo(templateId: string){
+    let num: number = 1;
+    if(localStorage.getItem(templateId+'_refno')){
+      num = Number.parseInt(localStorage.getItem(templateId+'_refno'))+1;
+    }
+    localStorage.setItem(templateId+'_refno',num+'');
+    return templateId + '-' + ((num+'').padStart(3,'0'));
+
     const docs = localStorage.getItem(templateId); 
     let newRefNo: string = templateId + '-001';
     if(docs){

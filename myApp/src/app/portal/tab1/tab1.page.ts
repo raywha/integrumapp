@@ -115,14 +115,14 @@ export class Tab1Page {
                     this.storage.get('offlinemuitldata').then(d => {
                       d = JSON.parse(d);
                       this.presentAlert(`${d.online.offlineTip}<br/>${d.online.ischangeOffline}`, "", [{
-                        text: 'Yes',
+                        text: d.online.yes,
                         handler: () => {
                           this.offlineFlag = true;
                           localStorage.setItem('offlineFlag', this.offlineFlag + '');
                           this.Nav.navigateBack('/tabs/tab1',{queryParams:{title:this.portalTile}});
                         }
                       }, {
-                        text: 'No',
+                        text: d.online.no,
                         handler: () => {
                         }
                       }
@@ -249,13 +249,13 @@ export class Tab1Page {
                 console.log('d:',d)
                 this.presentAlert(`${d.online.offlineTip}<br/>${d.online.ischangeOffline}`, "", [
                   {
-                    text: 'Yes',
+                    text: d.online.yes,
                     handler: () => {
                       this.offlineFlag = true;
                       localStorage.setItem('offlineFlag', this.offlineFlag + '');
                     }
                   },
-                  'No']);
+                  d.online.no]);
               })        
             } else if (res.status) {
               console.log('退出登录');

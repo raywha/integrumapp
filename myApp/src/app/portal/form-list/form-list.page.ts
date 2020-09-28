@@ -202,14 +202,14 @@ export class FormListPage implements OnInit {
                       d = JSON.parse(d);
                       console.log('d:',d)
                       this.presentAlert(`${d.online.offlineTip}<br/>${d.online.ischangeOffline}`, "", [{
-                        text: 'Yes',
+                        text: d.online.yes,
                         handler: () => {
                           this.offlineFlag = true;
                           localStorage.setItem('offlineFlag', this.offlineFlag + '');
                           this.goBack();
                         }
                       },{
-                        text: 'No',
+                        text: d.online.no,
                         handler: () => {
                           
                         }
