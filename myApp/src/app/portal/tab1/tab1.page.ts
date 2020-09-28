@@ -235,7 +235,7 @@ export class Tab1Page {
       this.storage.get('offlinemuitldata').then(d => {
         d = JSON.parse(d);
         console.log('d:', d)
-        this.presentAlert(`${d.online.notLogout}<br/>${d.online.logoutTip}`, "", ['Ok']);
+        this.presentAlert(`${d.online.notLogout}<br/>${d.online.logoutTip}`, "", ['OK']);
       })
     } else {
       this.storage.get("loginDetails").then(data => {

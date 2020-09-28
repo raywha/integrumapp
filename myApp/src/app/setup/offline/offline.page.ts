@@ -51,7 +51,7 @@ export class OfflinePage implements OnInit {
     if (!allTemplateID) {
       console.log('no data!');
       this.nav.navigateBack('/tabs/tab1');
-      //this.presentAlert("There is no data needs to be synchronized.", "",['Ok']);
+      //this.presentAlert("There is no data needs to be synchronized.", "",['OK']);
     } else {
       this.storage.get("loginDetails").then(logindata => {
         this.getforms.isOnline(logindata).pipe(first()).subscribe(result => {
@@ -112,7 +112,7 @@ export class OfflinePage implements OnInit {
                 this.storage.get('offlinemuitldata').then(d => {
                   d = JSON.parse(d);
                   this.presentAlert(`${d.online.syncEnd}`, "", [{
-                    text: d.online.ok,
+                    text: "OK",
                     handler: () => {
                       this.nav.navigateBack('/tabs/tab1');
                     }
@@ -135,7 +135,7 @@ export class OfflinePage implements OnInit {
             this.storage.get('offlinemuitldata').then( d => {
               d = JSON.parse(d);
               this.presentAlert(`${d.online.offlineTip}`, "", [{
-                text: d.online.ok,
+                text: "OK",
                 handler: () => {
                   this.offlineFlag = true;
                   localStorage.setItem('offlineFlag', this.offlineFlag + '');
