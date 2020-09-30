@@ -140,6 +140,8 @@ export class NewFormPage implements OnInit {
   public serverdoc: boolean = false;
   public lastres: any;
   public draftDocCreateTime: any;
+  public online :any;
+  public lookupdatas: any;
 
   constructor(
     private storage: Storage,
@@ -160,6 +162,19 @@ export class NewFormPage implements OnInit {
     private sanitizer: DomSanitizer,
     private draftCtrl: FormDrafts
   ) {
+    this.storage.get('offlinemuitldata').then( d => {
+      d = JSON.parse(d);
+      this.online = d.online;
+    });
+    this.storage.get("allforms").then(data => {
+      data = JSON.parse(data);
+      console.log('allform..',data)
+      if(data==null){
+        console.log(' allforms is loading!');
+        return false;
+      }
+      this.lookupdatas = data.lookupdatas
+    })
     if(localStorage.getItem("bgcolor")){
       console.log('localStorage-->bgcolor:',localStorage.getItem('bgcolor'))
       this.cbgcolor = localStorage.getItem('bgcolor');
@@ -355,6 +370,7 @@ export class NewFormPage implements OnInit {
                           if (v) {
                             data.hasSubfield = true;
                             data.fieldId = fieldId;
+                            console.log("-----------start-----");
                             this.getSublistOption(data, secId,'open');
                           }
     
@@ -524,110 +540,20 @@ export class NewFormPage implements OnInit {
       this.sysfields = this.selecttemplat.template.secs[0].fields;
       this.mandafields = this.selecttemplat.template.mandaFields;
       this.templatid = this.selecttemplat.template.templateId;
+      
       if (this.offlineFlag) {
-        // const menubar = this.selecttemplat.menubaritem;
-        // const result = menubar.result;
-        // if (result) {
-        //   const newarr = result.filter(e => e.btnType == 'btnClose' || e.btnType == 'btnSave');
-        //   menubar.result = newarr;
-        // }
-        // this.btnBox = menubar;
-        if(res.docname){
-          this.type = res.type;
-          
-          console.log('this.templatid:',this.templatid);
-          this.title = res.title;
-          this.status = res.stat;
-          this.storage.get(this.draftDocName).then(data => {
-            data = JSON.parse(data);
-            console.log('draft:',data,'this.draftDocName:',this.draftDocName);
-            const allfields: any = data.fields;
-            this.formID = data.docId;
-            const createTime: any = data.createTime;
-            this.draftDocCreateTime = createTime;
-            const dynamicDatas: any = data.dynamicDatas;
-            const app_offline_Update = data.app_offline_Update;
-            if(app_offline_Update && app_offline_Update == '1'){
-              this.serverdoc = true;
-              this.storage.get('offlinemuitldata').then( d =>{
-                d = JSON.parse(d);
-                if(this.type == 'open'){
-                  this.btnBox = {
-                    "result": [
-                      { "btnType": "btnEdit", "btnLabel": d.online.btnedit?d.online.btnedit:'Edit' },
-                      //{ "btnType": "btnDelete", "btnLabel": d.online.btndelete?d.online.btndelete:'Delete' },
-                      { "btnType": "btnClose", "btnLabel": d.online.btnclose?d.online.btnclose:"Close" }
-                    ]
-                  };
-                }else{
-                  this.btnBox = {
-                    "result": [
-                      { "btnType": "btnSave", "btnLabel": d.online.btnsave?d.online.btnsave:'Save' },
-                      //{ "btnType": "btnDelete", "btnLabel": d.online.btndelete?d.online.btndelete:'Delete' },
-                      { "btnType": "btnClose", "btnLabel": d.online.btnclose?d.online.btnclose:"Close" }
-                    ]
-                  };
-                }
-              })
-            }else{
-              this.storage.get('offlinemuitldata').then( d =>{
-                d = JSON.parse(d);
-                if(this.type == 'open'){
-                  this.btnBox = {
-                    "result": [
-                      { "btnType": "btnEdit", "btnLabel": d.online.btnedit?d.online.btnedit:'Edit' },
-                      { "btnType": "btnDelete", "btnLabel": d.online.btndelete?d.online.btndelete:'Delete' },
-                      { "btnType": "btnClose", "btnLabel": d.online.btnclose?d.online.btnclose:"Close" }
-                    ]
-                  };
-                }else{
-                  this.btnBox = {
-                    "result": [
-                      { "btnType": "btnSave", "btnLabel": d.online.btnsave?d.online.btnsave:'Save' },
-                      { "btnType": "btnDelete", "btnLabel": d.online.btndelete?d.online.btndelete:'Delete' },
-                      { "btnType": "btnClose", "btnLabel": d.online.btnclose?d.online.btnclose:"Close" }
-                    ]
-                  };
-                }
-              })
-            }
-            const secs: any = this.selecttemplat.template.secs;
-            for (let i = 0; i < secs.length; i++) {
-              if(dynamicDatas && dynamicDatas[secs[i].secId]){
-                secs[i].dynamicData = dynamicDatas[secs[i].secId].dynamicData;
-                secs[i].seore = dynamicDatas[secs[i].secId]['score'][3];
-              }
-              const fields = secs[i].fields;
-              for (let j = 0; j < fields.length; j++) {
-                const field = fields[j];
-                const f: any = allfields.find( e => e.name == field.name);
-                if(f && f.value){
-                  field.value = f.value;
-                }
-              }
-            }
-            this.setInitValue(res,createTime);
-          }).catch(e=>{
-            console.log(this.draftDocName,' error:',e);
-          })
-        }else{
-          this.storage.get('offlinemuitldata').then( d =>{
-            d = JSON.parse(d);
-            this.btnBox = {
-              "result": [
-                { "btnType": "btnSave", "btnLabel": d.online.btnsave?d.online.btnsave:'Save' },
-                { "btnType": "btnClose", "btnLabel": d.online.btnclose?d.online.btnclose:"Close" }
-              ]
-            };
-              
-          })
-          this.setInitValue(res);
-        }
+        this.btnBox = {
+          "result": [
+            { "btnType": "btnSave", "btnLabel": this.online.btnsave?this.online.btnsave:'Save' },
+            { "btnType": "btnClose", "btnLabel": this.online.btnclose?this.online.btnclose:"Close" }
+          ]
+        };
+        
       } else {
         this.btnBox = this.selecttemplat.menubaritem;
-        this.setInitValue(res);
+        
       }
-
+      this.setInitValue(res);
       
     })
   }
@@ -1076,6 +1002,22 @@ export class NewFormPage implements OnInit {
         }
         //if(this.quesSecId.indexOf(this.selecttemplat.template.secs[i].secId)==-1) this.sections.push(this.selecttemplat.template.secs[i])
         this.sectionsold.push(this.selecttemplat.template.secs[i])
+        if(this.selecttemplat.template.secs[i].sectionType=='1' && this.selecttemplat.template.secs[i].microData){
+          console.log('this.selecttemplat.template.secs[i]:',this.selecttemplat.template.secs[i])
+          const { secId, title, fields, enableHideRemoveButton, IsMircroSort, microData: { IsSupperUser, dcData } } = this.selecttemplat.template.secs[i];
+          console.log('this.microdbData:',this.microdbData);
+          const microsec = this.selecttemplat.template.secs[i];
+          if(IsMircroSort == 'ka_Yes'){
+              const sortField = microsec.sortField;
+              microsec.sortFieldName = sortField;
+              if(sortField.includes(' '))  microsec.sortFieldName = sortField.split(' ')[0];
+              microsec.sortStatus = 'N';
+
+              const sortIndex = microsec.dispFields.findIndex( e => e.id == microsec.sortFieldName);
+              microsec.sortIndex = sortIndex;
+          }
+          this.microdbData.push({ secId, title, fields, enableHideRemoveButton, IsMircroSort,  IsSupperUser, dcData  });
+        }
         if (this.selecttemplat.template.secs[i].dynamicData) {
           let dynamicJson = {};
           dynamicJson["fields"] = this.selecttemplat.template.secs[i].fields;
@@ -1240,7 +1182,32 @@ export class NewFormPage implements OnInit {
       case "btnSave":
         actiontype = "edit"
         console.log("unid==" + this.formID)
-        console.log(this.fields)
+        console.log(this.fields);
+        /*
+        if(localStorage.getItem('lan')!='en'){
+          for (let i = 0; i < this.fields.length; i++) {
+            const field = this.fields[i];
+            if(field.options && field.options.length>0){
+              if(field.value && (field.value != '' || field.value != [])){
+                const val = field.value;
+                if(Array.isArray(val)){
+                  const valarr: any = [];
+                  for (let j = 0; j < val.length; j++) {
+                    const element = val[j];
+                    const v = field.options.find(e => e.text == element);
+                    if(v) valarr.push(v.value);
+                  }
+                  if(valarr.length > 0 ) field.value = valarr;
+                }else{
+                  const v = field.options.find(e => e.text == val);
+                  if(v) field.value = v.value;
+                }
+                
+              }
+            }
+          }
+        }
+        */
         if (this.subformflag) {
           this.paraforsubmit = {
             "tempid": this.templatid,
@@ -2139,63 +2106,50 @@ export class NewFormPage implements OnInit {
         if (v && v.lastval) val = v.lastval + '@@' + val;
 
       }
-      column = parseInt(column) + 1;
-      let obj: any = {
-        key: val,
-        db: field.lookup.db ? field.lookup.db : '',
-        view,
-        column
-      }
-      this.getLookupOptions(obj).then((data: any) => {
-        if (data.returnResponse == "offline") {
-          this.storage.get('offlinemuitldata').then( d => {
-            d = JSON.parse(d);
-            console.log('d:',d)
-            /*this.presentAlert(`${d.online.offlineTip}<br/>${d.online.ischangeOffline}`, "", [{
-              text: 'Yes',
-              handler: () => {
-                this.offlineFlag = true;
-                localStorage.setItem('offlineFlag', this.offlineFlag + '');
+      const db = field.lookup.db ? field.lookup.db : '';
+      const ldbdata = this.lookupdatas.find(e => e.db ==db && e.vw == view);
+      if(ldbdata){
+        let ldata: any;
+        let ret = val.split('@@');
+        switch (column) {
+          case "1":
+            ldata = ldbdata.data.filter(e => e['COL_0'].value == val);
+            break;
+          case "2":
+              ldata = ldbdata.data.filter(e => e['COL_0'].value == ret[0] && e['COL_1'].value == ret[1] && e['COL_2']);
+              break;
+          case "3":
+              ldata = ldbdata.data.filter(e => e['COL_0'].value == ret[0] && e['COL_1'].value == ret[1] && e['COL_2'].value == ret[2] && e['COL_3']);
+          break;
 
-                
-              }
-            },{
-              text: 'No',
-              handler: () => {
-                //this.goBack();
-              }
-            }
-          ]);*/
-          })
+        }
+        const options = [];
+        let temparr = [];
+        ldata.forEach(e => {
+          const val = e['COL_'+column].value;
+          if(!temparr.includes(val)){
+            temparr.push(val);
+            options.push(e['COL_'+column]);
+          }
           
-        }else{
-          if (data.status == "success") {
-            let options: any = [];
-            options.push({ value: '', text: '' })
-            for (let i = 0; i < data.data.length; i++) {
-              let element = data.data[i];
-              options.push({ value: element, text: element })
-            }
-  
-            let tobj: object = {
-              secId,
-              view,
-              lastval: val,
-              options: options
-            }
-            if (this['lookupOptins' + column]) {
-              let index: number = this['lookupOptins' + column].findIndex(e => e.secId == secId && e.view == view);
-              if (index == -1) {
-                this['lookupOptins' + column].push(tobj);
-              } else {
-                this['lookupOptins' + column].splice(index, 1, tobj);
-              }
-            }
-  
+        });
+
+        let tobj: object = {
+          secId,
+          view,
+          lastval: val,
+          options
+        }
+        column = Number.parseInt(column) + 1;
+        if (this['lookupOptins' + column]) {
+          let index: number = this['lookupOptins' + column].findIndex(e => e.secId == secId && e.view == view);
+          if (index == -1) {
+            this['lookupOptins' + column].push(tobj);
+          } else {
+            this['lookupOptins' + column].splice(index, 1, tobj);
           }
         }
-        
-      });
+      }
       let v = this.sections.find(e=>e.secId == secId);
       if(v){
         if(v.fields){
@@ -2215,6 +2169,8 @@ export class NewFormPage implements OnInit {
               } 
             }
           }
+          // console.log('-------------v:',v);
+          // console.log('this.fields:',this.fields)
         }
       }
     }
@@ -2255,6 +2211,7 @@ export class NewFormPage implements OnInit {
         this.hasSubfieldChange(sfield, fval,stype);
       }
     }
+    console.log('-------seletect template:',this.selecttemplat)
   }
   getLookupOptions(para: object) {
     return new Promise((resolve, reject) => {
@@ -3283,25 +3240,32 @@ export class NewFormPage implements OnInit {
 
   };
   async newMicrodb(unid: string, section:any) {
-    const cbgcolor = this.cbgcolor;
-    const type = this.type;
-    const mianunid = this.formID;
-    section.fields.forEach(e => {
-      if(e.value) delete e.value;
-    });
-    const modal = await this.modal.create({
-      showBackdrop: true,
-      component: MicrodbComponent,
-      componentProps: {  section, cbgcolor , unid, mianunid, type }
-    });
-    modal.present();
-    //监听销毁的事件
-    const { data } = await modal.onDidDismiss();
-    
-    console.log('data:',data);
-    if(data.result == 'success'){
-      this.reUpdateMicrodbData(section.secId,data.unid,data.firstDisVal, data.firstDisType ,data.secondDisVal, data.secondDisType, data.thirdDisVal, data.thirdDisType);
-    }
+    if(this.offlineFlag){
+      this.storage.get('offlinemuitldata').then( d => {
+        d = JSON.parse(d);
+        this.presentAlert(d.online.micTip, "", ["OK"]);
+      })
+    }else{
+      const cbgcolor = this.cbgcolor;
+      const type = this.type;
+      const mianunid = this.formID;
+      section.fields.forEach(e => {
+        if(e.value) delete e.value;
+      });
+      const modal = await this.modal.create({
+        showBackdrop: true,
+        component: MicrodbComponent,
+        componentProps: {  section, cbgcolor , unid, mianunid, type }
+      });
+      modal.present();
+      //监听销毁的事件
+      const { data } = await modal.onDidDismiss();
+      
+      console.log('data:',data);
+      if(data.result == 'success'){
+        this.reUpdateMicrodbData(section.secId,data.unid,data.firstDisVal, data.firstDisType ,data.secondDisVal, data.secondDisType, data.thirdDisVal, data.thirdDisType);
+      }
+    } 
   };
   reUpdateMicrodbData(secId: string, unid: string, firstDisVal: any, firstDisType: any, secondDisVal: any, secondDisType:any, thirdDisVal: any, thirdDisType: any){
     const microdb = this.microdbData.find(item=>item.secId==secId);
@@ -3374,43 +3338,49 @@ export class NewFormPage implements OnInit {
     return val;
   }
   removeMicroDoc(unid: string, secId: string){
-    
-    this.storage.get('loginDetails').then(logindata => {
-      this.getforms.removeDoc(logindata, unid).pipe(first()).subscribe(data => {
-        data = JSON.parse(data.data);
-        console.log('removeMicroDoc:',data)
-        if (data.returnResponse == "offline") {
-          this.commonCtrl.hide();
-          this.storage.get('offlinemuitldata').then( d => {
-            d = JSON.parse(d);
-            console.log('d:',d)
-            this.presentAlert(`${d.online.offlineTip}<br/>${d.online.ischangeOffline}`, "", [{
-              text: d.online.yes,
-              handler: () => {
-                this.offlineFlag = true;
-                localStorage.setItem('offlineFlag', this.offlineFlag + '');
-                this.nav.navigateBack('/tabs/tab1',{queryParams:{title:this.portaltitle}});
-              }
-            },{
-              text: d.online.no,
-              handler: () => {
-                
-              }
-            }
-          ]);
-          })
-          
-        }else{  //online mode
-          if (data.result == 'success') {
-            console.log('***this.microdbdata:',this.microdbData);
-            this.updateMicrodbData(secId, unid);
-          } else {
-            this.presentAlert("failed!Error:" + data.result, "", "OK")
-          }
-        }
-        
+    if(this.offlineFlag){
+      this.storage.get('offlinemuitldata').then( d => {
+        d = JSON.parse(d);
+        this.presentAlert(d.online.micTip, "", ["OK"]);
       })
-    })
+    }else{
+      this.storage.get('loginDetails').then(logindata => {
+        this.getforms.removeDoc(logindata, unid).pipe(first()).subscribe(data => {
+          data = JSON.parse(data.data);
+          console.log('removeMicroDoc:',data)
+          if (data.returnResponse == "offline") {
+            this.commonCtrl.hide();
+            this.storage.get('offlinemuitldata').then( d => {
+              d = JSON.parse(d);
+              console.log('d:',d)
+              this.presentAlert(`${d.online.offlineTip}<br/>${d.online.ischangeOffline}`, "", [{
+                text: d.online.yes,
+                handler: () => {
+                  this.offlineFlag = true;
+                  localStorage.setItem('offlineFlag', this.offlineFlag + '');
+                  this.nav.navigateBack('/tabs/tab1',{queryParams:{title:this.portaltitle}});
+                }
+              },{
+                text: d.online.no,
+                handler: () => {
+                  
+                }
+              }
+            ]);
+            })
+            
+          }else{  //online mode
+            if (data.result == 'success') {
+              console.log('***this.microdbdata:',this.microdbData);
+              this.updateMicrodbData(secId, unid);
+            } else {
+              this.presentAlert("failed!Error:" + data.result, "", "OK")
+            }
+          }
+          
+        })
+      })
+    }
   }
   updateMicrodbData(secId: string,unid: string){
     const microdb = this.microdbData.find(item=>item.secId==secId);
