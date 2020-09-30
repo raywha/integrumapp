@@ -46,7 +46,7 @@ export class OfflinePage implements OnInit {
     }
   }
   async() {
-    console.log("---in async doc----");
+    console.log("--offline-in async doc----");
     const allTemplateID: any = localStorage.getItem('allTemplateID');
     if (!allTemplateID) {
       console.log('no data!');
@@ -85,7 +85,9 @@ export class OfflinePage implements OnInit {
             // });          
             Promise.all(allData).then((values) => {
               values.forEach((val: string, index) => {
-                values[index] = JSON.parse(val);
+                const obj = JSON.parse(val);
+                delete obj.template;
+                values[index] = obj;
               })
               console.log("------val-----", values);
               this.getforms.syncSave(logindata, values).pipe(first()).subscribe(data => {
