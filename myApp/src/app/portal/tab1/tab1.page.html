@@ -1,9 +1,9 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-button (click)="presentPopover($event)">
+      <!-- <ion-button (click)="presentPopover($event)">
         <ion-icon slot="start" name="settings" color="dark"></ion-icon>
-      </ion-button>
+      </ion-button> -->
       <!-- <ion-icon slot="start" *ngIf="offlineFlag" name="radio" color="danger"></ion-icon>
       <ion-icon slot="start" *ngIf="!offlineFlag" name="wifi" color="success"></ion-icon> -->
       <div class="offline">
@@ -29,8 +29,8 @@
   <div class="portal-box">
     <div class="portal-title" [ngStyle]="{'background-color':cbgcolor}">
       <ion-row>
-        <ion-col size="9"><span>{{portalTile}}</span></ion-col>
-        <ion-col><ion-icon name="list" (click)="presentPopoverPortal($event)"></ion-icon></ion-col>
+        <ion-col><span>{{portalTile}}</span></ion-col>
+        <!-- <ion-col><ion-icon name="list" (click)="presentPopoverPortal($event)"></ion-icon></ion-col> -->
        </ion-row>
     </div>
     <ion-list class="portal-list">

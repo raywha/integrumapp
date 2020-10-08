@@ -27,6 +27,10 @@ const routes: Routes = [
     path: 'online',
     loadChildren: () => import('./setup/online/online.module').then( m => m.OnlinePageModule)
   },
+  {
+    path: 'defaulthome',
+    loadChildren: () => import('./setup/defaulthome/defaulthome.module').then( m => m.DefaulthomePageModule)
+  },
 
 
 

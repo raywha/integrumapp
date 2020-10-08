@@ -6,6 +6,7 @@ import { FormsModule } from '@angular/forms';
 import { TabsPageRoutingModule } from './tabs.router.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { TabsPage } from './tabs.page';
+import { PopoverComponent } from '../tab1/component/popover/popover.component';
 
 @NgModule({
   imports: [
@@ -15,6 +16,7 @@ import { TabsPage } from './tabs.page';
     TabsPageRoutingModule,
     TranslateModule
   ],
-  declarations: [TabsPage]
+  declarations: [TabsPage,PopoverComponent],
+  entryComponents:[PopoverComponent]
 })
 export class TabsPageModule {}

@@ -193,7 +193,7 @@ export class FormListPage implements OnInit {
               this.para.curpage = this.searchkey.start
               this.geapp.getViewData(data, this.para).pipe(first())
                 .subscribe(data => {
-                  // console.log(data)
+                   console.log('getViewData-->',data)
                   data = JSON.parse(data.data);
                   console.log('getdata:',data)
                   console.log('data.returnResponse:',data.returnResponse,'  ',data.returnResponse == "offline")

@@ -204,3 +204,20 @@ ion-radio-group {
     line-height: 18px;
   }
 }
+.my-custom-class .popover-content{
+  top:30% !important;
+  left: 16% !important;
+  width: 20rem !important;
+}
+.my-custom-class .popover-arrow{
+  display: none !important;
+}
+.my-custom-class-set .popover-content{
+  top:30% !important;
+  left: 16% !important;
+  height: 21rem !important;
+  width: 20rem !important;
+}
+.my-custom-class-set .popover-arrow{
+  display: none !important;
+}

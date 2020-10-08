@@ -16,6 +16,10 @@
     <ion-icon slot="start" name="arrow-up-circle-outline"></ion-icon>
     <ion-label>{{setting.lastrelease}}</ion-label>
   </ion-item>
+  <ion-item lines="none" (click)="getLink(6)">
+    <ion-icon slot="start" name="home"></ion-icon>
+    <ion-label>{{setting.defaulthome}}</ion-label>
+  </ion-item>
   <ion-item lines="none" (click)="getLink(5)">
     <ion-icon slot="start" name="power"></ion-icon>
     <ion-label>{{setting.logout}}</ion-label>

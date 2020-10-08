@@ -212,7 +212,7 @@ export class Tab1Page {
     const popover = await this.popoverController.create({
       component: PopoverComponent,
       event: ev,
-      componentProps: { type: "setup", selectPortalIndex },
+      componentProps: { type: "setup", portal: this.portalInfo,selectPortalIndex },
       translucent: true
     });
     return await popover.present();

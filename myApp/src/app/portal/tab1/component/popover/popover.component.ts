@@ -14,6 +14,7 @@ export class PopoverComponent implements OnInit {
   public setting: any = [];
   public type: string;
   public portalList: any = [];
+  public setupPortalList: any = [];
   public selectPortalIndex: number = 0;
   public offlineFlag: boolean = true;
 
@@ -28,7 +29,10 @@ export class PopoverComponent implements OnInit {
       this.setting = res;
     })
     this.type = this.params.get("type")
-    if(this.type=='setup') this.selectPortalIndex = this.params.get('selectPortalIndex');
+    if(this.type=='setup') {
+      this.selectPortalIndex = this.params.get('selectPortalIndex');
+      this.setupPortalList = this.params.get("portal").items;
+    }
     if(this.params.get("portal")){
       let plist = this.params.get("portal").items;
       let userallportal = this.params.get("portal").userallportal;
@@ -61,7 +65,7 @@ export class PopoverComponent implements OnInit {
     } else if (code == 2) {
       this.Popover.dismiss()
       //this.nav.navigateBack('language');
-      this.nav.navigateBack('language',{queryParams:{selectPortalIndex:this.selectPortalIndex}})
+      this.nav.navigateBack('language',{queryParams:{selectPortalIndex:this.setupPortalList}})
     } else if (code == 3) {
       this.Popover.dismiss()
       // this.nav.navigateBack('add-action');
@@ -76,6 +80,11 @@ export class PopoverComponent implements OnInit {
       // this.nav.navigateBack('add-action');
 
       this.nav.navigateBack('lastrelease');
+    }else if (code == 6) {
+      this.Popover.dismiss()
+      // this.nav.navigateBack('add-action');
+
+      this.nav.navigateBack('defaulthome',{queryParams:{portalList:this.setupPortalList}});
     }else{
       let paramsSet=this.params.get("portalTile")
       console.log(paramsSet)
