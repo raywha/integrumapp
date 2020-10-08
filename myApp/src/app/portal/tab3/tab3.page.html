@@ -1,9 +1,28 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>
-     {{title}}
+    <ion-buttons slot="start">
+      <div class="offline">
+        <ion-img slot="start" *ngIf="offlineFlag" class="bgdoff" src="/assets/offline.png"></ion-img>
+        <ion-img slot="start" *ngIf="!offlineFlag" class="bgdon" src="/assets/online.png"></ion-img>
+       </div>
+    </ion-buttons>
+    <ion-title class="welcome-card">
+        <ion-img [src]="titlelog"></ion-img>
     </ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="logout()">
+        <ion-icon slot="start" name="power" color="dark"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content></ion-content>
+<ion-content>
+  <div class="todo-box">
+    <div class="todo-title" [ngStyle]="{'background-color':cbgcolor}">
+      <ion-row>
+        <ion-col><span>{{public.todoTitle}}</span></ion-col>
+       </ion-row>
+    </div>
+  </div>
+</ion-content>

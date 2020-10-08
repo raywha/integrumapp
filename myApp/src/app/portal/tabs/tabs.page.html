@@ -1,7 +1,7 @@
 <ion-tabs>
 
   <ion-tab-bar slot="bottom"  (ionTabBarChanged) = "change($event)">
-    <ion-tab-button tab="tab1" [style]="cbgcolor" (click)="gotoDefaultHome()"> 
+    <ion-tab-button [style]="cbgcolor" (click)="gotoDefaultHome()"> 
     <!-- <ion-tab-button tab="tab1" [style]="cbgcolor">-->
       <ion-icon name="home"></ion-icon>
       <ion-label> {{'public.home' | translate}}</ion-label>

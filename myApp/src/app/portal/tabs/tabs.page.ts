@@ -31,32 +31,29 @@ export class TabsPage {
     private router:Router
 
   ) {
-    this.gotoDefaultHome();
     if (localStorage.getItem("bgcolor")) {
       console.log('localStorage-->bgcolor:', localStorage.getItem('bgcolor'));
-      this.cbgcolor = `--color:${localStorage.getItem('bgcolor')};--color-selected:#0ec254`;
+      this.cbgcolor = `--color:${localStorage.getItem('bgcolor')};--color-selected:${localStorage.getItem('bgcolor')}`;
     }
+    this.gotoDefaultHome();
     this.offlineFlag = localStorage.getItem('offlineFlag')?(localStorage.getItem('offlineFlag')=="false"?false:true):false;
     this.storage.get("loginDetails").then(data => {
       this.geapp.getPortalInfo(data).pipe(first())
-            .subscribe(data => {
-              if (data.data.indexOf('DOCTYPE') == -1) {
-                data = JSON.parse(data.data);
-                if(data.returnResponse == "offline"){
-                  this.storage.get("offlinePortalInfo").then(d=>{
-                    if(d) this.portalInfo = d;
-                  
-                  })
-                }else{
-                  this.portalInfo = data;
-                }
-                
-               
-              } else {
-                this.router.navigate(['authemail'])
-              }
-            })
-          })
+        .subscribe(data => {
+          if (data.data.indexOf('DOCTYPE') == -1) {
+            data = JSON.parse(data.data);
+            if (data.returnResponse == "offline") {
+              this.storage.get("offlinePortalInfo").then(d => {
+                if (d) this.portalInfo = d;
+              })
+            } else {
+              this.portalInfo = data;
+            }
+          } else {
+            this.router.navigate(['authemail'])
+          }
+        })
+    })
   }
   async presentPopoverPortal(ev: any) {
     //this.portalInfo.userallportal = ['GMP Checklist'];
@@ -100,6 +97,8 @@ export class TabsPage {
         }else{
           this.router.navigate(['tabs/tab1'], {queryParams: {key:'data',title:d}});
         }
+      }else{
+        this.router.navigate(['tabs/tab1'])
       }
     })
   }
