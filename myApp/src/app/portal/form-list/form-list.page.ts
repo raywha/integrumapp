@@ -38,6 +38,7 @@ export class FormListPage implements OnInit {
   public cbgcolor = "#b81321";
   public isMyView: boolean = false;
   public offlineFlag: boolean;
+  public ovid: any;
 
   constructor(
     private storage: Storage,
@@ -94,6 +95,7 @@ export class FormListPage implements OnInit {
           this.formid=res.formid
          
           if (this.stype === "formlist") {
+            this.ovid = res.vid;
             this.vid = res.vid.split("/")[1].split("?")[0]
             this.vtitle = res.vtitle
           console.log('loaddata..',this.myviewdata);
@@ -183,6 +185,7 @@ export class FormListPage implements OnInit {
         this.formid=res.formid
         if (this.stype === "formlist") {
           if(res.vid && res.vid!=''){
+            this.ovid = res.vid;
             this.vid = res.vid.split("/")[1].split("?")[0];
             this.vtitle = res.vtitle
             if(this.vid.startsWith('my_') || this.vid.startsWith('My_')) this.isMyView = true;
@@ -241,7 +244,10 @@ export class FormListPage implements OnInit {
             })
           }else{
             console.log('no data.');
-            this.commonCtrl.processHide();
+            setTimeout(() => {
+              this.commonCtrl.processHide();
+            }, 50);
+            
           }
           
         }else{

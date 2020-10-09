@@ -1175,7 +1175,7 @@ export class NewFormPage implements OnInit {
           this.router.navigate(["/new-form"], { queryParams: newres});
         }else{
           actiontype = "edit";
-          this.router.navigate(["/new-form"], { queryParams: { unid: this.ulrs.unid, aid: this.ulrs.aid, title: this.ulrs.title, stat: this.ulrs.stat, type: actiontype, refresh: new Date().getTime(), cururl: this.lasturl } });
+          this.router.navigate(["/new-form"], { queryParams: { unid: this.ulrs.unid, aid: this.ulrs.aid, vid:this.vid, title: this.ulrs.title, stat: this.ulrs.stat, type: actiontype, refresh: new Date().getTime(), cururl: this.lasturl } });
         }
         
         break;
@@ -1583,7 +1583,14 @@ export class NewFormPage implements OnInit {
         this.para.unid = unid
         this.para.isedit = isedit == 'edit' ? 'yes' : 'no';
         this.getforms.getFormData(data, this.para).pipe(first()).subscribe(data => {
-          data = JSON.parse(data.data);
+          console.log('---getFormData data:',data)
+          if(data){
+            data = JSON.parse(data.data);
+          }else{
+            console.log('getFormData error:',data);
+            data = 'error'
+          }
+          
           resolve(data)
         })
       })
@@ -3596,7 +3603,6 @@ export class NewFormPage implements OnInit {
             templateIDs.push(this.templatid);
             localStorage.setItem('allTemplateID',JSON.stringify(templateIDs));
           }
-          console.log('**************************222')
           this.draftCtrl.saveFiletoBepersisted(newFileName, status, this.templatid, this.vid, draftSavedTime, initiatorOrMR, WFStatus, refNo);
           console.log('onffline save this.lasturl:',this.lasturl)
           if (this.subformflag) {

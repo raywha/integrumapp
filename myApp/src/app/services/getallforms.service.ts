@@ -10,13 +10,16 @@ import { TranslateService } from '@ngx-translate/core';
 })
 export class GetallformsService {
 
-  constructor(public translate :TranslateService,private http: HttpClient,private common:CommonService,private httpnative: HTTP) { }
+  constructor(public translate :TranslateService,private http: HttpClient,private common:CommonService,private httpnative: HTTP) {  
+    this.httpnative.setRequestTimeout(60*3);
+  }
 
   getAllForms(logindetail:any, lan?:string):Observable<any>{
     let browerLang=this.translate.getDefaultLang();
     if(lan){
       browerLang = lan;
     }
+    const curtime = new Date();
     const url = `${logindetail.server}/${logindetail.folder}/integrumws.nsf/xp_App.xsp/getAllForms?ver=v2&languageid=${browerLang}`;
     console.log('getallforms url:',url);
     if(logindetail.username && logindetail.password){
@@ -26,6 +29,9 @@ export class GetallformsService {
           "Authorization":auth
       };
       return from(this.httpnative.get(url,'',options).catch(e=>{
+        console.log('getAllForms service error:',e);
+        const otime = new Date();
+        console.log('---->getAllForms--otime.toLocaleTimeString:', otime.toLocaleTimeString(), '-->starttime:', curtime.toLocaleTimeString());
         if(e.status==-6) return {data:"{\"returnResponse\":\"offline\"}"};
       }));
     }

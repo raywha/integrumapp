@@ -77,15 +77,24 @@ export class Tab1Page {
             if(localStorage.getItem('lan')!=lan){
               this.processShow('loading...');
               localStorage.setItem('lan',lan); 
+              const curtime = new Date();
+
               this.getallforms.getAllForms(data).pipe(first()).subscribe(data => {
-                if (data.data.indexOf('DOCTYPE') == -1) {
-                  data = JSON.parse(data.data);
-                  console.log('over getallforms:',data)
-                  this.storage.set('allforms', JSON.stringify(data));  
-                  
+                const otime = new Date();
+                console.log('---->getAllForms--otime.toLocaleTimeString:', otime.toLocaleTimeString(), '-->starttime:', curtime.toLocaleTimeString());
+                if(data){
+                  if (data.data.indexOf('DOCTYPE') == -1) {
+                    data = JSON.parse(data.data);
+                    console.log('over getallforms:',data)
+                    this.storage.set('allforms', JSON.stringify(data));  
+                    
+                  }else{
+                    this.router.navigate(['authemail'])
+                  }
                 }else{
-                  this.router.navigate(['authemail'])
+                  console.log('get all froms error,data is null:',data)
                 }
+                
                  
                 this.processHide();
             })
