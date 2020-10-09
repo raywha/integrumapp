@@ -237,25 +237,25 @@ export class Tab1Page {
   }
   logout() {
     //portalTile http://oa.jf81.com/sfv3/appmgt.nsf/xp_ws.xsp/Logout?&email=zding@jf81.com&languageCode=zh&portalGroup=app.integrum Group A
-    console.log(this.portalTile)
+    //console.log(this.portalTile)
     let lan = this.translate.getDefaultLang();
-    console.log(this.logoutService)
+    //console.log(this.logoutService)
     if(this.offlineFlag){
       this.storage.get('offlinemuitldata').then(d => {
         d = JSON.parse(d);
-        console.log('d:', d)
+        //console.log('d:', d)
         this.presentAlert(`${d.online.notLogout}<br/>${d.online.logoutTip}`, "", ['OK']);
       })
     } else {
       this.storage.get("loginDetails").then(data => {
         this.logoutService.setLogout(data.username, data.password, data.email, lan, this.portalTile, data.server, data.folder).pipe(first())
           .subscribe(res => {
-            console.log(res)
+            //console.log(res)
             res = JSON.parse(res.data);
             if (res.returnResponse == "offline") {
               this.storage.get('offlinemuitldata').then( d => {
                 d = JSON.parse(d);
-                console.log('d:',d)
+               // console.log('d:',d)
                 this.presentAlert(`${d.online.offlineTip}<br/>${d.online.ischangeOffline}`, "", [
                   {
                     text: d.online.yes,
@@ -267,7 +267,7 @@ export class Tab1Page {
                   d.online.no]);
               })        
             } else if (res.status) {
-              console.log('退出登录');
+             // console.log('退出登录');
               this.Nav.navigateRoot('loginpass');
               localStorage.setItem('hasLogged', "false");
             }

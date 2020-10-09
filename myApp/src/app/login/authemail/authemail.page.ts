@@ -289,7 +289,7 @@ export class AuthemailPage implements OnInit {
               
               localStorage.setItem('hasLogged', 'true');
               localStorage.setItem('user', this.user);
-              console.log('this.user:',this.user)
+              //console.log('this.user:',this.user)
               localStorage.setItem('OUCategory', result.user.oucategory)
               
               this.getpsn.getpersoninfo(this.user, this.pass, this.server, this.folder).pipe(first()).subscribe(
@@ -342,11 +342,11 @@ export class AuthemailPage implements OnInit {
     if (this.authform.value.code == '') this.sso = false;
   }
   ssoToggle() {
-    console.log('*******************this.authform:', this.authform)
+    //console.log('*******************this.authform:', this.authform)
     if (this.sso) {
       this.commonCtrl.processShow('Processing...');
 
-      console.log('------->this.authform:', this.authform)
+      //console.log('------->this.authform:', this.authform)
       this.auth.sendEmail(this.authform.value.code)
         .pipe(first())
         .subscribe(
@@ -354,7 +354,7 @@ export class AuthemailPage implements OnInit {
             this.commonCtrl.processHide();
 
             result = JSON.parse(result.data);
-            console.log('SendEmail--result:', result)
+            //console.log('SendEmail--result:', result)
             if (result.status != "fail") {
               this.authform = this.formBuilder.group({
                 code: [this.authform.value.code, Validators.required],
@@ -387,7 +387,7 @@ export class AuthemailPage implements OnInit {
                       if(dom){
                         let label = dom.parentNode.children[0];
                         this.ssoserver = label.textContent;
-                        console.log("----------ssosever----:",this.ssoserver);
+                        //console.log("----------ssosever----:",this.ssoserver);
                         this.ssologin();
                       }                  
                     }
@@ -431,7 +431,7 @@ export class AuthemailPage implements OnInit {
     //let browserURL = this.ssoserver + '/' + ssofolder + '/' + 'integrumws.nsf/ssord.xsp';
     let browserURL = this.ssoserver + '/' + ssofolder + '/' + 'integrumws.nsf/ssordnew.xsp';
 
-    console.log('browserURL:', browserURL)
+    //console.log('browserURL:', browserURL)
     //let browserURL = this.ssoserver + '/' + 'integrumws.nsf/ssord.xsp';
 
     //const browser = this.iab.create(browserURL, '_blank', 'location=yes,toolbar=yes');
@@ -453,10 +453,10 @@ export class AuthemailPage implements OnInit {
 
     this.key1 = newkey[0].split('=');
     this.key2 = newkey[1].split('=');
-    console.log('------key1------', this.key1);
-    console.log('------key2------', this.key2);
+    //console.log('------key1------', this.key1);
+    //console.log('------key2------', this.key2);
     let postData = { key1: this.key1[1], key2: this.key2[1] };
-    console.log("POSTDATA>>>", postData);
+    //console.log("POSTDATA>>>", postData);
 
     const index: number = this.ssoserverlist.indexOf(this.ssoserver);
     const ssofolder: string = this.ssofolderlist[index];
@@ -467,7 +467,7 @@ export class AuthemailPage implements OnInit {
 
       }
       else {
-        console.log('success....', d);
+        //console.log('success....', d);
         this.Login();
         //this.saveLoginDetails(loginDetails);p@ssw0rd
       }
@@ -484,7 +484,7 @@ export class AuthemailPage implements OnInit {
     this.presentAlert(msg,'',[
       {text:btnNo, handler:()=>{}},
       {text:btnYes,handler:()=>{
-        console.log('prompt of update///');
+        //console.log('prompt of update///');
         Plugins.Browser.open({url});
       }}
     ]);

@@ -176,7 +176,7 @@ export class NewFormPage implements OnInit {
       this.lookupdatas = data.lookupdatas
     })
     if(localStorage.getItem("bgcolor")){
-      console.log('localStorage-->bgcolor:',localStorage.getItem('bgcolor'))
+      //console.log('localStorage-->bgcolor:',localStorage.getItem('bgcolor'))
       this.cbgcolor = localStorage.getItem('bgcolor');
     }
     this.offlineFlag = localStorage.getItem('offlineFlag') ? (localStorage.getItem('offlineFlag') == "false" ? false : true) : false;
@@ -190,14 +190,14 @@ export class NewFormPage implements OnInit {
     this.storage.get('loginDetails').then(data => {
       console.log('logindetails:',data)
       //if(data.code=="integrum001") this.cbgcolor = "#3880ff";this.secbgcolor = "action";this.txtfontcolor="primary";
-      console.log('--logindetails:',this.cbgcolor)
+      //console.log('--logindetails:',this.cbgcolor)
       this.initiator = data.username!=''?data.username:localStorage.getItem('user');
       this.initiatorOU = data.OUCategory!=''?data.OUCategory:localStorage.getItem('OUCategory');
     })
     this.activeRoute.queryParams.subscribe(res => {
       this.lastres = res;
       console.log(res);
-      console.log("进")
+      //console.log("进")
       this.ulrs.url = this.router.url
     this.ulrs.unid = this.getQueryVariable(this.ulrs.url, "unid")
     this.ulrs.aid = decodeURIComponent(this.getQueryVariable(this.ulrs.url, "aid"))
@@ -261,7 +261,7 @@ export class NewFormPage implements OnInit {
               this.commonCtrl.hide();
               this.storage.get('offlinemuitldata').then( d => {
                 d = JSON.parse(d);
-                console.log('d:',d)
+                //console.log('d:',d)
                 this.presentAlert(`${d.online.offlineTip}<br/>${d.online.ischangeOffline}`, "", [{
                   text: d.online.yes,
                   handler: () => {
@@ -370,7 +370,6 @@ export class NewFormPage implements OnInit {
                           if (v) {
                             data.hasSubfield = true;
                             data.fieldId = fieldId;
-                            console.log("-----------start-----");
                             this.getSublistOption(data, secId,'open');
                           }
     
@@ -446,7 +445,7 @@ export class NewFormPage implements OnInit {
                   }else if(data.xtype == 'signature'){
                     data.value = this.sanitizer.bypassSecurityTrustResourceUrl( data.value );
                   }else if(data.xtype == 'headline'){
-                    console.log('data.label:',data.label)
+                    //console.log('data.label:',data.label)
                     if(data.name == 'hsi_IncidentDetails_hsi_headlineCFOrg' || data.name == 'hsi_IncidentDetails_hsi_headlineCFHuman' || data.name == 'hsi_IncidentDetails_hsi_headlineCFTech') data.hide = true;
                     // if(this.findSameLabelname(this.selecttemplat.template.secs[i].fields,data.label,data.name)){
                     //   data.hide = true;
@@ -465,9 +464,9 @@ export class NewFormPage implements OnInit {
                     }
                 }
                 if(this.selecttemplat.template.secs[i].sectionType=='1'){
-                  console.log('this.selecttemplat.template.secs[i]:',this.selecttemplat.template.secs[i])
+                  //console.log('this.selecttemplat.template.secs[i]:',this.selecttemplat.template.secs[i])
                   const { secId, title, fields, enableHideRemoveButton, IsMircroSort, microData: { IsSupperUser, dcData } } = this.selecttemplat.template.secs[i];
-                  console.log('this.microdbData:',this.microdbData);
+                  //console.log('this.microdbData:',this.microdbData);
                   const microsec = this.selecttemplat.template.secs[i];
                   if(IsMircroSort == 'ka_Yes'){
                       const sortField = microsec.sortField;
@@ -719,7 +718,7 @@ export class NewFormPage implements OnInit {
         if (result.returnResponse == "offline") {
           this.storage.get('offlinemuitldata').then( d => {
             d = JSON.parse(d);
-            console.log('d:',d)
+           // console.log('d:',d)
             this.presentAlert(`${d.online.offlineTip}<br/>${d.online.ischangeOffline}`, "", [{
               text: d.online.yes,
               handler: () => {
@@ -739,7 +738,7 @@ export class NewFormPage implements OnInit {
           
         }else{
           this.inheritMap = result;
-          console.log("-------ssss:",this.inheritMap);
+          // console.log("-------ssss:",this.inheritMap);
           this.getAllForms(res);    
           
         }
@@ -949,7 +948,7 @@ export class NewFormPage implements OnInit {
             } else if (data.xtype == 'signature') {
               data.value = this.sanitizer.bypassSecurityTrustResourceUrl(data.value);
             } else if (data.xtype == 'headline') {
-              console.log('data.label:', data.label)
+              // console.log('data.label:', data.label)
               if (data.name == 'hsi_IncidentDetails_hsi_headlineCFOrg' || data.name == 'hsi_IncidentDetails_hsi_headlineCFHuman' || data.name == 'hsi_IncidentDetails_hsi_headlineCFTech') data.hide = true;
               // if(this.findSameLabelname(this.selecttemplat.template.secs[i].fields,data.label,data.name)){
               //   data.hide = true;
@@ -1003,9 +1002,9 @@ export class NewFormPage implements OnInit {
         //if(this.quesSecId.indexOf(this.selecttemplat.template.secs[i].secId)==-1) this.sections.push(this.selecttemplat.template.secs[i])
         this.sectionsold.push(this.selecttemplat.template.secs[i])
         if(this.selecttemplat.template.secs[i].sectionType=='1' && this.selecttemplat.template.secs[i].microData){
-          console.log('this.selecttemplat.template.secs[i]:',this.selecttemplat.template.secs[i])
+          // console.log('this.selecttemplat.template.secs[i]:',this.selecttemplat.template.secs[i])
           const { secId, title, fields, enableHideRemoveButton, IsMircroSort, microData: { IsSupperUser, dcData } } = this.selecttemplat.template.secs[i];
-          console.log('this.microdbData:',this.microdbData);
+          // console.log('this.microdbData:',this.microdbData);
           const microsec = this.selecttemplat.template.secs[i];
           if(IsMircroSort == 'ka_Yes'){
               const sortField = microsec.sortField;
@@ -1059,7 +1058,7 @@ export class NewFormPage implements OnInit {
         });
         if (total != 0) { 
           let result:string = (tempscore*100 / (total-naNum)).toFixed();
-          console.log(result);
+          // console.log(result);
           sec.score = tempscore + "/" + (total-naNum) + "   (" + ( result) + "%)"
         }
       }
@@ -1155,7 +1154,7 @@ export class NewFormPage implements OnInit {
     });
     popover.present();
     const { data } = await popover.onDidDismiss();
-    console.log(data)
+    // console.log(data)
     this.getBtnLink(data)
   }
 
@@ -1181,7 +1180,7 @@ export class NewFormPage implements OnInit {
         break;
       case "btnSave":
         actiontype = "edit"
-        console.log("unid==" + this.formID)
+        // console.log("unid==" + this.formID)
         console.log(this.fields);
         /*
         if(localStorage.getItem('lan')!='en'){
@@ -1226,7 +1225,7 @@ export class NewFormPage implements OnInit {
               "fields": this.fields
             }
           } else {
-            console.log("tempid==" + this.templatid)
+            // console.log("tempid==" + this.templatid)
             this.paraforsubmit = {
               "tempid": this.templatid,
               "formAction": "save",
@@ -1236,11 +1235,11 @@ export class NewFormPage implements OnInit {
           }
         }
 
-        console.log("保存了")
+        // console.log("保存了")
         if(this.mandatoryWhenApprove!="1" && this.skipMandatory=="0"){
           const {fieldError,msg} = this.checkMandatoryField("save");
           if (fieldError) {
-            console.log("必填了")
+            // console.log("必填了")
             console.log(msg)
             this.presentAlert("The follow fields are mandatory:<br/>" + msg, "", ["OK"])
            return false;
@@ -1252,7 +1251,7 @@ export class NewFormPage implements OnInit {
         this.paraforsubmit.dynamicDatas = saveDyDatas;
         console.log('this.paraforsubmit:',this.paraforsubmit)
         if (this.offlineFlag) {
-          console.log('offline save');
+          // console.log('offline save');
           if(this.newdoc){
             this.paraforsubmit.app_offline_NewForm = "1";
           }else{
@@ -1289,7 +1288,7 @@ export class NewFormPage implements OnInit {
               "fields": this.fields
             }
           } else {
-            console.log("tempid==" + this.templatid)
+            // console.log("tempid==" + this.templatid)
             this.paraforsubmit = {
               "tempid": this.templatid,
               "formAction": "submit",
@@ -1299,18 +1298,18 @@ export class NewFormPage implements OnInit {
           }
         }
 
-        console.log("提交操作")
+        // console.log("提交操作")
         if(this.mandatoryWhenApprove!="1"){
           const {fieldError,msg} = this.checkMandatoryField("submit");
           if (fieldError) {
-            console.log("必填了")
+            // console.log("必填了")
             console.log(msg)
             this.presentAlert("The follow fields are mandatory:<br/>" + msg, "", ["OK"])
             return false;
           }
         }
         var saveDyDatas = this.saveDyDatas();
-        console.log(saveDyDatas);
+        // console.log(saveDyDatas);
         this.comScores(saveDyDatas);
         this.paraforsubmit.dynamicDatas = saveDyDatas;
         this.submit(this.paraforsubmit, actiontype)
@@ -1335,11 +1334,11 @@ export class NewFormPage implements OnInit {
 
         break;
       case "btnDelete":
-          console.log("操作删除")
+          // console.log("操作删除")
           if(this.offlineFlag){
             this.storage.get('offlinemuitldata').then( d => {
               d = JSON.parse(d);
-              console.log('d:',d)
+              // console.log('d:',d)
               this.presentAlert(`${d.online.deletetip}`, "", [{
                 text: d.online.yes,
                 handler: () => {
@@ -1369,10 +1368,10 @@ export class NewFormPage implements OnInit {
           break;
       case 'btnSendForRv':
         if(this.mr2Type){
-          console.log('mr2type:',this.mr2Type)
+          // console.log('mr2type:',this.mr2Type)
           if(this.mr2Type=='template'){
             //this.submitToMr2(this.formID,data.result);
-            console.log('this.mr2Val:',this.mr2Val);
+            // console.log('this.mr2Val:',this.mr2Val);
             if(this.mr2Val && this.mr2Val.length>0){
               let options="";
               for(let i=0;i<this.mr2Val.length;i++){
@@ -1386,7 +1385,7 @@ export class NewFormPage implements OnInit {
                     if(dom){
                       let label = dom.parentNode.children[0];
                       let val = label.textContent;
-                      console.log("----------val----:",val);
+                      // console.log("----------val----:",val);
                       this.submitToMr2(this.formID,val);
                     }                  
                   }
@@ -1396,7 +1395,7 @@ export class NewFormPage implements OnInit {
               this.getPersons('', 'single', this.mr2Label, 'submitToMr2');
             }
           }else if(this.mr2Type=='directmanager'){
-            console.log('mr2value:',this.mr2Val);
+            // console.log('mr2value:',this.mr2Val);
             if(this.mr2Val && this.mr2Val!='' && this.mr2Val!=[]){
               this.submitToMr2(this.formID,this.mr2Val);
             }else{
@@ -1411,7 +1410,7 @@ export class NewFormPage implements OnInit {
         
         break;
       case 'btnReAssign':
-        console.log(this.sysfields);
+        // console.log(this.sysfields);
         const formMR = this.sysfields.find(item => item.name == 'formMR')
         if(formMR.xtype =='select'){
           this.getReassignMrByTemplate('','single',this.reassignLabel,formMR.options)
@@ -1433,7 +1432,7 @@ export class NewFormPage implements OnInit {
         // this.router.navigateByUrl(this.lasturl)
         break;
     }
-    console.log("操作了吗")
+    // console.log("操作了吗")
     // this.router.navigateByUrl(this.lasturl)
     //
     //this.Popover.dismiss(btn)
@@ -1466,7 +1465,7 @@ export class NewFormPage implements OnInit {
       const element = this.sections[i];
       if(element.secId) sectionsIds.push(element.secId);
     }
-    console.log("check mandatory field!")
+    // console.log("check mandatory field!")
     let msg = "";
     let fieldError = false;
     for (let p = 0; p < this.selecttemplat.template.mandaFields.length; p++) {
@@ -1528,7 +1527,7 @@ export class NewFormPage implements OnInit {
           if (data.returnResponse == "offline") {
             this.storage.get('offlinemuitldata').then( d => {
               d = JSON.parse(d);
-              console.log('d:',d)
+              // console.log('d:',d)
               this.presentAlert(`${d.online.offlineTip}<br/>${d.online.ischangeOffline}`, "", [{
                 text: d.online.yes,
                 handler: () => {
@@ -1597,7 +1596,7 @@ export class NewFormPage implements OnInit {
     })
   }
   changeback0113(field: any) {
-    console.log(field)
+    // console.log(field)
     if (field.label.trim() != "Severity") {
       return false;
     }
@@ -1735,7 +1734,7 @@ export class NewFormPage implements OnInit {
         const secId = field.secId;
         const sec = this.selecttemplat.template.secs.find(item => item.secId == secId);
         if(sec){
-          console.log('sec:',sec)
+          // console.log('sec:',sec)
           const fields = sec.fields;
           //const relafields = fields.filter(e => e.groupId == groupId)
           const relafields = [];
@@ -2233,7 +2232,7 @@ export class NewFormPage implements OnInit {
 
   goBack() {
     // this.nav.back()
-    console.log(this.subformflag)
+    // console.log(this.subformflag)
     if (this.subformflag) {
       let actiontype = "edit"
       this.router.navigate(["/new-form"], { queryParams: { unid: this.mainunid, aid: this.ulrs.aid, title: this.atitle, stat: this.ulrs.stat, type: actiontype, refresh: new Date().getTime(), cururl: this.lasturl } });
@@ -2246,7 +2245,7 @@ export class NewFormPage implements OnInit {
   }
   goBackView() {
     // this.nav.back()
-    console.log(this.subformflag)
+    // console.log(this.subformflag)
     if (this.subformflag) {
       let actiontype = "edit"
       this.router.navigate(["/new-form"], { queryParams: { unid: this.mainunid, aid: this.ulrs.aid, title: this.atitle, stat: this.ulrs.stat, type: actiontype, refresh: new Date().getTime(), cururl: this.lasturl } });
@@ -2306,7 +2305,7 @@ export class NewFormPage implements OnInit {
     });
   }
   getValue() {
-    console.log('我选中的是', this.radio.value)
+    // console.log('我选中的是', this.radio.value)
   }
   riskMatrix(selectedRiskMatrix, savedValue, riskName) {
     let obj: Object = {
@@ -2663,7 +2662,7 @@ export class NewFormPage implements OnInit {
   };
   
   async addLatlonToImage(name,field) {
-    console.log("------------in addLatlonToImage------");
+    // console.log("------------in addLatlonToImage------");
     const image = await Plugins.Camera.getPhoto({
       quality: 50,
       allowEditing: true,
@@ -2691,7 +2690,7 @@ export class NewFormPage implements OnInit {
     for (let i = 0; i < this.selecttemplat.template.secs.length; i++) {
       this.selecttemplat.template.secs[i].fields.forEach(item => {
         if (item.name == name) {
-          console.log(data)
+          // console.log(data)
           item.value = data;
         }
       })
@@ -2707,7 +2706,7 @@ export class NewFormPage implements OnInit {
     await alertGPSError.present();
   };
   async selecPicture(name,field) {
-    console.log("------------in select picture------");
+    // console.log("------------in select picture------");
     const image = await Plugins.Camera.getPhoto({
       quality: 50,
       allowEditing: true,
@@ -2764,7 +2763,7 @@ export class NewFormPage implements OnInit {
   }
   ngAfterViewInit(){
 
-    console.log('ngAfterViewInit:',this.cbgcolor)
+    // console.log('ngAfterViewInit:',this.cbgcolor)
     const cusstyle:string = `--background:${this.cbgcolor}`;
     this.testdom.changes.subscribe((list:QueryList<any>)=>{
       if(list.length > 0){
@@ -2775,7 +2774,7 @@ export class NewFormPage implements OnInit {
     });
   }
   async getRiskmatrix(selectedRiskMatrix,fieldname,fieldvalue) {
-    console.log('fieldvalue:',fieldvalue);
+    // console.log('fieldvalue:',fieldvalue);
     let obj: Object = {
       riskMatrixFrameData: selectedRiskMatrix,
       riskMatrixSaveData: fieldvalue,
@@ -2844,7 +2843,7 @@ export class NewFormPage implements OnInit {
           if (data.returnResponse == "offline") {
             this.storage.get('offlinemuitldata').then( d => {
               d = JSON.parse(d);
-              console.log('d:',d)
+              // console.log('d:',d)
               this.presentAlert(`${d.online.offlineTip}<br/>${d.online.ischangeOffline}`, "", [{
                 text: d.online.yes,
                 handler: () => {
@@ -2907,7 +2906,7 @@ export class NewFormPage implements OnInit {
         if (data.returnResponse == "offline") {
           this.storage.get('offlinemuitldata').then( d => {
             d = JSON.parse(d);
-            console.log('d:',d)
+            // console.log('d:',d)
             this.presentAlert(`${d.online.offlineTip}<br/>${d.online.ischangeOffline}`, "", [{
               text: d.online.yes,
               handler: () => {
@@ -2961,7 +2960,7 @@ export class NewFormPage implements OnInit {
         if (data.returnResponse == "offline") {
           this.storage.get('offlinemuitldata').then( d => {
             d = JSON.parse(d);
-            console.log('d:',d)
+            // console.log('d:',d)
             this.presentAlert(`${d.online.offlineTip}<br/>${d.online.ischangeOffline}`, "", [{
               text: d.online.yes,
               handler: () => {
@@ -3017,7 +3016,7 @@ export class NewFormPage implements OnInit {
         if (data.returnResponse == "offline") {
           this.storage.get('offlinemuitldata').then( d => {
             d = JSON.parse(d);
-            console.log('d:',d)
+            // console.log('d:',d)
             this.presentAlert(`${d.online.offlineTip}<br/>${d.online.ischangeOffline}`, "", [{
               text: d.online.yes,
               handler: () => {
@@ -3071,7 +3070,7 @@ export class NewFormPage implements OnInit {
         if (data.returnResponse == "offline") {
           this.storage.get('offlinemuitldata').then( d => {
             d = JSON.parse(d);
-            console.log('d:',d)
+            // console.log('d:',d)
             this.presentAlert(`${d.online.offlineTip}<br/>${d.online.ischangeOffline}`, "", [{
               text: d.online.yes,
               handler: () => {
@@ -3122,11 +3121,11 @@ export class NewFormPage implements OnInit {
     this.storage.get('loginDetails').then(logindata => {
       this.getforms.doReopen(logindata, para).pipe(first()).subscribe(data => {
         data = JSON.parse(data.data);
-        console.log('reopen:',data)
+        // console.log('reopen:',data)
         if (data.returnResponse == "offline") {
           this.storage.get('offlinemuitldata').then( d => {
             d = JSON.parse(d);
-            console.log('d:',d)
+            // console.log('d:',d)
             this.presentAlert(`${d.online.offlineTip}<br/>${d.online.ischangeOffline}`, "", [{
               text: d.online.yes,
               handler: () => {
@@ -3179,7 +3178,7 @@ export class NewFormPage implements OnInit {
           if (data.returnResponse == "offline") {
             this.storage.get('offlinemuitldata').then( d => {
               d = JSON.parse(d);
-              console.log('d:',d)
+              // console.log('d:',d)
               this.presentAlert(`${d.online.offlineTip}<br/>${d.online.ischangeOffline}`, "", [{
                 text: d.online.yes,
                 handler: () => {
@@ -3268,7 +3267,7 @@ export class NewFormPage implements OnInit {
       //监听销毁的事件
       const { data } = await modal.onDidDismiss();
       
-      console.log('data:',data);
+      // console.log('data:',data);
       if(data.result == 'success'){
         this.reUpdateMicrodbData(section.secId,data.unid,data.firstDisVal, data.firstDisType ,data.secondDisVal, data.secondDisType, data.thirdDisVal, data.thirdDisType);
       }
@@ -3354,12 +3353,12 @@ export class NewFormPage implements OnInit {
       this.storage.get('loginDetails').then(logindata => {
         this.getforms.removeDoc(logindata, unid).pipe(first()).subscribe(data => {
           data = JSON.parse(data.data);
-          console.log('removeMicroDoc:',data)
+          // console.log('removeMicroDoc:',data)
           if (data.returnResponse == "offline") {
             this.commonCtrl.hide();
             this.storage.get('offlinemuitldata').then( d => {
               d = JSON.parse(d);
-              console.log('d:',d)
+              // console.log('d:',d)
               this.presentAlert(`${d.online.offlineTip}<br/>${d.online.ischangeOffline}`, "", [{
                 text: d.online.yes,
                 handler: () => {
@@ -3378,7 +3377,7 @@ export class NewFormPage implements OnInit {
             
           }else{  //online mode
             if (data.result == 'success') {
-              console.log('***this.microdbdata:',this.microdbData);
+              // console.log('***this.microdbdata:',this.microdbData);
               this.updateMicrodbData(secId, unid);
             } else {
               this.presentAlert("failed!Error:" + data.result, "", "OK")
@@ -3433,9 +3432,9 @@ export class NewFormPage implements OnInit {
     }
   }
   findSameLabelname(fields: any, label: string, name: any): boolean{
-    console.log('name:',name,' label:',label)
+    // console.log('name:',name,' label:',label)
     const result = fields.find(e => e.name!=name && e.label==label);
-    console.log('findSameLabelname result:',result)
+    // console.log('findSameLabelname result:',result)
     if(result) return true;
     return false;
   }
@@ -3496,8 +3495,8 @@ export class NewFormPage implements OnInit {
   }
   saveDyDatas() {
     var saveDyDatas = {};
-    console.log('this.sections:',this.sections)
-    console.log('this.dynamicDatas:',this.dynamicDatas)
+    // console.log('this.sections:',this.sections)
+    // console.log('this.dynamicDatas:',this.dynamicDatas)
     for (var key in this.dynamicDatas) {
       const v = this.sections.find(e => e.secId == key);
       if(v){
@@ -3509,11 +3508,11 @@ export class NewFormPage implements OnInit {
   saveDynamicData(info,section){
     const {index, fields} = info;
     section.index = index;
-    console.log('info:',info)
+    // console.log('info:',info)
     fields.forEach((e,i) => {
       section.dynamicData.quesList[index][i] = e.value;
     });
-    console.log('saveDynamicData ---section:',section)
+    // console.log('saveDynamicData ---section:',section)
   }
   offlineSave(paraforsubmit: any) {
     const d = new Date();
@@ -3559,7 +3558,7 @@ export class NewFormPage implements OnInit {
       console.log('==============================paraforsubmit:',paraforsubmit)
       this.storage.set(oldFilename, JSON.stringify(paraforsubmit)).then((data) => {
         const status: string = this.getStatusText(this.status);
-        console.log('status:',status,'----this.status:',this.status)
+        // console.log('status:',status,'----this.status:',this.status)
         this.draftCtrl.updateStatus(oldFilename, status, this.status, this.templatid, draftSavedTime, initiatorOrMR);
         if (this.subformflag) {
           this.router.navigate(["/new-form"], { queryParams: { unid: this.mainunid, aid: this.ulrs.aid, title: this.atitle, stat: this.ulrs.stat, type: 'edit', refresh: new Date().getTime(), cururl: this.lasturl } });
@@ -3576,13 +3575,13 @@ export class NewFormPage implements OnInit {
         let WFStatus: string = 'Draft';
         let refNo: any;
         if(offlineUpdate){
-          console.log("---------1111111:",this.title);
+          // console.log("---------1111111:",this.title);
           WFStatus = this.status;
           status = this.getStatusText(this.status);
           refNo = this.title;
           paraforsubmit["docId"] = this.formID;
         }else{
-          console.log("---------22222222:",this.title);
+          // console.log("---------22222222:",this.title);
           paraforsubmit.createTime = moment(new Date()).format('DD-MM-YYYY HH:mm');
 
         }

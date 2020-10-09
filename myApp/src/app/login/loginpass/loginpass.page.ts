@@ -124,13 +124,13 @@ export class LoginpassPage implements OnInit {
               localStorage.setItem('bgcolor', result.color);
               
               var curtime = new Date();
-              console.log('-->starttime:', curtime.toLocaleTimeString());
+              //console.log('-->starttime:', curtime.toLocaleTimeString());
 
               this.auth.updateUserInfo(this.loginDetails).pipe(first()).subscribe(
                 data => {
-                  console.log('updateUserInfo----data...:', data)
+                  //console.log('updateUserInfo----data...:', data)
                   data = JSON.parse(data.data);
-                  console.log('updateUserInfo data,',data);
+                  //console.log('updateUserInfo data,',data);
                   const AppVersionNo = data.AppVersionNo;
                   const curVersion = AppConfig.appversion;
                   const msg = data.msg; 
@@ -153,7 +153,7 @@ export class LoginpassPage implements OnInit {
                         //TODO
 
                       }else{
-                        console.log('cursec:',cursec, ' second:',second)
+                        //console.log('cursec:',cursec, ' second:',second)
                         if( cursec < second){
                           this.promptOfUpdate(msg,btnYes,btnNo,AppURL);
                         }
@@ -163,7 +163,7 @@ export class LoginpassPage implements OnInit {
                   this.loginDetails.OUCategory = data.OUCategory;
                   const EmpCurrentPortal = data.EmpCurrentPortal;
                   this.loginDetails.empgroup = EmpCurrentPortal;
-                  console.log('updateUserInfo---->this.loginDetails:', this.loginDetails)
+                  //console.log('updateUserInfo---->this.loginDetails:', this.loginDetails)
                   localStorage.setItem('OUCategory', data.OUCategory)
                   localStorage.setItem('EmpCurrentPortal', EmpCurrentPortal)
                   console.log('userlan:', data.lan);
@@ -245,7 +245,7 @@ export class LoginpassPage implements OnInit {
     
     
     let browserURL = this.ssoserver + '/' + this.ssofolder + '/' + 'integrumws.nsf/ssordnew.xsp';
-    console.log('browserURL:',browserURL)
+    //console.log('browserURL:',browserURL)
     Plugins.Browser.open({
       url: browserURL
     });
@@ -256,10 +256,10 @@ export class LoginpassPage implements OnInit {
 
     this.key1 = newkey[0].split('=');
     this.key2 = newkey[1].split('=');
-    console.log('------key1------', this.key1);
-    console.log('------key2------', this.key2);
+   // console.log('------key1------', this.key1);
+    //console.log('------key2------', this.key2);
     let postData = { key1: this.key1[1], key2: this.key2[1] };
-    console.log("POSTDATA>>>", postData);
+    //console.log("POSTDATA>>>", postData);
 
     
     this.auth.ssoData(this.ssoserver, this.ssofolder, postData).subscribe(d => {
@@ -269,7 +269,7 @@ export class LoginpassPage implements OnInit {
 
       }
       else {
-        console.log('success....', d);
+       // console.log('success....', d);
         this.Login();
         //this.saveLoginDetails(loginDetails);p@ssw0rd
       }
@@ -286,7 +286,7 @@ export class LoginpassPage implements OnInit {
     this.presentAlert(msg,'',[
       {text:btnNo, handler:()=>{}},
       {text:btnYes,handler:()=>{
-        console.log('prompt of update///');
+        //console.log('prompt of update///');
         Plugins.Browser.open({url});
       }}
     ]);

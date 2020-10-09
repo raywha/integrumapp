@@ -196,14 +196,14 @@ export class FormListPage implements OnInit {
               this.para.curpage = this.searchkey.start
               this.geapp.getViewData(data, this.para).pipe(first())
                 .subscribe(data => {
-                   console.log('getViewData-->',data)
+                  // console.log('getViewData-->',data)
                   data = JSON.parse(data.data);
                   console.log('getdata:',data)
-                  console.log('data.returnResponse:',data.returnResponse,'  ',data.returnResponse == "offline")
+                  //console.log('data.returnResponse:',data.returnResponse,'  ',data.returnResponse == "offline")
                   if (data.returnResponse == "offline") {
                     this.storage.get('offlinemuitldata').then( d => {
                       d = JSON.parse(d);
-                      console.log('d:',d)
+                      //console.log('d:',d)
                       this.presentAlert(`${d.online.offlineTip}<br/>${d.online.ischangeOffline}`, "", [{
                         text: d.online.yes,
                         handler: () => {
@@ -258,7 +258,7 @@ export class FormListPage implements OnInit {
             this.para.key = this.vid;
             this.geapp.getActDocsAssoForms(data, this.para).pipe(first())
               .subscribe(data => {
-                console.log(data)
+                //console.log(data)
                 data = JSON.parse(data.data);
                 let tempdate;
                 data.actDocs.forEach(element => {
@@ -289,10 +289,10 @@ export class FormListPage implements OnInit {
 
   getItems(ev: any) {
 
-    console.log()
+    //console.log()
     this.data =this.databak
     let val = ev.target.value;
-   console.log(val)
+   //console.log(val)
     if (val && val.trim() != '') {
       this.data = this.databak.filter((item) => {
         
