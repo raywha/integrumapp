@@ -13,6 +13,7 @@ import { Plugins, CameraResultType, CameraSource } from '@capacitor/core';
 import { Router } from '@angular/router';
 import { commonCtrl } from "../../common/common";
 import { GetallformsService } from "../../services/getallforms.service";
+import * as moment from 'moment';
 @Component({
   selector: 'app-myaction',
   templateUrl: './myaction.page.html',
@@ -73,9 +74,9 @@ export class MyactionPage implements OnInit {
       this.commonCtrl.processShow('Processing...');
       this.unid = res.unid?res.unid:""; 
       this.pid = res.pid;
-      
-      this.getActDocData(this.unid?this.unid:"");
       this.type = res.type;
+      this.getActDocData(this.unid?this.unid:"");
+      
       if(this.type=="edit"){
         this.btnBox = {
           "result": [
@@ -105,6 +106,8 @@ export class MyactionPage implements OnInit {
           if(!this.actionList.EmployeeAssigned && !unid){
             this.actionList.EmployeeAssigned = localStorage.getItem("user");
           }
+          this.actionList.WFStatus = this.actionList.WFStatus=="Pending Management Representative Review"?"Pending MR Review":this.actionList.WFStatus;
+          if(this.actionList.DueDate && this.type=="edit") this.actionList.DueDate = moment(`${this.actionList.DueDate}`,'DD/MM/YYYY').format('YYYY-MM-DD')
           this.commonCtrl.processHide();
         })
     })

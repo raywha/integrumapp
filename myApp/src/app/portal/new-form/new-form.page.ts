@@ -145,6 +145,7 @@ export class NewFormPage implements OnInit {
   public lookupdatas: any;
   public newActSec:any={};
   public act:string="no";
+  private umr: any;
   constructor(
     private storage: Storage,
     public modal: ModalController,
@@ -177,6 +178,9 @@ export class NewFormPage implements OnInit {
     //   }
     //   this.lookupdatas = data.lookupdatas
     // })
+    if(localStorage.getItem("MR")){
+      this.umr = localStorage.getItem("MR");
+    }
     if(localStorage.getItem("bgcolor")){
       //console.log('localStorage-->bgcolor:',localStorage.getItem('bgcolor'))
       this.cbgcolor = localStorage.getItem('bgcolor');
@@ -239,8 +243,11 @@ export class NewFormPage implements OnInit {
             this.getAssActData(res.title).then((data:any)=>{
               console.log("ddddd:",data.result);
               this.newActSec.secId = "myAct";
-              this.newActSec.title = "Act Test";
+              this.newActSec.title = "Action Documents";
               this.newActSec.actDataList = data.result;
+              this.newActSec.actDataList.forEach((val,index) => {
+                this.newActSec.actDataList[index].WFStatus=val.WFStatus=="Pending Management Representative Review"?"Pending MR Review":val.WFStatus;
+              });    
             })
           }
           this.newdoc = false;
@@ -585,7 +592,9 @@ export class NewFormPage implements OnInit {
     let selectSecId: any = [];
     for (let i = 0; i < this.selecttemplat.template.secs.length; i++) {
       this.selecttemplat.template.secs[i].fields.forEach(data => {
-        
+        if(data.name=='formMR'){
+          if(data.value =='') data.value = this.umr;
+        }
         if (data.xtype == "radio" || data.xtype == "select") {
           if(data.xtype == "radio") data.options = data.options.filter(function (obj) { return obj.value != "" })
           //data.options = data.options.filter(function (obj) { return obj.value != "" })
@@ -3664,7 +3673,7 @@ export class NewFormPage implements OnInit {
 	  return status[v]?status[v]:v;
   }
   openAction(unid){
-    this.router.navigate(['myaction'],{queryParams:{unid:unid,type:'edit'}})
+    this.router.navigate(['myaction'],{queryParams:{unid:unid,type:'open'}})
   }
 }
 

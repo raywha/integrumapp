@@ -153,7 +153,8 @@ export class AuthemailPage implements OnInit {
               this.loginDetails.folder = this.folder;
               this.loginDetails.code = this.authform.value.code;
               this.loginDetails.email = result.user.email;
-              localStorage.setItem('email', result.user.email)
+              localStorage.setItem('email', result.user.email);
+              localStorage.setItem('MR', result.user.MR);
               this.loginDetails.OUCategory = result.user.oucategory;
 
               this.storage.set("loginDetails", this.loginDetails);

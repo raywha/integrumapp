@@ -122,7 +122,7 @@ export class LoginpassPage implements OnInit {
 
               this.storage.set("loginDetails",this.loginDetails)
               localStorage.setItem('bgcolor', result.color);
-              
+              localStorage.setItem('MR', result.user.MR);
               var curtime = new Date();
               //console.log('-->starttime:', curtime.toLocaleTimeString());
               console.log('updateUserInfo--before---this.loginDetails:',this.loginDetails);

@@ -834,12 +834,11 @@
                 <ion-col size="4">
                   <ion-item>
                     Due Date
-                    
                   </ion-item>
                 </ion-col>
                 <ion-col size="4">
                   <ion-item style="margin-right:-20px">
-                    Assignee             
+                    Assignee
                   </ion-item>
                 </ion-col>
                 <ion-col size="4">
@@ -848,21 +847,21 @@
                   </ion-item>
                 </ion-col>
               </ion-row>
-
+  
               <ion-row *ngFor="let ass of newActSec.actDataList;">
                 <ion-col size='4'>
                   <ion-item> 
-                   <a [ngStyle]="{'color':cbgcolor}">{{ass.DueDate}}</a> 
+                   <a (click)="openAction(ass.unid)" [ngStyle]="{'color':cbgcolor}">{{ass.DueDate}}</a> 
                   </ion-item>
                 </ion-col>
                 <ion-col size='4'>
                   <ion-item> 
-                   <a [ngStyle]="{'color':cbgcolor}">{{ass.actAssignee}}</a> 
+                   <a (click)="openAction(ass.unid)" [ngStyle]="{'color':cbgcolor}">{{ass.actAssignee}}</a> 
                   </ion-item>
                 </ion-col>
                 <ion-col size='4'>
                   <ion-item> 
-                   <a [ngStyle]="{'color':cbgcolor}">{{ass.WFStatus}}</a> 
+                   <a (click)="openAction(ass.unid)" [ngStyle]="{'color':cbgcolor}">{{ass.WFStatus}}</a> 
                   </ion-item>
                 </ion-col>
               </ion-row>
