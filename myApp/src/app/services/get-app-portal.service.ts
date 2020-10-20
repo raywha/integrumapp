@@ -78,7 +78,48 @@ export class GetAppPortalService {
       if(e.status==-6) return {data:"{\"returnResponse\":\"offline\"}"};
     }));
   }
-
+  getActData(logindetail:any,para:any):Observable<any>{
+    let browerLang=this.translate.getDefaultLang();
+    let count=para.count;
+    let curpage=para.curpage;
+    if(localStorage.getItem('lan')){
+      browerLang = localStorage.getItem('lan');
+    }
+    let params = `${logindetail.server}/${logindetail.folder}/integrumws.nsf/xp_App.xsp/getActViewData?countperpage=${encodeURIComponent(count)}&curpage=${encodeURIComponent(curpage)}&uname=${encodeURIComponent(logindetail.username)}&languageid=${encodeURIComponent(browerLang)}`;  
+    if(logindetail.username && logindetail.password){
+      let auth='Basic '+btoa(logindetail.username+':'+logindetail.password);
+      const options = {
+          "Content-Type":"application/json; charset=utf-8",
+          "Authorization":auth
+      };
+      return from(this.httpnative.get(params,'',options).catch(e=>{
+        if(e.status==-6) return {data:"{\"returnResponse\":\"offline\"}"};
+      }));
+    }
+    return from(this.httpnative.get(params,'','').catch(e=>{
+      if(e.status==-6) return {data:"{\"returnResponse\":\"offline\"}"};
+    }));
+  }
+  getActDocData(logindetail:any,unid:string):Observable<any>{
+    let browerLang=this.translate.getDefaultLang();
+    if(localStorage.getItem('lan')){
+      browerLang = localStorage.getItem('lan');
+    }
+    let params = `${logindetail.server}/${logindetail.folder}/integrumws.nsf/xp_App.xsp/getActDocData?unid=${encodeURIComponent(unid)}&languageid=${encodeURIComponent(browerLang)}`;  
+    if(logindetail.username && logindetail.password){
+      let auth='Basic '+btoa(logindetail.username+':'+logindetail.password);
+      const options = {
+          "Content-Type":"application/json; charset=utf-8",
+          "Authorization":auth
+      };
+      return from(this.httpnative.get(params,'',options).catch(e=>{
+        if(e.status==-6) return {data:"{\"returnResponse\":\"offline\"}"};
+      }));
+    }
+    return from(this.httpnative.get(params,'','').catch(e=>{
+      if(e.status==-6) return {data:"{\"returnResponse\":\"offline\"}"};
+    }));
+  }
   getActDocsAssoForms(logindetail:any,para:any ):Observable<any>{
     let key=para.key
     if(logindetail.username && logindetail.password){

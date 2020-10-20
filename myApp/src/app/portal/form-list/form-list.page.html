@@ -32,10 +32,10 @@
       <div class="contentLeft">
         <div class="title">
           <span *ngIf="item.title!=''">
-            <a [routerLink]="['/new-form']" [ngStyle]="{'color':cbgcolor}" [queryParams]="{unid:item.unid,aid:formid,title:item.DocRefNumber,stat:item.WFStatus,type:'open',vid:ovid,cururl:cururl}"> {{item.title}}</a>
+            <a [routerLink]="['/new-form']" [ngStyle]="{'color':cbgcolor}" [queryParams]="{unid:item.unid,aid:formid,title:item.DocRefNumber,stat:item.WFStatus,type:'open',vid:ovid,cururl:cururl,act:item.hasResponse}"> {{item.title}}</a>
           </span>
           <span *ngIf="item.title===''||!item.title">
-              <a [routerLink]="['/new-form']" [ngStyle]="{'color':cbgcolor}" [queryParams]="{unid:item.unid,aid:formid,title:item.DocRefNumber,stat:item.WFStatus,type:'open',vid:ovid,cururl:cururl,docname:item.name}">  {{item.DocRefNumber}}</a>
+              <a [routerLink]="['/new-form']" [ngStyle]="{'color':cbgcolor}" [queryParams]="{unid:item.unid,aid:formid,title:item.DocRefNumber,stat:item.WFStatus,type:'open',vid:ovid,cururl:cururl,docname:item.name,act:item.hasResponse}">  {{item.DocRefNumber}}</a>
           </span>
         </div>
         <div class="action">
@@ -45,7 +45,7 @@
           <ion-label>{{item.calendarDate}}</ion-label>
         </div>
       </div>
-      <div class="contentright" *ngIf="item.hasResponse=='yes'">
+      <div class="contentright" *ngIf="item.hasResponse=='yes'" style="display:none">
         <ion-icon [routerLink]="['/form-list']" [queryParams]="{vid:item.unid,type:'formlistAss'}" mode="ios" slot="end"
           name="arrow-forward"></ion-icon>
       </div>
@@ -69,7 +69,7 @@
           <ion-label>{{item.ActDueforCompletion}}</ion-label>
         </div>
       </div>
-      <div class="contentright" *ngIf="item.hasResponse=='yes'">
+      <div class="contentright" *ngIf="item.hasResponse=='yes'" style="display:none">
         <ion-icon [routerLink]="['/form-list']" [queryParams]="{vid:item.unid,type:'formlistAss'}" mode="ios" slot="end"
           name="arrow-forward"></ion-icon>
       </div>

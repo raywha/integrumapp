@@ -132,6 +132,9 @@ export class FormListPage implements OnInit {
                       // element.calendarDate = this.draftime;
                       //element.calendarDate = element.calendarDate.split(' ')[0]
                       if(element.calendarDate!='') element.calendarDate = moment(`${element.calendarDate}`,'YYYY-MM-DD').format('DD/MM/YYYY');
+                      if(element.isDueDate && element.isDueDate=="yes"){
+                        element.calendarDate = "Due "+element.calendarDate;
+                      }
                     });
                     this.data = this.data.concat( data.data)
                     this.databak =this.data
@@ -187,8 +190,10 @@ export class FormListPage implements OnInit {
           if(res.vid && res.vid!=''){
             this.ovid = res.vid;
             this.vid = res.vid.split("/")[1].split("?")[0];
-            this.vtitle = res.vtitle
-            if(this.vid.startsWith('my_') || this.vid.startsWith('My_')) this.isMyView = true;
+            this.vtitle = res.vtitle;
+            const substr = this.vid.substring(0,2).toLocaleLowerCase();
+            if(substr == 'my') this.isMyView = true;
+            //if(this.vid.startsWith('my_') || this.vid.startsWith('My_')) this.isMyView = true;
             this.storage.get("loginDetails").then(data => {
               //if(data.code=="kn001") this.cbgcolor = "#3880ff";
               this.para.key = this.vid;
@@ -228,6 +233,9 @@ export class FormListPage implements OnInit {
                       // this.draftime = tempdate.getDate() + "/" + (tempdate.getMonth() + 1) + "/" + tempdate.getFullYear()
                       // element.calendarDate = this.draftime;
                       if(element.calendarDate!='') element.calendarDate = moment(`${element.calendarDate}`,'YYYY-MM-DD').format('DD/MM/YYYY');
+                      if(element.isDueDate && element.isDueDate=="yes"){
+                        element.calendarDate = "Due "+element.calendarDate;
+                      }
                     });
                     if(this.isMyView){
                       this.myviewdata = data.data;

@@ -210,18 +210,106 @@ export class AuthemailPage implements OnInit {
                   this.translate.use(data.lan);
                   this.storage.set("loginDetails", this.loginDetails)
                   //this.setAccountData(this.loginDetails,data.lan);
+                  /*
                   this.getallforms.getAllForms(this.loginDetails,data.lan).pipe(first()).subscribe(data => {
                     this.commonCtrl.processHide();
                     const otime = new Date();
                     console.log('getAllForms--otime.toLocaleTimeString:', otime.toLocaleTimeString(), '-->starttime:', curtime.toLocaleTimeString());
                     data = JSON.parse(data.data);
                     this.storage.set('allforms', JSON.stringify(data));
+                    
                     this.commonCtrl.processHide();
                     this.ngZone.run(() => {
 
                       this.router.navigate(['tabs/tab1'], { queryParams: { lan: data.lan } })
                     })
+                    
                   })
+                  */
+                 this.storage.get("allforms").then( forms => {
+                   const lan = data.lan;
+                  if(forms == null){
+                    this.downloadAllForms(lan);
+                  }else{
+                    forms = JSON.parse(forms);
+                    console.log('forms:', forms);
+                    const templates = forms.templates;
+                    // const templateids = templates.filter(t => t.lastmodify);
+                    const arr = [];
+                    templates.forEach(t => {
+                      if (t) {
+                        const lastmodify = t.lastmodify;
+                        if (lastmodify) {
+                          arr.push({
+                            tid: t.template.templateId,
+                            lastmodify
+                          })
+                        }
+                      }
+
+                    });
+                    console.log('--------------arr....', arr);
+                    if (arr.length == 0) {
+                      this.downloadAllForms(lan);
+                    } else {
+                      this.getUpdateFormids(arr,lan).then(data => {
+                        data = JSON.parse(data);
+                        console.log('getUpdateFormids---------------data:', data);
+                        if (data.tmplateids) {
+                          const arr = data.tmplateids;
+                          if (arr.length == 0) {
+                            console.log('do not need update allforms');
+                            const otime = new Date();
+                            console.log('getAllForms-***getUpdateFormids---do not need update allforms-otime.toLocaleTimeString:', otime.toLocaleTimeString(), '-->starttime:');
+                            this.commonCtrl.processHide();
+                            this.ngZone.run(() => {
+        
+                              this.router.navigate(['tabs/tab1'], { queryParams: { lan} })
+                            })
+                          } else {
+                            const tarr = [];
+                            for (let index = 0; index < arr.length; index++) {
+                              const element = arr[index];
+                              tarr.push(this.getForm(element,lan));
+                            }
+                            Promise.all(tarr).then(result => {
+                              console.log('----**----===----result:', result);
+                              let newtemplates: any = templates;
+                              arr.forEach(f => {
+                                newtemplates = newtemplates.filter(form => form.template.templateId != f)
+                              });
+                              newtemplates = newtemplates.concat(result);
+                              this.storage.set('allforms', JSON.stringify({ templates: newtemplates }));
+                              const otime = new Date();
+                            console.log('getAllForms-***getUpdateFormids---update specify forms-otime.toLocaleTimeString:', otime.toLocaleTimeString(), '-->starttime:');
+                              this.commonCtrl.processHide();
+                              this.ngZone.run(() => {
+          
+                                this.router.navigate(['tabs/tab1'], { queryParams: { lan } })
+                              })
+                            }).catch(e => {
+                              console.log('getform all error:', e);
+                            })
+                          }
+                        } else {
+                          if (data.status != 'failed') {
+                            console.log('----------------------allforms:', data);
+                            this.storage.set('allforms', JSON.stringify(data));
+                            this.commonCtrl.processHide();
+                            this.ngZone.run(() => {
+        
+                              this.router.navigate(['tabs/tab1'], { queryParams: { lan } })
+                            })
+                          }else{
+                            console.log('getUpdateFormids error:',data)
+                          }
+
+                        }
+                      });
+                    }
+                  }
+                })
+                  
                   this.auth.getOfflineMultiData().pipe(first()).subscribe(
                     data => {
                       console.log('getOfflineMultiData----data...:', JSON.parse(data.data))
@@ -291,12 +379,13 @@ export class AuthemailPage implements OnInit {
               localStorage.setItem('user', this.user);
               //console.log('this.user:',this.user)
               localStorage.setItem('OUCategory', result.user.oucategory)
-              
+              const stime:any = new Date();
               this.getpsn.getpersoninfo(this.user, this.pass, this.server, this.folder).pipe(first()).subscribe(
                 data => {
                   const otime = new Date();
-                  console.log('getpersoninfo--otime.toLocaleTimeString:', otime.toLocaleTimeString(), '-->starttime:', curtime.toLocaleTimeString());
+                  console.log('getpersoninfo--otime.toLocaleTimeString:', otime.toLocaleTimeString(), '-->starttime:', curtime.toLocaleTimeString(), '-->****starttime:', stime.toLocaleTimeString());
                   data = JSON.parse(data.data);
+                  console.log('getpersoninfo:',data);
                   this.storage.set('psninfo', JSON.stringify(data));
                 }
               )
@@ -322,6 +411,77 @@ export class AuthemailPage implements OnInit {
           }
         },
       );
+  }
+
+  getForm(tmpid: string, lan: string){
+    return new Promise((resolve,reject)=>{
+      this.getallforms.getSpecifyForm(this.loginDetails,tmpid,lan).pipe(first()).subscribe(data => {
+        console.log('getForm data:',data);
+        //this.storage.set('tmpid',data)
+        data = JSON.parse(data.data);
+        //resolve(JSON.stringify(data));
+        resolve(data);
+       });
+    })
+  }
+  getFormids( lan: string):any{
+    return new Promise((resolve,reject)=>{
+      this.getallforms.getFormids(this.loginDetails,lan).pipe(first()).subscribe(data => {
+        console.log('getFormids data:',data);
+        //this.storage.set('tmpid',data)
+        resolve(data);
+       });
+    })
+  }
+  getUpdateFormids(param: any,lan:string):any{
+    return new Promise((resolve,reject)=>{
+      this.getallforms.getUpdateFormids(this.loginDetails,param,lan).pipe(first()).subscribe(data => {
+        console.log('getUpdateFormids data:',data);
+        //this.storage.set('tmpid',data)
+        
+        resolve(data);
+       });
+    })
+  }
+  downloadAllForms(lan: string){
+    this.getFormids(lan).then( data =>{
+      data = JSON.parse(data.data);
+      console.log('downloadAllForms:',data)
+      if(data.tmplateids){
+        const arr = data.tmplateids;
+        const tarr = [];
+        for (let index = 0; index < arr.length; index++) {
+          const element = arr[index];
+          tarr.push(this.getForm(element,lan));
+        }
+        Promise.all(tarr).then(result => {
+          console.log('------------result:', result)
+          this.storage.set('allforms', JSON.stringify({templates:result})); 
+          const otime = new Date();
+                    console.log('getAllForms-***downloadAllForms-otime.toLocaleTimeString:', otime.toLocaleTimeString(), '-->starttime:');
+          this.commonCtrl.processHide();
+          this.ngZone.run(() => {
+
+            this.router.navigate(['tabs/tab1'], { queryParams: { lan } })
+          })
+        }).catch(e => {
+          console.log('getform all error:', e);
+        })
+      }else{
+        if(data.status != 'failed'){
+          console.log('----------------------allforms:',data);
+          this.storage.set('allforms', JSON.stringify(data)); 
+          this.commonCtrl.processHide();
+          this.ngZone.run(() => {
+
+            this.router.navigate(['tabs/tab1'], { queryParams: { lan } })
+          })
+        }else{
+          console.log('downloadAllForms error:',data)
+        }
+        
+      }
+    });
   }
   // 
   async presentAlert(msg: string, header: string, btn: any) {

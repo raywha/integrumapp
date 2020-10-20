@@ -39,7 +39,89 @@ export class GetallformsService {
       if(e.status==-6) return {data:"{\"returnResponse\":\"offline\"}"};
     }));
   }
+  getFormids(logindetail:any, lan?:string):Observable<any>{
+    let browerLang=this.translate.getDefaultLang();
+    if(lan){
+      browerLang = lan;
+    }
+    const curtime = new Date();
+    const url = `${logindetail.server}/${logindetail.folder}/integrumws.nsf/xp_App.xsp/getUserAllFormsID?lan=${browerLang}`;
+    //console.log('getFormids url:',url);
+    if(logindetail.username && logindetail.password){
+      let auth='Basic '+btoa(logindetail.username+':'+logindetail.password);
+      const options = {
+          "Content-Type":"application/json; charset=utf-8",
+          "Authorization":auth
+      };
+      return from(this.httpnative.get(url,'',options).catch(e=>{
+        console.log('getFormids service error:',e);
+        const otime = new Date();
+        console.log('---->getFormids--otime.toLocaleTimeString:', otime.toLocaleTimeString(), '-->starttime:', curtime.toLocaleTimeString());
+        if(e.status==-6) return {data:"{\"returnResponse\":\"offline\"}"};
+      }));
+    }
+    return from(this.httpnative.get(url,'','').catch(e=>{
+      if(e.status==-6) return {data:"{\"returnResponse\":\"offline\"}"};
+    }));
+  }
+  getUpdateFormids(logindetail:any,para: any, lan?:string):Observable<any>{
+    let browerLang=this.translate.getDefaultLang();
+    if(lan){
+      browerLang = lan;
+    }
+    const obj: any = {
+      lan:browerLang,
+      tmpids: para
+    }
 
+    //const  data=`${encodeURIComponent(obj)}`;
+    const data = {"data":escape(JSON.stringify(obj))};
+    this.httpnative.setDataSerializer("json");
+    const curtime = new Date();
+    const url = `${logindetail.server}/${logindetail.folder}/integrumws.nsf/xp_App.xsp/getUpdateUserAllFormsID`;
+    //console.log('getUpdateFormids url:',url);
+    if(logindetail.username && logindetail.password){
+      let auth='Basic '+btoa(logindetail.username+':'+logindetail.password);
+      const options = {
+          "Content-Type":"application/json; charset=utf-8",
+          "Authorization":auth
+      };
+      return from(this.httpnative.post(url,data,options).catch(e=>{
+        console.log('getFormids service error:',e);
+        const otime = new Date();
+        console.log('---->getFormids--otime.toLocaleTimeString:', otime.toLocaleTimeString(), '-->starttime:', curtime.toLocaleTimeString());
+        if(e.status==-6) return {data:"{\"returnResponse\":\"offline\"}",e};
+      }));
+    }
+    return from(this.httpnative.post(url,data,'').catch(e=>{
+      if(e.status==-6) return {data:"{\"returnResponse\":\"offline\"}"};
+    }));
+  }
+  getSpecifyForm(logindetail:any,tmpid: string, lan?:string):Observable<any>{
+    let browerLang=this.translate.getDefaultLang();
+    if(lan){
+      browerLang = lan;
+    }
+    const curtime = new Date();
+    const url = `${logindetail.server}/${logindetail.folder}/integrumws.nsf/xp_App.xsp/getSpecifyFormJSON?lan=${browerLang}&tmpid=${tmpid}`;
+    //console.log('getFormids url:',url);
+    if(logindetail.username && logindetail.password){
+      let auth='Basic '+btoa(logindetail.username+':'+logindetail.password);
+      const options = {
+          "Content-Type":"application/json; charset=utf-8",
+          "Authorization":auth
+      };
+      return from(this.httpnative.get(url,'',options).catch(e=>{
+        console.log('getSpecifyForm service error:',e);
+        const otime = new Date();
+        console.log('---->getSpecifyForm--otime.toLocaleTimeString:', otime.toLocaleTimeString(), '-->starttime:', curtime.toLocaleTimeString());
+        if(e.status==-6) return {data:"{\"returnResponse\":\"offline\"}"};
+      }));
+    }
+    return from(this.httpnative.get(url,'','').catch(e=>{
+      if(e.status==-6) return {data:"{\"returnResponse\":\"offline\"}"};
+    }));
+  }
 
   getFormData(logindetail:any,para:any, lan?:string ):Observable<any>{
     let browerLang=this.translate.getDefaultLang();
@@ -65,6 +147,29 @@ export class GetallformsService {
       if(e.status==-6) return {data:"{\"returnResponse\":\"offline\"}"};
     }));
   }
+  getAssActData(logindetail:any,para:any, lan?:string ):Observable<any>{
+    let browerLang=this.translate.getDefaultLang();
+    if(lan){
+      browerLang = lan;
+    }
+    let param:string = logindetail.server+'/'+logindetail.folder+'/integrumws.nsf/xp_App.xsp/getAssActData?ref='+encodeURIComponent(para)+'&languageid='+browerLang;
+    console.log('getAssActData  url:',param)
+    if(logindetail.username && logindetail.password){
+      let auth='Basic '+btoa(logindetail.username+':'+logindetail.password);
+
+      const options = {
+          "Content-Type":"application/json; charset=utf-8",
+          "Authorization":auth
+      };
+      return from(this.httpnative.get(param,'',options).catch(e=>{
+        if(e.status==-6) return {data:"{\"returnResponse\":\"offline\"}"};
+      }));
+    }
+    return from(this.httpnative.get(param,'','').catch(e=>{
+      if(e.status==-6) return {data:"{\"returnResponse\":\"offline\"}"};
+    }));
+  }
+
   submit(logindetail:any,para:any ):Observable<any>{
     let  data=para;
     console.log("------before decode---",data);
@@ -106,6 +211,27 @@ export class GetallformsService {
       }));
     }
     return from(this.httpnative.post(logindetail.server+'/'+logindetail.folder+'/integrumws.nsf/xp_App.xsp/syncSave',data,'').catch(e=>{
+      if(e.status==-6) return {data:"{\"returnResponse\":\"offline\"}"};
+    }));
+  }
+  actionSave(logindetail:any,para:any ):Observable<any>{
+    let  data=para;
+    data = {"data":escape(JSON.stringify(data))};
+    this.httpnative.setDataSerializer("json");
+    if(logindetail.username && logindetail.password){
+      let auth='Basic '+btoa(logindetail.username+':'+logindetail.password);
+      let unid=para.unid
+      const options = {
+          "Content-Type":"application/json; charset=utf-8",
+          "Authorization":auth
+      };
+      console.log('para:',para)
+      
+      return from(this.httpnative.post(logindetail.server+'/'+logindetail.folder+'/integrumws.nsf/xp_App.xsp/actionSave',data,options).catch(e=>{
+        if(e.status==-6) return {data:"{\"returnResponse\":\"offline\"}"};
+      }));
+    }
+    return from(this.httpnative.post(logindetail.server+'/'+logindetail.folder+'/integrumws.nsf/xp_App.xsp/actionSave',data,'').catch(e=>{
       if(e.status==-6) return {data:"{\"returnResponse\":\"offline\"}"};
     }));
   }
@@ -359,6 +485,23 @@ export class GetallformsService {
   }
   getFieldValue(logindetail:any,fields: string, fullname: string):Observable<any>{
     const url = `${logindetail.server}/${logindetail.folder}/integrumws.nsf/xp_App.xsp/getFieldsValue?fields=${encodeURIComponent(fields)}&fullname=${encodeURIComponent(fullname)}`;
+    if(logindetail.username && logindetail.password){
+      let auth='Basic '+btoa(logindetail.username+':'+logindetail.password);
+
+      const options = {
+          "Content-Type":"application/json; charset=utf-8",
+          "Authorization":auth
+      };
+      return from(this.httpnative.get(url,'',options).catch(e=>{
+        if(e.status==-6) return {data:"{\"returnResponse\":\"offline\"}"};
+      }));
+    }
+    return from(this.httpnative.get(url,'','').catch(e=>{
+      if(e.status==-6) return {data:"{\"returnResponse\":\"offline\"}"};
+    }));
+  }
+  getForms(logindetail:any, tmpid: string, lan: string):Observable<any>{
+    const url = `${logindetail.server}/${logindetail.folder}/integrumws.nsf/xp_App.xsp/getMyActions?tmpid=${encodeURIComponent(tmpid)}&lan=${lan}`;
     if(logindetail.username && logindetail.password){
       let auth='Basic '+btoa(logindetail.username+':'+logindetail.password);
 

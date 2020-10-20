@@ -31,6 +31,10 @@ const routes: Routes = [
     path: 'defaulthome',
     loadChildren: () => import('./setup/defaulthome/defaulthome.module').then( m => m.DefaulthomePageModule)
   },
+  {
+    path: 'myaction',
+    loadChildren: () => import('./portal/myaction/myaction.module').then( m => m.MyactionPageModule)
+  },
 
 
 

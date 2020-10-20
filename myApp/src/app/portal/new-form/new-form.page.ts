@@ -131,6 +131,7 @@ export class NewFormPage implements OnInit {
   public formmr;
   public microdbData:any = [];
   public orderbyImg: string = 'assets/icon/sort_none.gif';
+  public actorderbyImg: string = 'assets/icon/sort_none.gif';
   public orderbyState: boolean;
   public dynamicDatas:any = {};
   public status:string = "";
@@ -142,7 +143,8 @@ export class NewFormPage implements OnInit {
   public draftDocCreateTime: any;
   public online :any;
   public lookupdatas: any;
-
+  public newActSec:any={};
+  public act:string="no";
   constructor(
     private storage: Storage,
     public modal: ModalController,
@@ -166,15 +168,15 @@ export class NewFormPage implements OnInit {
       d = JSON.parse(d);
       this.online = d.online;
     });
-    this.storage.get("allforms").then(data => {
-      data = JSON.parse(data);
-      console.log('allform..',data)
-      if(data==null){
-        console.log(' allforms is loading!');
-        return false;
-      }
-      this.lookupdatas = data.lookupdatas
-    })
+    // this.storage.get("allforms").then(data => {
+    //   data = JSON.parse(data);
+    //   console.log('allform..',data)
+    //   if(data==null){
+    //     console.log(' allforms is loading!');
+    //     return false;
+    //   }
+    //   this.lookupdatas = data.lookupdatas
+    // })
     if(localStorage.getItem("bgcolor")){
       //console.log('localStorage-->bgcolor:',localStorage.getItem('bgcolor'))
       this.cbgcolor = localStorage.getItem('bgcolor');
@@ -232,6 +234,15 @@ export class NewFormPage implements OnInit {
         }
       }else{
         if (res.unid) {
+          if(res.act=="yes"){
+            this.act = res.act;
+            this.getAssActData(res.title).then((data:any)=>{
+              console.log("ddddd:",data.result);
+              this.newActSec.secId = "myAct";
+              this.newActSec.title = "Act Test";
+              this.newActSec.actDataList = data.result;
+            })
+          }
           this.newdoc = false;
           this.serverdoc = true;
 
@@ -504,7 +515,11 @@ export class NewFormPage implements OnInit {
               }
               this.comPercents();
             }
-            
+            if(res.act=="yes"){
+              console.log("aa",res.title)        
+              this.sections.splice(this.sections.length-1,0,this.newActSec);
+              console.log("------test:",this.sections)
+            }
             //})
           })
           
@@ -539,6 +554,7 @@ export class NewFormPage implements OnInit {
       this.sysfields = this.selecttemplat.template.secs[0].fields;
       this.mandafields = this.selecttemplat.template.mandaFields;
       this.templatid = this.selecttemplat.template.templateId;
+      this.lookupdatas = this.selecttemplat.template.lookupdatas;
       
       if (this.offlineFlag) {
         this.btnBox = {
@@ -1066,7 +1082,9 @@ export class NewFormPage implements OnInit {
 }
   getTemplatByViewId(data, vid) {
     let res;
+    console.log('getTemplatByViewId: data:',data)
     data.forEach(element => {
+      console.log('element:',element,' template: ',element.template)
       if (element.template.template_id == vid) {
         res = element
       }
@@ -1174,7 +1192,7 @@ export class NewFormPage implements OnInit {
           this.router.navigate(["/new-form"], { queryParams: newres});
         }else{
           actiontype = "edit";
-          this.router.navigate(["/new-form"], { queryParams: { unid: this.ulrs.unid, aid: this.ulrs.aid, vid:this.vid, title: this.ulrs.title, stat: this.ulrs.stat, type: actiontype, refresh: new Date().getTime(), cururl: this.lasturl } });
+          this.router.navigate(["/new-form"], { queryParams: { unid: this.ulrs.unid, aid: this.ulrs.aid, vid:this.vid, title: this.ulrs.title, stat: this.ulrs.stat, type: actiontype, refresh: new Date().getTime(), cururl: this.lasturl,act:this.act } });
         }
         
         break;
@@ -1427,6 +1445,8 @@ export class NewFormPage implements OnInit {
       case "btnReopen":
             this.presentModal('reopen');
             break;
+      case "btnNewAction":
+        this.router.navigate(["/myaction"], { queryParams: {type:"edit",pid:this.formID}});
       default:
         actiontype = "open"
         // this.router.navigateByUrl(this.lasturl)
@@ -1508,8 +1528,8 @@ export class NewFormPage implements OnInit {
       }
     }//End
     if(action=="submit" || (action == "save" && this.skipMandatory == "0")){
-      msg = this.checkQuesMandatory(msg);
-      if(msg) fieldError = true;
+      //msg = this.checkQuesMandatory(msg);
+      //sif(msg) fieldError = true;
     }
 
     return {fieldError,msg};
@@ -1595,6 +1615,24 @@ export class NewFormPage implements OnInit {
       })
     })
   }
+  getAssActData(para:any) {
+    return new Promise((resolve, reject) => {
+      this.storage.get("loginDetails").then(data => {
+        this.getforms.getAssActData(data,para).pipe(first()).subscribe(data => {
+          if(data){
+            data = JSON.parse(data.data);
+            console.log("----ass---:",data);
+          }else{
+            console.log('getFormData error:',data);
+            data = 'error'
+          }
+          
+          resolve(data)
+        })
+      })
+    })
+  }
+
   changeback0113(field: any) {
     // console.log(field)
     if (field.label.trim() != "Severity") {
@@ -3624,6 +3662,9 @@ export class NewFormPage implements OnInit {
   getStatusText(v: string){
     const status={"Draft":"ka_Draft","Open":"ka_Open","Approved":"ka_Approved","Completed":"ka_Completed","Rejected":"ka_Rejected","Pending Acceptance":"ka_PAccept","Approved-Pending Form MR":"ka_APFM","Signed-Off":"ka_Signed-Off","Pending Management Representative Review":"ka_PMRR","In Review":"ka_INRW"};
 	  return status[v]?status[v]:v;
+  }
+  openAction(unid){
+    this.router.navigate(['myaction'],{queryParams:{unid:unid,type:'edit'}})
   }
 }
 

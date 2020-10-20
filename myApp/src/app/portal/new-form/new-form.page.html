@@ -588,6 +588,45 @@
           <app-dynamicsec *ngIf="section.dynamicData.quesList.length>0" [sec]="section" doctype="edit" [unid]="draftDocName?draftDocName:formID" (outer)="saveDynamicData($event,section)"></app-dynamicsec>
           <ion-item *ngIf="section.dynamicData.quesList.length==0">no question</ion-item>
         </div>
+        <div *ngIf="section.secId=='myAct'">
+          <ion-grid>
+            <ion-row>
+              <ion-col size="4">
+                <ion-item>
+                  Due Date
+                </ion-item>
+              </ion-col>
+              <ion-col size="4">
+                <ion-item style="margin-right:-20px">
+                  Assignee
+                </ion-item>
+              </ion-col>
+              <ion-col size="4">
+                <ion-item style="margin-right:-20px">
+                  Status
+                </ion-item>
+              </ion-col>
+            </ion-row>
+
+            <ion-row *ngFor="let ass of newActSec.actDataList;">
+              <ion-col size='4'>
+                <ion-item> 
+                 <a (click)="openAction(ass.unid)" [ngStyle]="{'color':cbgcolor}">{{ass.DueDate}}</a> 
+                </ion-item>
+              </ion-col>
+              <ion-col size='4'>
+                <ion-item> 
+                 <a (click)="openAction(ass.unid)" [ngStyle]="{'color':cbgcolor}">{{ass.actAssignee}}</a> 
+                </ion-item>
+              </ion-col>
+              <ion-col size='4'>
+                <ion-item> 
+                 <a (click)="openAction(ass.unid)" [ngStyle]="{'color':cbgcolor}">{{ass.WFStatus}}</a> 
+                </ion-item>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+        </div>
       </div>
 
     </div>
@@ -788,6 +827,46 @@
           <div *ngIf="section.sectionType=='1' && section.dynamicData">
             <app-dynamicsec *ngIf="section.dynamicData.quesList.length>0" [sec]="section" doctype="open" [unid]="draftDocName?draftDocName:formID"></app-dynamicsec>
             <ion-item *ngIf="section.dynamicData.quesList.length==0">no question</ion-item>
+          </div>
+          <div *ngIf="section.secId=='myAct'">
+            <ion-grid>
+              <ion-row>
+                <ion-col size="4">
+                  <ion-item>
+                    Due Date
+                    
+                  </ion-item>
+                </ion-col>
+                <ion-col size="4">
+                  <ion-item style="margin-right:-20px">
+                    Assignee             
+                  </ion-item>
+                </ion-col>
+                <ion-col size="4">
+                  <ion-item style="margin-right:-20px">
+                    Status
+                  </ion-item>
+                </ion-col>
+              </ion-row>
+
+              <ion-row *ngFor="let ass of newActSec.actDataList;">
+                <ion-col size='4'>
+                  <ion-item> 
+                   <a [ngStyle]="{'color':cbgcolor}">{{ass.DueDate}}</a> 
+                  </ion-item>
+                </ion-col>
+                <ion-col size='4'>
+                  <ion-item> 
+                   <a [ngStyle]="{'color':cbgcolor}">{{ass.actAssignee}}</a> 
+                  </ion-item>
+                </ion-col>
+                <ion-col size='4'>
+                  <ion-item> 
+                   <a [ngStyle]="{'color':cbgcolor}">{{ass.WFStatus}}</a> 
+                  </ion-item>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
           </div>
         </div>
 
