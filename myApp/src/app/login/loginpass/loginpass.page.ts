@@ -144,7 +144,7 @@ export class LoginpassPage implements OnInit {
               console.log('updateUserInfo--before---this.loginDetails:',this.loginDetails);
               this.auth.updateUserInfo(this.loginDetails).pipe(first()).subscribe(
                 data => {
-                  //console.log('updateUserInfo----data...:', data)
+                  console.log('updateUserInfo----data...:', data)
                   data = JSON.parse(data.data);
                   console.log('updateUserInfo data,',data);
                   const AppVersionNo = data.AppVersionNo;

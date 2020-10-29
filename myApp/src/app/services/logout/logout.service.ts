@@ -14,7 +14,7 @@ export class LogoutService {
 
   setLogout(userid: string,pass:string,email:string,language:string,protalGroup:any,domain:string,folder:string): Observable<any> {
     let params:string = `${AppConfig.domain}/${AppConfig.folder}/appmgt.nsf/xp_ws.xsp/Logout?&email=${encodeURIComponent(email)}&languageCode=${encodeURIComponent(language)}&portalGroup=${encodeURIComponent(protalGroup)}`;
-
+console.log('setLogout  params:',params)
     if(userid && pass){
       let auth='Basic '+btoa(userid+':'+pass);
       const options = {

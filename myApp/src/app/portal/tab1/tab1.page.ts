@@ -354,7 +354,7 @@ export class Tab1Page {
       this.storage.get("loginDetails").then(data => {
         this.logoutService.setLogout(data.username, data.password, data.email, lan, this.portalTile, data.server, data.folder).pipe(first())
           .subscribe(res => {
-            //console.log(res)
+            console.log('setLogout res:',res)
             res = JSON.parse(res.data);
             if (res.returnResponse == "offline") {
               this.storage.get('offlinemuitldata').then( d => {

@@ -241,7 +241,7 @@ export class NewFormPage implements OnInit {
           if(res.act=="yes"){
             this.act = res.act;
             this.getAssActData(res.title).then((data:any)=>{
-              console.log("ddddd:",data.result);
+              // console.log("ddddd:",data.result);
               this.newActSec.secId = "myAct";
               this.newActSec.title = "Action Documents";
               this.newActSec.actDataList = data.result;
@@ -274,7 +274,7 @@ export class NewFormPage implements OnInit {
   
           this.commonCtrl.show();
           this.getFormData(res.unid, res.type).then((data: any) => {
-            console.log('getFormData: data:',data);
+            // console.log('getFormData: data:',data);
             if (data.returnResponse == "offline") {
               this.commonCtrl.hide();
               this.storage.get('offlinemuitldata').then( d => {
@@ -1093,7 +1093,7 @@ export class NewFormPage implements OnInit {
     let res;
     console.log('getTemplatByViewId: data:',data)
     data.forEach(element => {
-      console.log('element:',element,' template: ',element.template)
+      // console.log('element:',element,' template: ',element.template)
       if (element.template.template_id == vid) {
         res = element
       }
@@ -1615,7 +1615,7 @@ export class NewFormPage implements OnInit {
         this.para.unid = unid
         this.para.isedit = isedit == 'edit' ? 'yes' : 'no';
         this.getforms.getFormData(data, this.para).pipe(first()).subscribe(data => {
-          console.log('---getFormData data:',data)
+          // console.log('---getFormData data:',data)
           if(data){
             data = JSON.parse(data.data);
           }else{

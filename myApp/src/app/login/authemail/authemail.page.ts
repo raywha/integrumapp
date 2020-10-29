@@ -166,7 +166,7 @@ export class AuthemailPage implements OnInit {
 
               this.auth.updateUserInfo(this.loginDetails).pipe(first()).subscribe(
                 data => {
-                  console.log('updateUserInfo----data...:', data)
+                  console.log('================updateUserInfo----data...:', data)
                   data = JSON.parse(data.data);
                   console.log('updateUserInfo- parse---data...:', data)
                   const AppVersionNo = data.AppVersionNo;
@@ -434,7 +434,7 @@ export class AuthemailPage implements OnInit {
   getForm(tmpid: string, lan: string){
     return new Promise((resolve,reject)=>{
       this.getallforms.getSpecifyForm(this.loginDetails,tmpid,lan).pipe(first()).subscribe(data => {
-        console.log('getForm data:',data);
+        // console.log('getForm data:',data);
         //this.storage.set('tmpid',data)
         data = JSON.parse(data.data);
         //resolve(JSON.stringify(data));

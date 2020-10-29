@@ -47,7 +47,7 @@ export class AuthenticationService {
   
     return from(this.httpnative.post(AppConfig.domain+'/'+AppConfig.folder+'/appmgt.nsf/xp_ws.xsp/UserAuthentication',data,""))
   }
-  updateUserInfo(logindetail:any):Observable<any>{
+  updateUserInfo1029(logindetail:any):Observable<any>{
     const {folder,username,email,code,OUCategory} = logindetail;
     const deviceid = "iphone12 001";
     const lan = this.translate.getDefaultLang() || localStorage.getItem("lan");
@@ -69,6 +69,33 @@ export class AuthenticationService {
     console.log('url:',AppConfig.domain+'/'+AppConfig.folder+'/appmgt.nsf/xp_ws.xsp/updateUserInfo')
     console.log('data...',data)
     return from(this.httpnative.post(AppConfig.domain+'/'+AppConfig.folder+'/appmgt.nsf/xp_ws.xsp/updateUserInfo',data,"").catch(e=>{
+      if(e.status==-6) return {data:"{\"returnResponse\":\"offline\"}"};
+    }));
+    
+  }
+  updateUserInfo(logindetail:any):Observable<any>{
+    const {folder,username,email,code,OUCategory} = logindetail;
+    const deviceid = "iphone12 001";
+    const lan = this.translate.getDefaultLang() || localStorage.getItem("lan");
+    let os:string = "Android";
+    if(this.platform.is('ios')){
+      os = "iOS";
+    }
+    const data = {
+      username,
+      email,
+      "oucategory":OUCategory,
+      code,
+      deviceid,
+      "devicettype":"iphone13 plus",
+      os,
+      lan
+    }
+    console.log('updateUserInfo---service---->',logindetail)
+    console.log('url:',AppConfig.domain+'/'+AppConfig.folder+'/appmgt.nsf/xp_ws.xsp/updateUserInfo')
+    console.log('data...',data)
+    const url = `${AppConfig.domain}/${AppConfig.folder}/appmgt.nsf/xp_ws.xsp/updateUserInfo?username=${encodeURIComponent(username)}&email=${encodeURIComponent(email)}&oucategory=${encodeURIComponent(OUCategory)}&code=${encodeURIComponent(code)}&deviceid=${encodeURIComponent(deviceid)}&os=${os}`;
+    return from(this.httpnative.get(url,'',"").catch(e=>{
       if(e.status==-6) return {data:"{\"returnResponse\":\"offline\"}"};
     }));
     
