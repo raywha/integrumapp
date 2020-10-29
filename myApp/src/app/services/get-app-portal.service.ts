@@ -13,14 +13,14 @@ export class GetAppPortalService {
 
   constructor(public translate :TranslateService,private http: HttpClient,private common:CommonService,private httpnative: HTTP) { }
 
-  getPortalInfo(logindetail:any, lan?:string): Observable<any> {
+  getPortalInfo(logindetail:any, lan:string,pm:any): Observable<any> {
     //console.log('getProtalInfo---->',logindetail)
     let email = logindetail.email && logindetail.email!=''?logindetail.email:localStorage.getItem('email');
     let browerLang=this.translate.getDefaultLang();
     if(lan){
       browerLang = lan;
     }
-    let params:string = `${logindetail.server}/${logindetail.folder}/integrumws.nsf/xp_App.xsp/getAppPortal?&email=${encodeURIComponent(logindetail.email)}&lan=${browerLang}`;
+    let params:string = `${logindetail.server}/${logindetail.folder}/integrumws.nsf/xp_App.xsp/getAppPortal?&email=${encodeURIComponent(logindetail.email)}&lan=${browerLang}&modify=${encodeURIComponent(pm)}`;
     //console.log('getProtalInfo url:',params)
     if(logindetail.username && logindetail.password){
       

@@ -182,80 +182,109 @@ export class Tab1Page {
             }
             this.offlineFlag = localStorage.getItem('offlineFlag')?(localStorage.getItem('offlineFlag')=="false"?false:true):false;
 
-            this.geapp.getPortalInfo(data).pipe(first())
-            .subscribe(data => {
-              if (data.data.indexOf('DOCTYPE') == -1) {
-                data = JSON.parse(data.data);
-                if(data.returnResponse == "offline"){
-                  if(this.offlineFlag){
-                    this.storage.get("offlinePortalInfo").then(d=>{
-                      this.portalInfo = d;
-                      if(!this.portalTile) this.portalTile = d.selectedPortal;
-                      if(!this.data) this.data = this.getDataBykey(this.portalTile, "Title");
+            this.storage.get("portalmodify").then((pm)=>{
+              this.geapp.getPortalInfo(data,"",pm).pipe(first())
+              .subscribe(data => {
+                if (data.data.indexOf('DOCTYPE') == -1) {
+                  data = JSON.parse(data.data);
+                  if(data.returnResponse == "offline"){
+                    if(this.offlineFlag){
+                      this.storage.get("offlinePortalInfo").then(d=>{
+                        this.portalInfo = d;
+                        if(!this.portalTile) this.portalTile = d.selectedPortal;
+                        if(!this.data) this.data = this.getDataBykey(this.portalTile, "Title");
+                        this.hide();
+                      })
+                    }else{
                       this.hide();
-                    })
+                      this.storage.get('offlinemuitldata').then(d => {
+                        d = JSON.parse(d);
+                        this.presentAlert(`${d.online.offlineTip}<br/>${d.online.ischangeOffline}`, "", [{
+                          text: d.online.yes,
+                          handler: () => {
+                            this.offlineFlag = true;
+                            localStorage.setItem('offlineFlag', this.offlineFlag + '');
+                            this.Nav.navigateBack('/tabs/tab1',{queryParams:{title:this.portalTile}});
+                          }
+                        }, {
+                          text: d.online.no,
+                          handler: () => {
+                          }
+                        }
+                        ]);
+                      })
+                    }
                   }else{
-                    this.hide();
-                    this.storage.get('offlinemuitldata').then(d => {
-                      d = JSON.parse(d);
-                      this.presentAlert(`${d.online.offlineTip}<br/>${d.online.ischangeOffline}`, "", [{
-                        text: d.online.yes,
-                        handler: () => {
-                          this.offlineFlag = true;
-                          localStorage.setItem('offlineFlag', this.offlineFlag + '');
-                          this.Nav.navigateBack('/tabs/tab1',{queryParams:{title:this.portalTile}});
-                        }
-                      }, {
-                        text: d.online.no,
-                        handler: () => {
-                        }
-                      }
-                      ]);
-                    })
+                    if(!data.action){
+                      this.portalInfo = data
+                      this.portalTile = data.selectedPortal
+                      this.storage.set("offlinePortalInfo", data);
+                      this.storage.set("portalmodify",data.modify);
+                    }else{
+                      this.storage.get("offlinePortalInfo").then(d=>{
+                        this.portalInfo = d;
+                        if(!this.portalTile) this.portalTile = d.selectedPortal;
+                        if(!this.data) this.data = this.getDataBykey(this.portalTile, "Title");
+                        this.hide();
+                      })
+                    }
+                    
                   }
-                }else{
-                  this.portalInfo = data
-                  this.portalTile = data.selectedPortal
-                  this.storage.set("offlinePortalInfo", data);
+                  console.log("----this.protal---",this.portalInfo);
+                  if (res.title) {
+                    this.portalTile = res.title;
+                  }
+                  if (res.selectPortalIndex) {
+                    let selectPortalIndex = res.selectPortalIndex;
+                    if (selectPortalIndex < 0) selectPortalIndex = 0;
+                    const title = this.portalInfo.items[selectPortalIndex].Title;
+                    this.portalTile = title;
+                  }
+                  console.log("---portal title---:", this.portalTile);
+                  this.data = this.getDataBykey(this.portalTile, "Title")
+                  this.hide()    
+                } else {
+                  this.router.navigate(['authemail'])
                 }
-                console.log("----this.protal---",this.portalInfo);
-                if (res.title) {
-                  this.portalTile = res.title;
-                }
-                if (res.selectPortalIndex) {
-                  let selectPortalIndex = res.selectPortalIndex;
-                  if (selectPortalIndex < 0) selectPortalIndex = 0;
-                  const title = this.portalInfo.items[selectPortalIndex].Title;
-                  this.portalTile = title;
-                }
-                console.log("---portal title---:", this.portalTile);
-                this.data = this.getDataBykey(this.portalTile, "Title")
-                this.hide()    
-              } else {
-                this.router.navigate(['authemail'])
-              }
+              })
             })
+            
 
           }
         })
         
       }
-      this.activeRoute.queryParams.subscribe(res => {
-        if (res.lan) {
-          this.geapp.getPortalInfo(data,res.lan).pipe(first())
-          .subscribe(data => {
-            if (data.data.indexOf('DOCTYPE') == -1) {
-              data = JSON.parse(data.data);
-              this.portalInfo = data
-              this.portalTile = data.selectedPortal;
-              this.data = this.getDataBykey(this.portalTile, "Title")
-              this.hide()
-            }else{
-              this.router.navigate(['authemail'])
-            }
-          })
-        }
-      });
+      this.storage.get("portalmodify").then((p)=>{
+        this.activeRoute.queryParams.subscribe(res => {
+          if (res.lan) {
+            this.geapp.getPortalInfo(data,res.lan,p).pipe(first())
+            .subscribe(data => {
+              if (data.data.indexOf('DOCTYPE') == -1) {
+                data = JSON.parse(data.data);
+                if(!data.action){
+                  this.portalInfo = data
+                  this.portalTile = data.selectedPortal;
+                  this.data = this.getDataBykey(this.portalTile, "Title")
+                  this.storage.set("offlinePortalInfo", data);
+                  this.storage.set("portalmodify",data.modify);
+                  this.hide()
+                }else{
+                  this.storage.get("offlinePortalInfo").then(d=>{
+                    this.portalInfo = d;
+                    if(!this.portalTile) this.portalTile = d.selectedPortal;
+                    if(!this.data) this.data = this.getDataBykey(this.portalTile, "Title");
+                    this.hide();
+                  })
+                }
+                
+              }else{
+                this.router.navigate(['authemail'])
+              }
+            })
+          }
+        });
+      })
+      
       
         // this.getou.getLoginPic(data).pipe(first()).subscribe(data => {
         //   if (data.data.indexOf('DOCTYPE') == -1) {

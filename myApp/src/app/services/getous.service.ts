@@ -14,24 +14,31 @@ export class GetousService {
   constructor(private http: HttpClient,private common:CommonService,private httpnative: HTTP) { }
 
 
-  getous(userid: string,pass:string,domain:string,folder:string): Observable<any> {
+  getous(userid: string,pass:string,domain:string,folder:string,oum:any): Observable<any> {
     if(userid && pass){
       let auth='Basic '+btoa(userid+':'+pass);
       const options = {
           "Content-Type":"application/json; charset=utf-8",
           "Authorization":auth
       };
-      return from(this.httpnative.get(domain+'/'+folder+'/integrumws.nsf/xp_App.xsp/getOUs',"",options).catch(e=>{
+      var ouType = "";
+      var modify = "";
+      if(oum){
+        ouType = oum.action?oum.action:"";
+        modify = oum.modify?oum.modify:"";
+      }
+      
+      return from(this.httpnative.get(domain+'/'+folder+'/integrumws.nsf/xp_App.xsp/getOUs?ouType='+encodeURIComponent(ouType)+'&modify='+encodeURIComponent(modify),"",options).catch(e=>{
         if(e.status==-6) return {data:"{\"returnResponse\":\"offline\"}"};
       }));
     }
-    return from(this.httpnative.get(domain+'/'+folder+'/integrumws.nsf/xp_App.xsp/getOUs',"",'').catch(e=>{
+    return from(this.httpnative.get(domain+'/'+folder+'/integrumws.nsf/xp_App.xsp/getOUs?ouType='+encodeURIComponent(ouType)+'&modify='+encodeURIComponent(modify),"",'').catch(e=>{
       if(e.status==-6) return {data:"{\"returnResponse\":\"offline\"}"};
     }));
   
   }
 
-  getLoginPic(logindetail:any): Observable<any> {
+  getLoginPic(logindetail:any,pic): Observable<any> {
     const {username,password,code} = logindetail;
     //let auth='Basic '+btoa(username+':'+password);
     //const options = {
@@ -40,7 +47,7 @@ export class GetousService {
     //};
     //return from(this.httpnative.get(domain+'/'+folder+'/appmgt.nsf/xp_ws.xsp/getAppKeyword?client=integrum','',options));
     //let url:string = `${AppConfig.domain}/${AppConfig.folder}/appmgt.nsf/xp_ws.xsp/getAppKeyword?client=integrum`;
-    const curl:string = `${AppConfig.domain}/${AppConfig.folder}/appmgt.nsf/xp_ws.xsp/getAppKeyword?code=${encodeURIComponent(code)}&server=${encodeURIComponent(AppConfig.domain)}&folder=${encodeURIComponent(AppConfig.folder)}`;
+    const curl:string = `${AppConfig.domain}/${AppConfig.folder}/appmgt.nsf/xp_ws.xsp/getAppKeyword?code=${encodeURIComponent(code)}&server=${encodeURIComponent(AppConfig.domain)}&folder=${encodeURIComponent(AppConfig.folder)}&modify=${encodeURIComponent(pic)}`;
     return from(this.httpnative.get(curl,'','').catch(e=>{
       if(e.status==-6) return {data:"{\"returnResponse\":\"offline\"}"};
     }));

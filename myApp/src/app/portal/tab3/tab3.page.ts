@@ -7,6 +7,7 @@ import { first } from 'rxjs/operators';
 import { AlertController } from '@ionic/angular';
 import { NavController } from '@ionic/angular';
 import { commonCtrl } from "../../common/common";
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-tab3',
@@ -39,6 +40,7 @@ export class Tab3Page {
     public Nav: NavController,
     public geapp: GetAppPortalService,
     public commonCtrl: commonCtrl,
+    public activeRoute: ActivatedRoute,
   ) {
     if(localStorage.getItem("bgcolor")){
       //console.log('localStorage-->bgcolor:',localStorage.getItem('bgcolor'))
@@ -52,7 +54,10 @@ export class Tab3Page {
       d = JSON.parse(d);
       this.titlelog=d.HeaderCompanyLogo;
     })
-    this.getData();
+    this.activeRoute.queryParams.subscribe(res => {
+      var action = res.action?res.action:"";
+      this.getData(action);
+    })
   }
   ngOnInit() {
     console.log("------init")
@@ -130,8 +135,9 @@ export class Tab3Page {
         })
     })
   }
-  getData() {
-    //this.commonCtrl.processShow("loading....");
+  getData(action) {
+    if(action=="back") this.searchkey={"start":1,"count":10};
+    this.commonCtrl.show();
     this.storage.get("loginDetails").then(data => {
       this.para.count = this.searchkey.count
       this.para.curpage = this.searchkey.start
@@ -141,7 +147,7 @@ export class Tab3Page {
           this.data = data.result;
           console.log("----act data---:",this.data);
           this.databak = this.data;
-          //this.commonCtrl.processHide();
+          this.commonCtrl.hide();
         })
     })
   }

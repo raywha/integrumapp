@@ -35,6 +35,10 @@ const routes: Routes = [
     path: 'myaction',
     loadChildren: () => import('./portal/myaction/myaction.module').then( m => m.MyactionPageModule)
   },
+  {
+    path: 'updatedownload',
+    loadChildren: () => import('./setup/updatedownload/updatedownload.module').then( m => m.UpdatedownloadPageModule)
+  },
 
 
 

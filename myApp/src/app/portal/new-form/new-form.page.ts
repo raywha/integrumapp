@@ -1590,7 +1590,11 @@ export class NewFormPage implements OnInit {
               if(!this.formID){      
                 this.router.navigate(['/form-list'],{queryParams:{vid:this.vid,vtitle:this.title,type:'formlist',formid:this.ulrs.aid,temptitle:this.portaltitle}});
               }else{
-                this.router.navigateByUrl(this.lasturl);
+                if(this.act=="yes"){
+                  this.router.navigate(['/form-list'],{queryParams:{vid:this.vid,vtitle:this.title,type:'formlist',formid:this.ulrs.aid,temptitle:this.portaltitle}});
+                }else{
+                  this.router.navigateByUrl(this.lasturl);
+                }   
               }
             }
           }
@@ -2300,7 +2304,11 @@ export class NewFormPage implements OnInit {
       if(this.offlineFlag){
         this.router.navigate(['/form-list'],{queryParams:{vid:this.vid,vtitle:this.title,type:'formlist',formid:this.ulrs.aid,temptitle:this.portaltitle}});
       }else{
-        this.router.navigateByUrl(this.lasturl)
+        if (this.act == "yes") {
+          this.router.navigate(['/form-list'],{queryParams:{vid:this.vid,vtitle:this.title,type:'formlist',formid:this.ulrs.aid,temptitle:this.portaltitle}});
+        } else {
+          this.router.navigateByUrl(this.lasturl);
+        } 
       }
       //this.nav.navigateBack('/tabs/tab1',{queryParams:{title:this.portaltitle}});
     }

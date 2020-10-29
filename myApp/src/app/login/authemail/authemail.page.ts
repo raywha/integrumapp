@@ -349,29 +349,42 @@ export class AuthemailPage implements OnInit {
                         }  
                       }
                     )
-                    this.getou.getLoginPic({username:this.user, password: this.pass, code: this.authform.value.code}).pipe(first()).subscribe(data => {
-                      if (data.data.indexOf('DOCTYPE') == -1) {
-                        data = JSON.parse(data.data);
-                        console.log('getportal pic:',data,'--pic:',data.HeaderCompanyLogo)
-                        this.storage.set('HeaderCompanyLogo', JSON.stringify(data));
-                      }
-                      
-                      
-                    });
-                  this.getou.getous(this.user, this.pass, this.server, this.folder).pipe(first()).subscribe(
-                    data => {
-                      const otime = new Date();
-                      console.log('getous--otime.toLocaleTimeString:', otime.toLocaleTimeString(), '-->starttime:', curtime.toLocaleTimeString());
-                      data = JSON.parse(data.data);
-                      this.storage.set('ous', JSON.stringify(data));
-                      // this.commonCtrl.processHide();
-                      // this.ngZone.run(() => {
-
-                      //   this.router.navigate(['tabs/tab1'], { queryParams: { lan: data.lan } })
-                      // })
-
-                    }
-                  )
+                    this.storage.get("compicmodify").then((pic)=>{
+                      this.getou.getLoginPic({username:this.user, password: this.pass, code: this.authform.value.code},pic).pipe(first()).subscribe(data => {
+                        if (data.data.indexOf('DOCTYPE') == -1) {
+                          data = JSON.parse(data.data);
+                          console.log('getportal pic:',data,'--pic:',data.HeaderCompanyLogo)
+                          if(!data.action){
+                            this.storage.set('HeaderCompanyLogo', JSON.stringify(data));
+                            this.storage.set('compicmodify', data.modify);
+                          }
+                        }
+                        
+                        
+                      });
+                    })
+                    
+                    this.storage.get("oumodify").then((oum)=>{
+                      console.log("---------------auth ou:",oum);
+                      this.getou.getous(this.user, this.pass, this.server, this.folder,oum).pipe(first()).subscribe(
+                        data => {
+                          const otime = new Date();
+                          console.log('getous--otime.toLocaleTimeString:', otime.toLocaleTimeString(), '-->starttime:', curtime.toLocaleTimeString());
+                          data = JSON.parse(data.data);
+                          if(!data.action){
+                            this.storage.set('ous', JSON.stringify(data.oudata));
+                            this.storage.set("oumodify",data.oumodify);
+                          }
+                          // this.commonCtrl.processHide();
+                          // this.ngZone.run(() => {
+    
+                          //   this.router.navigate(['tabs/tab1'], { queryParams: { lan: data.lan } })
+                          // })
+    
+                        }
+                      )
+                    })
+                  
                   
                 }
               )
@@ -381,16 +394,20 @@ export class AuthemailPage implements OnInit {
               //console.log('this.user:',this.user)
               localStorage.setItem('OUCategory', result.user.oucategory)
               const stime:any = new Date();
-              this.getpsn.getpersoninfo(this.user, this.pass, this.server, this.folder).pipe(first()).subscribe(
-                data => {
-                  const otime = new Date();
-                  console.log('getpersoninfo--otime.toLocaleTimeString:', otime.toLocaleTimeString(), '-->starttime:', curtime.toLocaleTimeString(), '-->****starttime:', stime.toLocaleTimeString());
-                  data = JSON.parse(data.data);
-                  console.log('getpersoninfo:',data);
-                  this.storage.set('psninfo', JSON.stringify(data));
-                }
-              )
-              
+              this.storage.get("pinfoModify").then((empc)=>{
+                this.getpsn.getpersoninfo(this.user, this.pass, this.server, this.folder,empc,"").pipe(first()).subscribe(
+                  data => {
+                    const otime = new Date();
+                    console.log('getpersoninfo--otime.toLocaleTimeString:', otime.toLocaleTimeString(), '-->starttime:', curtime.toLocaleTimeString(), '-->****starttime:', stime.toLocaleTimeString());
+                    data = JSON.parse(data.data);
+                    if(!data.action){
+                      console.log('getpersoninfo:',data);
+                      this.storage.set('psninfo', JSON.stringify(data));
+                      this.storage.set('pinfoModify', data.empCount);
+                    }
+                  }
+                )
+              })     
               
             } else {
               this.commonCtrl.processHide();

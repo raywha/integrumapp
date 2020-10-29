@@ -38,7 +38,8 @@ export class TabsPage {
     this.gotoDefaultHome();
     this.offlineFlag = localStorage.getItem('offlineFlag')?(localStorage.getItem('offlineFlag')=="false"?false:true):false;
     this.storage.get("loginDetails").then(data => {
-      this.geapp.getPortalInfo(data).pipe(first())
+      this.storage.get("portalmodify").then((pm)=>{
+        this.geapp.getPortalInfo(data,'',pm).pipe(first())
         .subscribe(data => {
           if (data.data.indexOf('DOCTYPE') == -1) {
             data = JSON.parse(data.data);
@@ -47,12 +48,23 @@ export class TabsPage {
                 if (d) this.portalInfo = d;
               })
             } else {
-              this.portalInfo = data;
+              if(!data.action){
+                this.portalInfo = data;
+                this.storage.set("offlinePortalInfo", data);
+                this.storage.set("portalmodify",data.modify);
+              }else{
+                this.storage.get("offlinePortalInfo").then(d => {
+                  if (d) this.portalInfo = d;
+                })
+              }
+              
             }
           } else {
             this.router.navigate(['authemail'])
           }
         })
+      })
+      
     })
   }
   async presentPopoverPortal(ev: any) {

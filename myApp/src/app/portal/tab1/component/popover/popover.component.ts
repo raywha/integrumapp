@@ -85,6 +85,10 @@ export class PopoverComponent implements OnInit {
       // this.nav.navigateBack('add-action');
 
       this.nav.navigateBack('defaulthome',{queryParams:{portalList:this.setupPortalList}});
+    }else if (code == 7) {
+      this.Popover.dismiss()
+      // this.nav.navigateBack('add-action');
+      this.nav.navigateBack('updatedownload');
     }else{
       let paramsSet=this.params.get("portalTile")
       console.log(paramsSet)

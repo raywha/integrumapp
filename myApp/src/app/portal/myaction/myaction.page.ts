@@ -37,7 +37,7 @@ export class MyactionPage implements OnInit {
   public cameraTips:string = 'Tap image to see more options';
   public btnBox: any = {
     "result": [
-      { "btnType": "btnEdit", "btnLabel": "Edit" },
+      { "btnType": "btnSave", "btnLabel": "Save" },
       { "btnType": "btnClose", "btnLabel": "Close" }
     ]
   }
@@ -49,6 +49,8 @@ export class MyactionPage implements OnInit {
     textarea:""
   };
   public pid:any;
+  public pJson:any = {};
+  public mJson:any = {};
   constructor(
     public getActionSerice: CreateFromService, 
     private storage:Storage,
@@ -71,19 +73,18 @@ export class MyactionPage implements OnInit {
       console.log("-----label:",this.readAction);
     })
     this.activeRoute.queryParams.subscribe(res => {
-      this.commonCtrl.processShow('Processing...');
       this.unid = res.unid?res.unid:""; 
-      this.pid = res.pid;
+      this.pid = res.pid?res.pid:"";
       this.type = res.type;
-      this.getActDocData(this.unid?this.unid:"");
-      
-      if(this.type=="edit"){
-        this.btnBox = {
-          "result": [
-            { "btnType": "btnSave", "btnLabel": "Save" },
-            { "btnType": "btnClose", "btnLabel": "Close" }
-          ]
-        }
+      if(this.type=='open'||this.unid=="") {
+        this.commonCtrl.show();
+        this.getActDocData(this.unid?this.unid:"");
+      }
+      if(this.unid) this.btnBox["result"].push({ "btnType": "btnGoMain", "btnLabel": "Go to main form" });
+      if(this.actionList.WFStatus) this.actionList.WFStatus = this.actionList.WFStatus=="Pending Management Representative Review"?"Pending MR Review":this.actionList.WFStatus;     
+      if(this.actionList.DueDate && this.type=="edit") this.actionList.DueDate = moment(`${this.actionList.DueDate}`,'DD/MM/YYYY').format('YYYY-MM-DD')      
+      if(this.type=="edit"&&this.unid!=""){
+        if(this.mJson.edit) this.btnBox.result = this.mJson.edit;
       }
     })
   }
@@ -100,15 +101,17 @@ export class MyactionPage implements OnInit {
       this.geapp.getActDocData(data,unid).pipe(first())
         .subscribe(data => {
           data = JSON.parse(data.data);
-          console.log("------dddddd0000:",data);
+          console.log("------actdddddd0000:",data);
           this.actionList = data.actData;
-          this.placeholder = data.placeholder;    
+          this.placeholder = data.placeholder;  
+          this.pJson = data.pJson;
+          this.mJson = data.mJson;
+          if(this.mJson.open) this.btnBox.result = this.mJson.open;
           if(!this.actionList.EmployeeAssigned && !unid){
             this.actionList.EmployeeAssigned = localStorage.getItem("user");
           }
-          this.actionList.WFStatus = this.actionList.WFStatus=="Pending Management Representative Review"?"Pending MR Review":this.actionList.WFStatus;
-          if(this.actionList.DueDate && this.type=="edit") this.actionList.DueDate = moment(`${this.actionList.DueDate}`,'DD/MM/YYYY').format('YYYY-MM-DD')
-          this.commonCtrl.processHide();
+          if(this.actionList.WFStatus) this.actionList.WFStatus = this.actionList.WFStatus=="Pending Management Representative Review"?"Pending MR Review":this.actionList.WFStatus;
+          this.commonCtrl.hide();
         })
     })
   }
@@ -142,18 +145,25 @@ export class MyactionPage implements OnInit {
         }
         console.log("-----para:",para);
         this.actSave(para);
-        this.goback();
+        
         break;
       case "btnClose":
         this.router.navigate(["/tabs/tab3"]);
         break;
+      case "btnGoMain":
+          if(this.unid==""){
+            this.router.navigate(["/new-form"]);
+          }else{
+            this.router.navigate(["/new-form"],{queryParams:{ unid: this.pJson.unid,vid:this.pJson.vid,aid:this.pJson.aid,title:this.pJson.title,stat:this.pJson.stat, type: 'open',cururl:"",act:"yes" } });
+          }
+          break;
       default:
         actiontype = "open";
         break;
     }
   }
   goback(){
-    this.nav.navigateBack('/tabs/tab3');
+    this.router.navigate(['tabs/tab3']);
   }
   actSave(para) {
     this.commonCtrl.processShow('Processing...');

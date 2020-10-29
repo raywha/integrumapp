@@ -1,0 +1,40 @@
+<ion-header>
+  <ion-toolbar>
+      <ion-buttons slot="start">
+          <ion-back-button defaultHref="tabs/tab1" text="" color="dark"></ion-back-button>
+        </ion-buttons>
+    <ion-title>{{public.updatedownload}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="account-box">
+    <ion-item>
+      <ion-label>{{download.template}}:</ion-label>
+      <ion-toggle [(ngModel)]="downtemplate" mode="ios"></ion-toggle>
+    </ion-item>
+    <ion-item>
+      <ion-label>{{download.ou}}:</ion-label>
+      <ion-toggle [(ngModel)]="downou" mode="ios"></ion-toggle>
+    </ion-item>
+    <ion-item>
+      <ion-label>{{download.employee}}:</ion-label>
+      <ion-toggle [(ngModel)]="downemp" mode="ios"></ion-toggle>
+    </ion-item>
+    <ion-item>
+      <ion-label>{{download.portal}}:</ion-label>
+      <ion-toggle [(ngModel)]="downportal" mode="ios"></ion-toggle>
+    </ion-item>
+    <ion-item lines="none">
+      <ion-label>{{download.companylog}}:</ion-label>
+      <ion-toggle [(ngModel)]="downlog" mode="ios"></ion-toggle>
+    </ion-item>
+    <ion-item lines="none">
+    </ion-item>
+    <ion-item lines="none">
+      <div class="nulldiv"></div>
+      <ion-button size="large"[ngStyle]="{'--background':cbgcolor}" (click)="downloadAll()"> {{download.download}} </ion-button>
+      <div class="nulldiv"></div>
+    </ion-item>
+  </div>
+</ion-content>

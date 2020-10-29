@@ -11,18 +11,18 @@ export class GetpersoninfoService {
 
   constructor(private http: HttpClient,private common:CommonService,private httpnative: HTTP) { }
 
-getpersoninfo(userid: string,pass:string,domain:string,folder:string): Observable<any> {
+getpersoninfo(userid: string,pass:string,domain:string,folder:string,empc:any,action:any): Observable<any> {
   if(userid && pass){
     let auth='Basic '+btoa(userid+':'+pass);
     const options = {
         "Content-Type":"application/json; charset=utf-8",
         "Authorization":auth
     };
-    return from(this.httpnative.get(domain+'/'+folder+'/integrumws.nsf/xp_webservices.xsp/getPersonInfo?username='+encodeURIComponent(userid),'',options).catch(e=>{
+    return from(this.httpnative.get(domain+'/'+folder+'/integrumws.nsf/xp_webservices.xsp/getPersonInfo?username='+encodeURIComponent(userid)+'&modify='+encodeURIComponent(empc)+'&action='+encodeURIComponent(action),'',options).catch(e=>{
       if(e.status==-6) return {data:"{\"returnResponse\":\"offline\"}"};
     }));
   }
-  return from(this.httpnative.get(domain+'/'+folder+'/integrumws.nsf/xp_webservices.xsp/getPersonInfo?username='+encodeURIComponent(userid),'','').catch(e=>{
+  return from(this.httpnative.get(domain+'/'+folder+'/integrumws.nsf/xp_webservices.xsp/getPersonInfo?username='+encodeURIComponent(userid)+'&modify='+encodeURIComponent(empc)+'&action='+encodeURIComponent(action),'','').catch(e=>{
     if(e.status==-6) return {data:"{\"returnResponse\":\"offline\"}"};
   }));
   }

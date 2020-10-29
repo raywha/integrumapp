@@ -83,11 +83,27 @@ export class LoginpassPage implements OnInit {
         this.server = data.server;
         this.folder = data.folder;
         this.code = data.code;
-        this.getou.getLoginPic(data).pipe(first()).subscribe(data => {
+        this.storage.get("compicmodify").then((pic)=>{
+          this.getou.getLoginPic(data, pic).pipe(first()).subscribe(data => {
+            data = JSON.parse(data.data);
+            if (!data.action) {
+              this.logPic.log=data.LoginCompanyLogo
+              this.logPic.background=data.LoginBKImage
+              this.storage.set('HeaderCompanyLogo', JSON.stringify(data));
+              this.storage.set('compicmodify', data.modify);
+            }
+          });
+        })
+        this.storage.get('HeaderCompanyLogo').then(d => {
+          data = JSON.parse(d);
+          this.logPic.log=data.LoginCompanyLogo;
+          this.logPic.background=data.LoginBKImage;
+        })
+        /*this.getou.getLoginPic(data).pipe(first()).subscribe(data => {
           data = JSON.parse(data.data);
          this.logPic.log=data.LoginCompanyLogo
          this.logPic.background=data.LoginBKImage
-        });
+        });*/
       } else {
         this.loginDetails.email = localStorage.getItem('email')
         this.loginDetails.OUCategory = localStorage.getItem('OUCategory')
@@ -275,22 +291,35 @@ export class LoginpassPage implements OnInit {
               localStorage.setItem('hasLogged', 'true');
               localStorage.setItem('user', this.user);
               localStorage.setItem('OUCategory', result.user.oucategory)
-              this.getou.getous(this.user, this.pass, this.server, this.folder).pipe(first()).subscribe(
-                data => {
-                  const otime = new Date();
-                  console.log('getous--otime.toLocaleTimeString:', otime.toLocaleTimeString(), '-->starttime:', curtime.toLocaleTimeString());
-                  data = JSON.parse(data.data);
-                  this.storage.set('ous', JSON.stringify(data));
-                }
-              )
-              this.getpsn.getpersoninfo(this.user, this.pass, this.server, this.folder).pipe(first()).subscribe(
-                data => {
-                  const otime = new Date();
-                  console.log('getpersoninfo--otime.toLocaleTimeString:', otime.toLocaleTimeString(), '-->starttime:', curtime.toLocaleTimeString());
-                  data = JSON.parse(data.data);
-                  this.storage.set('psninfo', JSON.stringify(data));
-                }
-              )
+              this.storage.get("oumodify").then((oum)=>{
+                console.log("---------------loginpass ou:",oum);
+                this.getou.getous(this.user, this.pass, this.server, this.folder,oum).pipe(first()).subscribe(
+                  data => {
+                    const otime = new Date();
+                    console.log('getous--loginpass--otime.toLocaleTimeString:', otime.toLocaleTimeString(), '-->starttime:', curtime.toLocaleTimeString());
+                    console.log("gggggg:",data);
+                    data = JSON.parse(data.data);
+                    if(!data.action){
+                      this.storage.set('ous', JSON.stringify(data.oudata));
+                      this.storage.set("oumodify",data.oumodify);
+                    }
+                  }
+                )
+              })
+              this.storage.get("pinfoModify").then((empc)=>{
+                this.getpsn.getpersoninfo(this.user, this.pass, this.server, this.folder,empc,"").pipe(first()).subscribe(
+                  data => {
+                    const otime = new Date();
+                    console.log('getpersoninfo--otime.toLocaleTimeString:', otime.toLocaleTimeString(), '-->starttime:', curtime.toLocaleTimeString());
+                    data = JSON.parse(data.data);
+                    if(!data.action){
+                      this.storage.set('psninfo', JSON.stringify(data));
+                      this.storage.set('pinfoModify', data.empCount);
+                    }
+                    
+                  }
+                )
+              })
 
             } else {
               this.commonCtrl.processHide();
