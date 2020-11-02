@@ -254,7 +254,7 @@ export class AuthemailPage implements OnInit {
                       this.downloadAllForms(lan);
                     } else {
                       this.getUpdateFormids(arr,lan).then(data => {
-                        data = JSON.parse(data);
+                        data = JSON.parse(data.data);
                         console.log('getUpdateFormids---------------data:', data);
                         if (data.tmplateids) {
                           const arr = data.tmplateids;
@@ -340,25 +340,35 @@ export class AuthemailPage implements OnInit {
                     )
                     this.account.getReleaseInfo().pipe(first()).subscribe(
                       data => {
-                        data = JSON.parse(data.data);
-                        console.log('releaseinfo--data:',data);
-                        if(data.returnResponse == "offline"){
-                          console.log('releaseinfo error ',data)
+                        if (data) {
+                          data = JSON.parse(data.data);
+                          console.log('releaseinfo--data:', data);
+                          if (data.returnResponse == "offline") {
+                            console.log('releaseinfo error ', data)
+                          } else {
+                            this.storage.set('releaseinfo', JSON.stringify(data));
+                          }
                         }else{
-                          this.storage.set('releaseinfo', JSON.stringify(data));
-                        }  
+                          console.log('getReleaseInfo is null..')
+                        }
+                          
                       }
                     )
                     this.storage.get("compicmodify").then((pic)=>{
                       this.getou.getLoginPic({username:this.user, password: this.pass, code: this.authform.value.code},pic).pipe(first()).subscribe(data => {
-                        if (data.data.indexOf('DOCTYPE') == -1) {
-                          data = JSON.parse(data.data);
-                          console.log('getportal pic:',data,'--pic:',data.HeaderCompanyLogo)
-                          if(!data.action){
-                            this.storage.set('HeaderCompanyLogo', JSON.stringify(data));
-                            this.storage.set('compicmodify', data.modify);
+                        if(data){
+                          if (data.data.indexOf('DOCTYPE') == -1) {
+                            data = JSON.parse(data.data);
+                            console.log('getportal pic:',data,'--pic:',data.HeaderCompanyLogo)
+                            if(!data.action){
+                              this.storage.set('HeaderCompanyLogo', JSON.stringify(data));
+                              this.storage.set('compicmodify', data.modify);
+                            }
                           }
+                        }else{
+                          console.log('getLoginPic is null......')
                         }
+                        
                         
                         
                       });

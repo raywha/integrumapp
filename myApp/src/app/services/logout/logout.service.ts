@@ -23,6 +23,7 @@ console.log('setLogout  params:',params)
       };
       //http://oa.jf81.com/sfv3/appmgt.nsf/xp_ws.xsp/Logout?&email=zding@jf81.com&languageCode=zh&portalGroup=app.integrum Group A
       return from(this.httpnative.get(params,'','').catch(e=>{
+        console.log('setLogout error:',e)
         if(e.status==-6) return {data:"{\"returnResponse\":\"offline\"}"};
       }));
     }

@@ -145,146 +145,153 @@ export class LoginpassPage implements OnInit {
               this.auth.updateUserInfo(this.loginDetails).pipe(first()).subscribe(
                 data => {
                   console.log('updateUserInfo----data...:', data)
-                  data = JSON.parse(data.data);
-                  console.log('updateUserInfo data,',data);
-                  const AppVersionNo = data.AppVersionNo;
-                  const curVersion = AppConfig.appversion;
-                  const msg = data.msg; 
-                  const btnYes = data.btnYes;
-                  const btnNo = data.btnNo;
-                  let AppURL = data.AppURL;
-                  if(AppURL!='') AppURL.replace('https','itms-apps')
-                  if(AppVersionNo && AppVersionNo.includes('.')){
-                    const ret  = AppVersionNo.split('.');
-                    const cret = curVersion.split('.');
-                    const first  = ret[0];
-                    const curfir = cret[0];
-                    if(curfir < first){
-                      //TODO
-                      this.promptOfUpdate(msg,btnYes,btnNo,AppURL);
-                    }else if(curfir == first){
-                      const second = ret[1];
-                      const cursec = cret[1];
-                      if(second.includes('.')){
+                  if(data){
+                    data = JSON.parse(data.data);
+                    console.log('updateUserInfo data,',data);
+                    const AppVersionNo = data.AppVersionNo;
+                    const curVersion = AppConfig.appversion;
+                    const msg = data.msg; 
+                    const btnYes = data.btnYes;
+                    const btnNo = data.btnNo;
+                    let AppURL = data.AppURL;
+                    if(AppURL!='') AppURL.replace('https','itms-apps')
+                    if(AppVersionNo && AppVersionNo.includes('.')){
+                      const ret  = AppVersionNo.split('.');
+                      const cret = curVersion.split('.');
+                      const first  = ret[0];
+                      const curfir = cret[0];
+                      if(curfir < first){
                         //TODO
-
-                      }else{
-                        //console.log('cursec:',cursec, ' second:',second)
-                        if( cursec < second){
-                          this.promptOfUpdate(msg,btnYes,btnNo,AppURL);
+                        this.promptOfUpdate(msg,btnYes,btnNo,AppURL);
+                      }else if(curfir == first){
+                        const second = ret[1];
+                        const cursec = cret[1];
+                        if(second.includes('.')){
+                          //TODO
+  
+                        }else{
+                          //console.log('cursec:',cursec, ' second:',second)
+                          if( cursec < second){
+                            this.promptOfUpdate(msg,btnYes,btnNo,AppURL);
+                          }
                         }
                       }
                     }
-                  }
-                  this.loginDetails.OUCategory = data.OUCategory;
-                  const EmpCurrentPortal = data.EmpCurrentPortal;
-                  this.loginDetails.empgroup = EmpCurrentPortal;
-                  //console.log('updateUserInfo---->this.loginDetails:', this.loginDetails)
-                  localStorage.setItem('OUCategory', data.OUCategory)
-                  localStorage.setItem('EmpCurrentPortal', EmpCurrentPortal)
-                  console.log('userlan:', data.lan);
-                  localStorage.setItem('lan', data.lan);
-                  this.translate.setDefaultLang(data.lan);
-                  this.translate.use(data.lan);
-                  this.storage.set("loginDetails", this.loginDetails)
-
-                  // this.getallforms.getAllForms(this.loginDetails,data.lan).pipe(first()).subscribe(data => {
-                  //   this.commonCtrl.processHide();
-                  //   const otime = new Date();
-                  //   console.log('getAllForms--otime.toLocaleTimeString:', otime.toLocaleTimeString(), '-->starttime:', curtime.toLocaleTimeString());
-                  //   data = JSON.parse(data.data);
-                  //   this.storage.set('allforms', JSON.stringify(data));
-                  // })
-
-                  // this.commonCtrl.processHide();
-                  // this.ngZone.run(() => {
-
-                  //   this.router.navigate(['tabs/tab1'],{ queryParams: { lan: data.lan } })
-                  // })
-                  this.storage.get("allforms").then( forms => {
-                    const lan = data.lan;
-                   if(forms == null){
-                     this.downloadAllForms(lan);
-                   }else{
-                     forms = JSON.parse(forms);
-                     console.log('forms:', forms);
-                     const templates = forms.templates;
-                     // const templateids = templates.filter(t => t.lastmodify);
-                     const arr = [];
-                     templates.forEach(t => {
-                       if (t) {
-                         const lastmodify = t.lastmodify;
-                         if (lastmodify) {
-                           arr.push({
-                             tid: t.template.templateId,
-                             lastmodify
-                           })
-                         }
-                       }
- 
-                     });
-                     console.log('--------------arr....', arr);
-                     if (arr.length == 0) {
+                    this.loginDetails.OUCategory = data.OUCategory;
+                    const EmpCurrentPortal = data.EmpCurrentPortal;
+                    this.loginDetails.empgroup = EmpCurrentPortal;
+                    //console.log('updateUserInfo---->this.loginDetails:', this.loginDetails)
+                    localStorage.setItem('OUCategory', data.OUCategory)
+                    localStorage.setItem('EmpCurrentPortal', EmpCurrentPortal)
+                    console.log('userlan:', data.lan);
+                    localStorage.setItem('lan', data.lan);
+                    this.translate.setDefaultLang(data.lan);
+                    this.translate.use(data.lan);
+                    this.storage.set("loginDetails", this.loginDetails)
+  
+                    // this.getallforms.getAllForms(this.loginDetails,data.lan).pipe(first()).subscribe(data => {
+                    //   this.commonCtrl.processHide();
+                    //   const otime = new Date();
+                    //   console.log('getAllForms--otime.toLocaleTimeString:', otime.toLocaleTimeString(), '-->starttime:', curtime.toLocaleTimeString());
+                    //   data = JSON.parse(data.data);
+                    //   this.storage.set('allforms', JSON.stringify(data));
+                    // })
+  
+                    // this.commonCtrl.processHide();
+                    // this.ngZone.run(() => {
+  
+                    //   this.router.navigate(['tabs/tab1'],{ queryParams: { lan: data.lan } })
+                    // })
+                    this.storage.get("allforms").then( forms => {
+                      const lan = data.lan;
+                      console.log("------forms:",forms);
+                     if(forms == null){
                        this.downloadAllForms(lan);
-                     } else {
-                       this.getUpdateFormids(arr,lan).then(data => {
-                         //console.log('getUpdateFormids---------?>',data.data)
-                         data = JSON.parse(data.data);
-                         console.log('getUpdateFormids---------------data:', data);
-                         if (data.tmplateids) {
-                           const arr = data.tmplateids;
-                           if (arr.length == 0) {
-                             console.log('do not need update allforms');
-                             const otime = new Date();
-                             console.log('getAllForms-***getUpdateFormids---do not need update allforms-otime.toLocaleTimeString:', otime.toLocaleTimeString(), '-->starttime:');
-                             this.commonCtrl.processHide();
-                             this.ngZone.run(() => {
-         
-                               this.router.navigate(['tabs/tab1'], { queryParams: { lan} })
+                     }else{
+                       forms = JSON.parse(forms);
+                       console.log('forms:', forms);
+                       const templates = forms.templates;
+                       // const templateids = templates.filter(t => t.lastmodify);
+                       const arr = [];
+                       templates.forEach(t => {
+                         if (t) {
+                           const lastmodify = t.lastmodify;
+                           if (lastmodify) {
+                             arr.push({
+                               tid: t.template.templateId,
+                               lastmodify
                              })
-                           } else {
-                             const tarr = [];
-                             for (let index = 0; index < arr.length; index++) {
-                               const element = arr[index];
-                               tarr.push(this.getForm(element,lan));
-                             }
-                             Promise.all(tarr).then(result => {
-                               console.log('----**----===----result:', result);
-                               let newtemplates: any = templates;
-                               arr.forEach(f => {
-                                 newtemplates = newtemplates.filter(form => form.template.templateId != f)
-                               });
-                               newtemplates = newtemplates.concat(result);
-                               this.storage.set('allforms', JSON.stringify({ templates: newtemplates }));
+                           }
+                         }
+   
+                       });
+                       console.log('--------------arr....', arr);
+                       if (arr.length == 0) {
+                         this.downloadAllForms(lan);
+                       } else {
+                         this.getUpdateFormids(arr,lan).then(data => {
+                           //console.log('getUpdateFormids---------?>',data.data)
+                           data = JSON.parse(data.data);
+                           console.log('getUpdateFormids---------------data:', data);
+                           if (data.tmplateids) {
+                             const arr = data.tmplateids;
+                             if (arr.length == 0) {
+                               console.log('do not need update allforms');
                                const otime = new Date();
-                             console.log('getAllForms-***getUpdateFormids---update specify forms-otime.toLocaleTimeString:', otime.toLocaleTimeString(), '-->starttime:');
+                               console.log('getAllForms-***getUpdateFormids---do not need update allforms-otime.toLocaleTimeString:', otime.toLocaleTimeString(), '-->starttime:');
+                               this.commonCtrl.processHide();
+                               this.ngZone.run(() => {
+           
+                                 this.router.navigate(['tabs/tab1'], { queryParams: { lan} })
+                               })
+                             } else {
+                               const tarr = [];
+                               for (let index = 0; index < arr.length; index++) {
+                                 const element = arr[index];
+                                 tarr.push(this.getForm(element,lan));
+                               }
+                               Promise.all(tarr).then(result => {
+                                 console.log('----**----===----result:', result);
+                                 let newtemplates: any = templates;
+                                 arr.forEach(f => {
+                                   newtemplates = newtemplates.filter(form => form.template.templateId != f)
+                                 });
+                                 newtemplates = newtemplates.concat(result);
+                                 this.storage.set('allforms', JSON.stringify({ templates: newtemplates }));
+                                 const otime = new Date();
+                               console.log('getAllForms-***getUpdateFormids---update specify forms-otime.toLocaleTimeString:', otime.toLocaleTimeString(), '-->starttime:');
+                                 this.commonCtrl.processHide();
+                                 this.ngZone.run(() => {
+             
+                                   this.router.navigate(['tabs/tab1'], { queryParams: { lan } })
+                                 })
+                               }).catch(e => {
+                                 console.log('getform all error:', e);
+                               })
+                             }
+                           } else {
+                             if (data.status != 'failed') {
+                               console.log('----------------------allforms:', data);
+                               this.storage.set('allforms', JSON.stringify(data));
                                this.commonCtrl.processHide();
                                this.ngZone.run(() => {
            
                                  this.router.navigate(['tabs/tab1'], { queryParams: { lan } })
                                })
-                             }).catch(e => {
-                               console.log('getform all error:', e);
-                             })
+                             }else{
+                               console.log('getUpdateFormids error:',data)
+                             }
+   
                            }
-                         } else {
-                           if (data.status != 'failed') {
-                             console.log('----------------------allforms:', data);
-                             this.storage.set('allforms', JSON.stringify(data));
-                             this.commonCtrl.processHide();
-                             this.ngZone.run(() => {
-         
-                               this.router.navigate(['tabs/tab1'], { queryParams: { lan } })
-                             })
-                           }else{
-                             console.log('getUpdateFormids error:',data)
-                           }
- 
-                         }
-                       });
+                         });
+                       }
                      }
-                   }
-                 })
+                   })
+                  }else{
+                    console.log('updata info is null .. ')
+                    this.commonCtrl.processHide();
+                  }
+                  
                 }
               )
               

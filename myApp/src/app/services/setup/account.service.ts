@@ -17,6 +17,8 @@ export class AccountService {
   getAccount(email: string): Observable<any> {
     const url:string = `${AppConfig.domain}/${AppConfig.folder}/appmgt.nsf/xp_ws.xsp/getMyAccount?email=${email}`;
     return from(this.httpnative.get(url,'','').catch(e=>{
+      console.log('service ..getAccount error....',e)
+
       if(e.status==-6) return {data:"{\"returnResponse\":\"offline\"}"};
     }));
    
@@ -28,6 +30,8 @@ export class AccountService {
     }
     let url:string = `${AppConfig.domain}/${AppConfig.folder}/appmgt.nsf/xp_ws.xsp/getReleaseInfo?os=${os}`;
     return from(this.httpnative.get(url,'','').catch(e=>{
+      console.log('service ..getReleaseInfo error....',e)
+
       if(e.status==-6) return {data:"{\"returnResponse\":\"offline\"}"};
     }));
    

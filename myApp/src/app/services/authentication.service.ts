@@ -96,6 +96,7 @@ export class AuthenticationService {
     console.log('data...',data)
     const url = `${AppConfig.domain}/${AppConfig.folder}/appmgt.nsf/xp_ws.xsp/updateUserInfo?username=${encodeURIComponent(username)}&email=${encodeURIComponent(email)}&oucategory=${encodeURIComponent(OUCategory)}&code=${encodeURIComponent(code)}&deviceid=${encodeURIComponent(deviceid)}&os=${os}`;
     return from(this.httpnative.get(url,'',"").catch(e=>{
+      console.log('updateUserInfo error....',e)
       if(e.status==-6) return {data:"{\"returnResponse\":\"offline\"}"};
     }));
     
@@ -114,6 +115,7 @@ export class AuthenticationService {
     const curl:string = `${AppConfig.domain}/${AppConfig.folder}/appmgt.nsf/xp_ws.xsp/multiLan?lan=${encodeURIComponent(lan)}`;
 
     return from(this.httpnative.get(curl,'','').catch(e=>{
+      console.log('service ..getOfflineMultiData error....',e)
       if(e.status==-6) return {data:"{\"returnResponse\":\"offline\"}"};
     }));
   }
