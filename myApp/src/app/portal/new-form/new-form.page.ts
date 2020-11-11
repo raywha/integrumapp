@@ -358,6 +358,8 @@ export class NewFormPage implements OnInit {
               this.mandafields = this.selecttemplat.template.mandaFields
               this.templatid = this.selecttemplat.templateId
               let quesFields: any = this.selecttemplat.template.quesFields;
+              this.lookupdatas = this.selecttemplat.template.lookupdatas;
+
               for (let i = 0; i < quesFields.length; i++) {
                 const element = quesFields[i];
                 let answerWhen = element.answerWhen;
