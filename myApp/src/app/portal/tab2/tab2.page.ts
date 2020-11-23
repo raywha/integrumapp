@@ -10,6 +10,7 @@ export class Tab2Page {
   public address:any={}
   constructor(private geolocation:Geolocation) {
     this.geolocation.getCurrentPosition().then((resp) => {
+      console.log('-----------gps:',resp.coords)
       this.address=resp.coords;
      //  resp.coords.latitude
        // resp.coords.longitude

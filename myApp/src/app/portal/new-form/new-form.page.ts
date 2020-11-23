@@ -8,7 +8,8 @@ import { parseLazyRoute } from '@angular/compiler/src/aot/lazy_routes';
 import { first } from 'rxjs/operators';
 import { commonCtrl } from "../../common/common";
 import { PopoverComponent } from "../../common/popover/popover.component"
-import { SecurityComponent } from "../../common/security/security.component"
+import { SecurityComponent } from "../../common/security/security.component";
+import { GuidanceComponent } from '../../common/guidance/guidance.component';
 import { Router } from '@angular/router';
 import { Diagnostic } from '@ionic-native/diagnostic/ngx';
 import { Camera, CameraOptions } from '@ionic-native/camera/ngx';
@@ -26,6 +27,8 @@ import { RoleComponent } from "../../common/role/role.component";
 import { MrtemplateComponent } from "../../common/mrtemplate/mrtemplate.component";
 import { MicrodbComponent } from '../microdb/microdb.component';
 import { FormDrafts } from '../../common/form-draft';
+import { AppConfig } from '../../config';
+
 
 @Component({
   selector: 'app-new-form',
@@ -146,6 +149,10 @@ export class NewFormPage implements OnInit {
   public newActSec:any={};
   public act:string="no";
   private umr: any;
+  public enableTemplateInfo: string = 'ka_No';
+  public templateInfo: string;
+  public templateInfoLabel: string;
+  public gpsdd: string;
   constructor(
     private storage: Storage,
     public modal: ModalController,
@@ -165,6 +172,12 @@ export class NewFormPage implements OnInit {
     private sanitizer: DomSanitizer,
     private draftCtrl: FormDrafts
   ) {
+    this.geolocation.getCurrentPosition().then( resp => {
+      this.gpsdd = resp.coords.longitude + ',' + resp.coords.latitude;
+    }).catch( error => {
+      console.log('Error getting location', error);
+      this.gpsdd = 'error' + ',' + 'error';
+    })
     this.storage.get('offlinemuitldata').then( d => {
       d = JSON.parse(d);
       this.online = d.online;
@@ -306,6 +319,11 @@ export class NewFormPage implements OnInit {
               //this.selecttemplat = this.getTemplatByViewId(this.templates, res.aid)
               this.selecttemplat = this.templates[0];
               console.log('selecttemplat:',this.selecttemplat)
+              this.templateInfo = this.resetTemplateInfoImgSrc(this.selecttemplat.template.templateInfo);
+              const tilabel = this.selecttemplat.templateInfoLabel;
+              this.templateInfoLabel = tilabel != ''?tilabel: 'Guidance';
+              this.enableTemplateInfo = this.selecttemplat.enableTemplateInfo;
+
               this.mandatoryWhenApprove = this.selecttemplat.mandatoryWhenApprove?this.selecttemplat.mandatoryWhenApprove:"0";
               this.skipMandatory = this.selecttemplat.skipMandatory?this.selecttemplat.skipMandatory:"0";
               let selectSecId: any = this.selecttemplat.sectionids ? this.selecttemplat.sectionids : [];
@@ -369,6 +387,11 @@ export class NewFormPage implements OnInit {
               }
               console.log('selecttemplate:',this.selecttemplat.template)
               for (let i = 0; i < this.selecttemplat.template.secs.length; i++) {
+                const cursection = this.selecttemplat.template.secs[i];
+                const secInfo = cursection.secInfo;
+                if(secInfo){
+                  this.selecttemplat.template.secs[i].secInfo = this.resetTemplateInfoImgSrc(secInfo);
+                }
                 if (this.selecttemplat.template.secs[i].fields && this.selecttemplat.template.secs[i].sectionType!='1') {
                   this.selecttemplat.template.secs[i].fields.forEach(data => {
     
@@ -470,6 +493,9 @@ export class NewFormPage implements OnInit {
                     // if(this.findSameLabelname(this.selecttemplat.template.secs[i].fields,data.label,data.name)){
                     //   data.hide = true;
                     // }
+                  }else if(data.xtype == 'gps_dd'){
+                    //data.value = this.gpsdd;
+                    this.gpsdd = data.value;
                   }
                     this.fields.push(data) //
                     // this.selectScore(data,data.value,this.selecttemplat.template.secs[i].title)
@@ -557,6 +583,11 @@ export class NewFormPage implements OnInit {
         return false;
       }
       console.log('new selecttemplate:',this.selecttemplat)
+      this.templateInfo = this.resetTemplateInfoImgSrc(this.selecttemplat.template.templateInfo);
+      const tilabel = this.selecttemplat.templateInfoLabel;
+      this.templateInfoLabel = tilabel != '' ? tilabel : 'Guidance';
+      this.enableTemplateInfo = this.selecttemplat.enableTemplateInfo;
+
       this.mandatoryWhenApprove = this.selecttemplat.mandatoryWhenApprove?this.selecttemplat.mandatoryWhenApprove:"0";
       this.skipMandatory = this.selecttemplat.skipMandatory?this.selecttemplat.skipMandatory:"0";
       this.title = this.selecttemplat.template.templateTitle;
@@ -593,6 +624,11 @@ export class NewFormPage implements OnInit {
     }
     let selectSecId: any = [];
     for (let i = 0; i < this.selecttemplat.template.secs.length; i++) {
+      const cursection = this.selecttemplat.template.secs[i];
+                const secInfo = cursection.secInfo;
+                if(secInfo){
+                  this.selecttemplat.template.secs[i].secInfo = this.resetTemplateInfoImgSrc(secInfo);
+                }
       this.selecttemplat.template.secs[i].fields.forEach(data => {
         if(data.name=='formMR'){
           if(data.value =='') data.value = this.umr;
@@ -680,6 +716,8 @@ export class NewFormPage implements OnInit {
         //   data.hide = true;
         // }
         if(data.name == 'hsi_IncidentDetails_hsi_headlineCFOrg' || data.name == 'hsi_IncidentDetails_hsi_headlineCFHuman' || data.name == 'hsi_IncidentDetails_hsi_headlineCFTech') data.hide = true;
+      }else if(data.xtype == 'gps_dd'){
+        data.value = this.gpsdd;
       }
       if(res.subform && this.inheritMap[data.name]){
         console.log("---inheritval--------:",this.inheritMap[data.name]);
@@ -3684,6 +3722,43 @@ export class NewFormPage implements OnInit {
   }
   openAction(unid){
     this.router.navigate(['myaction'],{queryParams:{unid:unid,type:'open'}})
+  }
+  openUrl(field: any){
+    let url: string = '';
+    if(field.xtype == 'pre_url'){
+      url = field.urlText;
+    }else{
+      url = field.value;
+    }
+    const substr = url.substring(0,4).toLocaleLowerCase();
+    if(substr != 'http') url = 'http://' + url;
+    Plugins.Browser.open({url});
+  }
+  resetTemplateInfoImgSrc(content: string): string{
+    const separator: string = 'src="';
+    if(content.includes(separator)){
+      const ret = content.split(separator);
+      let temp: string = ret[0];
+      for (let i = 1; i < ret.length; i++) {
+        const element = ret[i];
+        temp += separator;
+        if(!element.startsWith('http')){
+          temp += AppConfig.domain;
+        }
+        temp += ret[i];
+      }
+      content = temp;
+    }
+    return content;
+  }
+  //open guidance
+  async openGuidance(title,content) {
+    const modal = await this.modal.create({
+      showBackdrop: true,
+      component: GuidanceComponent,
+      componentProps: {title,content,cbgcolor:this.cbgcolor }
+    });
+    modal.present();
   }
 }
 

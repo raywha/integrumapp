@@ -1,0 +1,12 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+        <ion-icon name="arrow-back" (click)="dismiss()" mode="ios" color="dark"></ion-icon>
+    </ion-buttons>
+    <ion-title>{{title}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <div [innerHTML]="sanitizer.bypassSecurityTrustHtml(content)"></div>
+
+</ion-content>

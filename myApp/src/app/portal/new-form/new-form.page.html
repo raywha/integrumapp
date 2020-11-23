@@ -18,6 +18,22 @@
 </ion-header>
 
 <ion-content>
+  <div *ngIf="enableTemplateInfo=='ka_Yes'">
+    <ion-item lines="none" #testdom>
+      <!-- <ion-label color="light">{{templateInfoLabel}}&nbsp;&nbsp;&nbsp;&nbsp;</ion-label>
+      <ion-icon slot="end" color="light" name="arrow-forward" mode="ios" (click)="isShowGuidance(null,0)"
+        *ngIf="!(list&&list[0]&&list[0].show)"></ion-icon>
+      <ion-icon slot="end" color="light" name="arrow-down" mode="ios" (click)="isShowGuidance(null,0)"
+        *ngIf="list[0].show">
+      </ion-icon> -->
+      <ion-label color="light" (click)="openGuidance(templateInfoLabel,templateInfo)">{{templateInfoLabel}}&nbsp;&nbsp;&nbsp;&nbsp;</ion-label>
+      <ion-icon slot="end" color="light" name="arrow-forward" mode="ios" (click)="openGuidance(templateInfoLabel,templateInfo)"></ion-icon>
+    </ion-item>
+  
+    <!-- <div *ngIf="list[0].show" class="guidance-box">
+      <div [innerHTML]="sanitizer.bypassSecurityTrustHtml(templateInfo)"></div>
+    </div> -->
+  </div>
   <div class="form-container" id="edit" *ngIf="type=='edit'">
 
     <div *ngFor="let field of sysfields;let index = index;">
@@ -105,6 +121,15 @@
         </ion-item>
         
         <div *ngIf="list[index].show" class="guidance-box">
+
+          <div *ngIf="section.enableSecInfo=='ka_Yes'" class="secguidance">
+            <ion-item lines="none" #testdom>
+              <ion-label color="light" (click)="openGuidance(section.secInfoLabel,section.secInfo)">{{section.secInfoLabel}}&nbsp;&nbsp;&nbsp;&nbsp;</ion-label>
+              <ion-icon slot="end" color="light" name="arrow-forward" mode="ios" (click)="openGuidance(section.secInfoLabel,section.secInfo)"></ion-icon>
+            </ion-item>
+ 
+          </div>
+
           <div *ngIf="section.secId!='AuditTrail' && section.secId!='subform' && section.sectionType!='1' ">
           <div *ngFor="let field of section.fields;let index = index;" class="fieldshow">
             <!--multiselectfield-->
@@ -222,6 +247,20 @@
                 </ion-text>
               </ion-item>
             </div>
+            <!--preurl-->
+            <div *ngIf="field.xtype=='pre_url'">
+              <ion-item>
+                <ion-label>
+                  {{field.label}}
+                  <span *ngIf="field.mandatory=='Y'" class="needfill">*</span>
+                </ion-label>
+                </ion-item>
+                
+              <ion-item>
+                <ion-label [ngStyle]="{'color': cbgcolor}" (click)="openUrl(field)"> {{field.buttonText}} </ion-label>
+               <ion-icon name="link" slot="start" [ngStyle]="{'color': cbgcolor}"></ion-icon>
+              </ion-item>
+            </div>
             <!--riskmatrix-->
             <!-- <div *ngIf="field.xtype=='riskmatrix'">
               <ion-item>
@@ -237,7 +276,7 @@
             </div> -->
             <div *ngIf="field.xtype==='riskmatrix'">
               <ion-label style="margin-bottom:10px; " color="basic" stacked>{{field.label}}</ion-label>
-              <button style="padding-left:10px;" ion-item block color="secondary" (click)="getRiskmatrix(field.RiskMatrix,field.name,field.value)">Risk Matrix</button>
+              <button style="padding-left:10px;font-size:18px;" ion-item block color="secondary" (click)="getRiskmatrix(field.RiskMatrix,field.name,field.value)">Click to open risk matrix.</button>
                <!-- <a [routerLink]="['/risk-matrix']" [queryParams]="{riskMatrixFrameData:tobj,riskMatrixSaveData:field.value,riskName:field.name}">Risk Matrix</a> -->
                <ion-item *ngIf="field.value" [ngStyle]="{ 'background-color': field.value.ResultColor,'padding-left':'10px' }">
                   {{field.value.TheScore}}
@@ -365,8 +404,20 @@
             <div *ngIf="field.xtype==='computed'" [hidden]="field.hide" class="column-count">
               <h4>{{field.label}}</h4>
             </div>
+            <!--gps location-->
+            <div *ngIf="field.xtype==='gps_dd'" class="text-number" [hidden]="field.hide">
+              <ion-item>
+                <ion-label style="margin-bottom:10px; " color="basic" stacked>
+                  {{field.label}}
+                  <span *ngIf="field.mandatory=='Y'" class="needfill">*</span>
+                </ion-label>
+              </ion-item>
+              <ion-item>
+                {{field.value}}
+              </ion-item>
+            </div>
             <!--textfield-->
-            <div *ngIf="field.xtype==='text'" class="text-number" [hidden]="field.hide">
+            <div *ngIf="field.xtype==='text' || field.xtype==='url'" class="text-number" [hidden]="field.hide">
               <ion-item>
                 <ion-label style="margin-bottom:10px; " color="basic" stacked>
                   {{field.label}}
@@ -685,6 +736,14 @@
           </ion-icon>
         </ion-item>
         <div *ngIf="list[index].show" class="guidance-box">
+
+          <div *ngIf="section.enableSecInfo=='ka_Yes'" class="secguidance">
+            <ion-item lines="none" #testdom>
+              <ion-label color="light" (click)="openGuidance(section.secInfoLabel,section.secInfo)">{{section.secInfoLabel}}&nbsp;&nbsp;&nbsp;&nbsp;</ion-label>
+              <ion-icon slot="end" color="light" name="arrow-forward" mode="ios" (click)="openGuidance(section.secInfoLabel,section.secInfo)"></ion-icon>
+            </ion-item>
+ 
+          </div>
           <div *ngIf="section.secId!='AuditTrail' && section.secId!='subform' && section.sectionType!='1' ">
             <div *ngFor="let field of section.fields;let index = index;" class="fieldshow" [hidden]="field.hide">
               <!--multiselectfield-->
@@ -725,17 +784,27 @@
                         </div>
                       </div>
                       <div *ngIf="field.xtype!=='signature'">
-
-                        <ion-text [ngStyle]="{'color': cbgcolor}">
-                          {{field.value}}
-                        </ion-text>
+                        <div *ngIf="field.xtype!=='pre_url' && field.xtype!=='url'">
+                          <ion-text [ngStyle]="{'color': cbgcolor}">
+                            {{field.value}}
+                          </ion-text>
+                        </div>
+                        <!--preurl-->
+                        <div *ngIf="field.xtype=='pre_url' || field.xtype=='url'">
+                          <ion-item>
+                            <ion-label *ngIf="field.xtype=='pre_url'" [ngStyle]="{'color': cbgcolor}" (click)="openUrl(field)"> {{field.buttonText}} </ion-label>
+                            <ion-label *ngIf="field.xtype=='url'" [ngStyle]="{'color': cbgcolor}" (click)="openUrl(field)"> {{field.value}} </ion-label>
+                            <ion-icon name="link" slot="start" [ngStyle]="{'color': cbgcolor}"></ion-icon>
+                          </ion-item>
+                        </div>
+                        
                       </div>
                     </div>
                   </div>
                   </div>
                   <div *ngIf="field.xtype==='riskmatrix'">
                     <ion-label style="margin-bottom:10px; " color="basic" stacked>{{field.label}}</ion-label>
-                    <button style="padding-left:10px;" ion-item block color="secondary" (click)="getRiskmatrix(field.RiskMatrix,field.name,field.value)">Risk Matrix</button>
+                    <button style="padding-left:10px;font-size: 18px;" ion-item block color="secondary" (click)="getRiskmatrix(field.RiskMatrix,field.name,field.value)">Click to open risk matrix.</button>
                      <!-- <a [routerLink]="['/risk-matrix']" [queryParams]="{riskMatrixFrameData:tobj,riskMatrixSaveData:field.value,riskName:field.name}">Risk Matrix</a> -->
                      <ion-item *ngIf="field.value" [ngStyle]="{ 'background-color': field.value.ResultColor,'padding-left':'10px' }">
                         {{field.value.TheScore}}
