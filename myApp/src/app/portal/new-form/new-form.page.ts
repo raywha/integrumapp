@@ -173,7 +173,8 @@ export class NewFormPage implements OnInit {
     private draftCtrl: FormDrafts
   ) {
     this.geolocation.getCurrentPosition().then( resp => {
-      this.gpsdd = resp.coords.longitude + ',' + resp.coords.latitude;
+      // this.gpsdd = resp.coords.longitude + ',' + resp.coords.latitude;
+      this.gpsdd = resp.coords.latitude + ',' + resp.coords.longitude;
     }).catch( error => {
       console.log('Error getting location', error);
       this.gpsdd = 'error' + ',' + 'error';
