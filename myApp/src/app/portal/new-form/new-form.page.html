@@ -19,15 +19,15 @@
 
 <ion-content>
   <div *ngIf="enableTemplateInfo=='ka_Yes'">
-    <ion-item lines="none" #testdom>
+    <ion-item lines="none">
       <!-- <ion-label color="light">{{templateInfoLabel}}&nbsp;&nbsp;&nbsp;&nbsp;</ion-label>
       <ion-icon slot="end" color="light" name="arrow-forward" mode="ios" (click)="isShowGuidance(null,0)"
         *ngIf="!(list&&list[0]&&list[0].show)"></ion-icon>
       <ion-icon slot="end" color="light" name="arrow-down" mode="ios" (click)="isShowGuidance(null,0)"
         *ngIf="list[0].show">
       </ion-icon> -->
-      <ion-label color="light" (click)="openGuidance(templateInfoLabel,templateInfo)">{{templateInfoLabel}}&nbsp;&nbsp;&nbsp;&nbsp;</ion-label>
-      <ion-icon slot="end" color="light" name="arrow-forward" mode="ios" (click)="openGuidance(templateInfoLabel,templateInfo)"></ion-icon>
+      <ion-icon name="information-circle-outline" color="success"></ion-icon>
+      <ion-label (click)="openGuidance(templateInfoLabel,templateInfo)">{{templateInfoLabel}}&nbsp;&nbsp;&nbsp;&nbsp;</ion-label>
     </ion-item>
   
     <!-- <div *ngIf="list[0].show" class="guidance-box">
@@ -122,10 +122,10 @@
         
         <div *ngIf="list[index].show" class="guidance-box">
 
-          <div *ngIf="section.enableSecInfo=='ka_Yes'" class="secguidance">
-            <ion-item lines="none" #testdom>
-              <ion-label color="light" (click)="openGuidance(section.secInfoLabel,section.secInfo)">{{section.secInfoLabel}}&nbsp;&nbsp;&nbsp;&nbsp;</ion-label>
-              <ion-icon slot="end" color="light" name="arrow-forward" mode="ios" (click)="openGuidance(section.secInfoLabel,section.secInfo)"></ion-icon>
+          <div *ngIf="section.enableSecInfo=='ka_Yes'">
+            <ion-item lines="none">
+              <ion-icon name="information-circle-outline" color="success"></ion-icon>
+              <ion-label (click)="openGuidance(section.secInfoLabel,section.secInfo)">{{section.secInfoLabel}}&nbsp;&nbsp;&nbsp;&nbsp;</ion-label>
             </ion-item>
  
           </div>
@@ -737,10 +737,10 @@
         </ion-item>
         <div *ngIf="list[index].show" class="guidance-box">
 
-          <div *ngIf="section.enableSecInfo=='ka_Yes'" class="secguidance">
-            <ion-item lines="none" #testdom>
-              <ion-label color="light" (click)="openGuidance(section.secInfoLabel,section.secInfo)">{{section.secInfoLabel}}&nbsp;&nbsp;&nbsp;&nbsp;</ion-label>
-              <ion-icon slot="end" color="light" name="arrow-forward" mode="ios" (click)="openGuidance(section.secInfoLabel,section.secInfo)"></ion-icon>
+          <div *ngIf="section.enableSecInfo=='ka_Yes'">
+            <ion-item lines="none">
+              <ion-icon name="information-circle-outline" color="success"></ion-icon>
+              <ion-label (click)="openGuidance(section.secInfoLabel,section.secInfo)">{{section.secInfoLabel}}&nbsp;&nbsp;&nbsp;&nbsp;</ion-label>
             </ion-item>
  
           </div>
