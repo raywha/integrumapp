@@ -626,111 +626,113 @@ export class NewFormPage implements OnInit {
     let selectSecId: any = [];
     for (let i = 0; i < this.selecttemplat.template.secs.length; i++) {
       const cursection = this.selecttemplat.template.secs[i];
-                const secInfo = cursection.secInfo;
-                if(secInfo){
-                  this.selecttemplat.template.secs[i].secInfo = this.resetTemplateInfoImgSrc(secInfo);
+      const secInfo = cursection.secInfo;
+      if (secInfo) {
+        this.selecttemplat.template.secs[i].secInfo = this.resetTemplateInfoImgSrc(secInfo);
+      }
+      if (this.selecttemplat.template.secs[i].fields && this.selecttemplat.template.secs[i].sectionType != '1') {
+        this.selecttemplat.template.secs[i].fields.forEach(data => {
+          if (data.name == 'formMR') {
+            if (data.value == '') data.value = this.umr;
+          }
+          if (data.xtype == "radio" || data.xtype == "select") {
+            if (data.xtype == "radio") data.options = data.options.filter(function (obj) { return obj.value != "" })
+            //data.options = data.options.filter(function (obj) { return obj.value != "" })
+            if (data.xtype == "select") {
+              if (this.selecttemplat.template.subListFields.length > 0) {
+                let secId = this.selecttemplat.template.secs[i].secId;
+                let fieldname = data.name;
+                let fieldId = fieldname.split(secId + '_')[1];
+                let v = this.selecttemplat.template.subListFields.find(e => e.parentSecId == secId &&
+                  e.options && e.options.subfieldlist && e.options.subfieldlist.pfieldid && e.options.subfieldlist.pfieldid == fieldId)
+                if (v) {
+                  data.hasSubfield = true;
+                  data.fieldId = fieldId;
                 }
-      this.selecttemplat.template.secs[i].fields.forEach(data => {
-        if(data.name=='formMR'){
-          if(data.value =='') data.value = this.umr;
-        }
-        if (data.xtype == "radio" || data.xtype == "select") {
-          if(data.xtype == "radio") data.options = data.options.filter(function (obj) { return obj.value != "" })
-          //data.options = data.options.filter(function (obj) { return obj.value != "" })
-          if (data.xtype == "select") {
-            if (this.selecttemplat.template.subListFields.length > 0) {
-              let secId = this.selecttemplat.template.secs[i].secId;
-              let fieldname = data.name;
-              let fieldId = fieldname.split(secId + '_')[1];
-              let v = this.selecttemplat.template.subListFields.find(e => e.parentSecId == secId &&
-                e.options && e.options.subfieldlist && e.options.subfieldlist.pfieldid && e.options.subfieldlist.pfieldid == fieldId)
-              if (v) {
-                data.hasSubfield = true;
-                data.fieldId = fieldId;
-              }
 
-            }
-          }
-        } else if (data.xtype == 'multiou' || data.xtype == 'singleou') {
-          let obj: any = this.getOuLevelAndGroupId(data.name, this.selecttemplat.template.secs[i].secId);
-          let level: number = obj.level;
-          let ouGroupId: string = obj.ouGroupId;
-          if (this.initiatorOU) {
-            let iou: any = this.initiatorOU.split('\\');
-            let tmp: any = '';
-            for (let m = 0; m < level; m++) {
-              if (tmp == '') {
-                if (iou[m]) tmp = iou[m];
-              } else {
-                if (iou[m]) tmp += "/" + iou[m];
               }
             }
-            this.getOUSublistdetails(data.name, tmp, this.selecttemplat.template.secs[i].secId);
-            data.value = tmp;
-          }
-
-        }else if(data.xtype == 'checkbox'){
-          if(data.value){
-            let cehckvalues=data.value.split(",")
-            data.options.forEach(option =>{
-               let flag=cehckvalues.some(v =>{
-                 return v==option.value
-               })
-               if(flag){
-                 option.ischeck=true
-               }else{
-                option.ischeck=false
-               }
-            })
-          }
-        
-         
-      }else if(data.xtype == 'questionnaire'){
-        let v = data.options[0];
-        if(v && v.value){
-          if(v.value!='' && data.quesType==='singleselect') data.options.unshift({value:'',text:''});
-        }
-        const val: any = data.value;
-          if(val){
-            const quesFields: any = this.selecttemplat.template.quesFields;
-            const qfield: any = quesFields.find(e => e.fieldId == data.name);
-            if(qfield){
-              let qsec: any = [];
-              if(data.quesType==='singleselect'){
-                qsec = qfield.answerWhen[val];
-              }else{
-                for (let i = 0; i < val.length; i++) {
-                  const ele = val[i];
-                  qsec = qsec.concat(qfield.answerWhen[ele]);
+          } else if (data.xtype == 'multiou' || data.xtype == 'singleou') {
+            let obj: any = this.getOuLevelAndGroupId(data.name, this.selecttemplat.template.secs[i].secId);
+            let level: number = obj.level;
+            let ouGroupId: string = obj.ouGroupId;
+            if (this.initiatorOU) {
+              let iou: any = this.initiatorOU.split('\\');
+              let tmp: any = '';
+              for (let m = 0; m < level; m++) {
+                if (tmp == '') {
+                  if (iou[m]) tmp = iou[m];
+                } else {
+                  if (iou[m]) tmp += "/" + iou[m];
                 }
               }
-              for (let i = 0; i < qsec.length; i++) {
-                const secId = qsec[i];
-                //const index: number = this.quesSecId.findIndex(e => e == secId);
-                //if (index != -1) this.quesSecId.splice(index, 1);
-                this.quesSecId = this.quesSecId.filter(e => e!=secId)
+              this.getOUSublistdetails(data.name, tmp, this.selecttemplat.template.secs[i].secId);
+              data.value = tmp;
+            }
+
+          } else if (data.xtype == 'checkbox') {
+            if (data.value) {
+              let cehckvalues = data.value.split(",")
+              data.options.forEach(option => {
+                let flag = cehckvalues.some(v => {
+                  return v == option.value
+                })
+                if (flag) {
+                  option.ischeck = true
+                } else {
+                  option.ischeck = false
+                }
+              })
+            }
+
+
+          } else if (data.xtype == 'questionnaire') {
+            let v = data.options[0];
+            if (v && v.value) {
+              if (v.value != '' && data.quesType === 'singleselect') data.options.unshift({ value: '', text: '' });
+            }
+            const val: any = data.value;
+            if (val) {
+              const quesFields: any = this.selecttemplat.template.quesFields;
+              const qfield: any = quesFields.find(e => e.fieldId == data.name);
+              if (qfield) {
+                let qsec: any = [];
+                if (data.quesType === 'singleselect') {
+                  qsec = qfield.answerWhen[val];
+                } else {
+                  for (let i = 0; i < val.length; i++) {
+                    const ele = val[i];
+                    qsec = qsec.concat(qfield.answerWhen[ele]);
+                  }
+                }
+                for (let i = 0; i < qsec.length; i++) {
+                  const secId = qsec[i];
+                  //const index: number = this.quesSecId.findIndex(e => e == secId);
+                  //if (index != -1) this.quesSecId.splice(index, 1);
+                  this.quesSecId = this.quesSecId.filter(e => e != secId)
+                }
               }
             }
+          } else if (data.xtype == 'headline') {
+            // if(this.findSameLabelname(this.selecttemplat.template.secs[i].fields,data.label,data.name)){
+            //   data.hide = true;
+            // }
+            if (data.name == 'hsi_IncidentDetails_hsi_headlineCFOrg' || data.name == 'hsi_IncidentDetails_hsi_headlineCFHuman' || data.name == 'hsi_IncidentDetails_hsi_headlineCFTech') data.hide = true;
+          } else if (data.xtype == 'gps_dd') {
+            data.value = this.gpsdd;
           }
-      } else if(data.xtype == 'headline'){
-        // if(this.findSameLabelname(this.selecttemplat.template.secs[i].fields,data.label,data.name)){
-        //   data.hide = true;
-        // }
-        if(data.name == 'hsi_IncidentDetails_hsi_headlineCFOrg' || data.name == 'hsi_IncidentDetails_hsi_headlineCFHuman' || data.name == 'hsi_IncidentDetails_hsi_headlineCFTech') data.hide = true;
-      }else if(data.xtype == 'gps_dd'){
-        data.value = this.gpsdd;
+          if (res.subform && this.inheritMap[data.name]) {
+            console.log("---inheritval--------:", this.inheritMap[data.name]);
+            if (data.xtype == 'multiou' || data.xtype == 'singleou') {
+              this.getOUSublistdetails(data.name, this.inheritMap[data.name], this.selecttemplat.template.secs[i].secId);
+            }
+            data.value = this.inheritMap[data.name];
+          }
+          this.loadSecs.push(data);
+          this.fields.push(data) //
+          //this.selectScore(data,data.value,this.selecttemplat.template.secs[i].title)
+        })
       }
-      if(res.subform && this.inheritMap[data.name]){
-        console.log("---inheritval--------:",this.inheritMap[data.name]);
-        if (data.xtype == 'multiou' || data.xtype == 'singleou') {
-          this.getOUSublistdetails(data.name, this.inheritMap[data.name], this.selecttemplat.template.secs[i].secId);
-        }
-        data.value = this.inheritMap[data.name];
-      }
-        this.loadSecs.push(data);
-        this.fields.push(data) //
-        //this.selectScore(data,data.value,this.selecttemplat.template.secs[i].title)
-      })
       // console .log(this.selecttemplat.template.secs[i])
       if (this.quesSecId.indexOf(this.selecttemplat.template.secs[i].secId) == -1){
         this.sections.push(this.selecttemplat.template.secs[i]);
@@ -1442,6 +1444,7 @@ export class NewFormPage implements OnInit {
             // console.log('this.mr2Val:',this.mr2Val);
             if(this.mr2Val && this.mr2Val.length>0){
               let options="";
+              this.mr2Val.sort();
               for(let i=0;i<this.mr2Val.length;i++){
                 options+='<ion-item><ion-label>'+this.mr2Val[i]+'</ion-label><ion-radio slot="end" value='+this.mr2Val[i]+'></ion-radio></ion-item>';
               }
@@ -1592,6 +1595,7 @@ export class NewFormPage implements OnInit {
         this.getforms.submit(logindata, para).pipe(first()).subscribe(data => {
           console.log('this.getforms.submit:', data)
           data = JSON.parse(data.data);
+          console.log('psrse....this.getforms.submit:', data)
           this.commonCtrl.processHide();
           //console.log('this.getforms.submit:', JSON.parse(data.data));
           if (data.returnResponse == "offline") {
@@ -2930,11 +2934,17 @@ export class NewFormPage implements OnInit {
     }
   }
   submitToMr2(unid:string,mr2:string) {
-    const para = {unid,mr2};
+    const para = {
+      "tempid": this.templatid,
+      "action": "sendforreview",
+      "strformMR":mr2,
+      "docId": this.formID,
+      "fields": this.fields
+    }
     return new Promise((resolve, reject) => {
       this.storage.get("loginDetails").then(logindata => {
         //this.getforms.getFormData(logindata, { "unid": "EBE27D0FEC6AEFF9482584D90020DCE6" }).pipe(first()).subscribe(data => {
-        this.getforms.submitToMr2(logindata, para).pipe(first()).subscribe(data => {
+        this.getforms.doAction(logindata, para).pipe(first()).subscribe(data => {
           data = JSON.parse(data.data);
           if (data.returnResponse == "offline") {
             this.storage.get('offlinemuitldata').then( d => {
@@ -2974,6 +2984,7 @@ export class NewFormPage implements OnInit {
             })
             
           }else{
+            console.log('send 2 mr2 data:',data)
             if(data.status=='success'){
               this.router.navigateByUrl(this.lasturl)
             }else{
@@ -3049,9 +3060,16 @@ export class NewFormPage implements OnInit {
   }
   reAssign(comments: string){
     let unid: string = this.formID;
-    const para: any = {unid, comments, formmr: this.formmr};
+    const para = {
+      "tempid": this.templatid,
+      "action": "reassign",
+      comments,
+      "formmr":this.formmr,
+      "docId": this.formID,
+      "fields": this.fields
+    }
     this.storage.get('loginDetails').then(logindata => {
-      this.getforms.doReAssign(logindata, para).pipe(first()).subscribe(data => {
+      this.getforms.doAction(logindata, para).pipe(first()).subscribe(data => {
         data = JSON.parse(data.data);
         if (data.returnResponse == "offline") {
           this.storage.get('offlinemuitldata').then( d => {
@@ -3103,10 +3121,17 @@ export class NewFormPage implements OnInit {
   }
   approve(comments: string){
     let unid: string = this.formID;
-    const para: any = {unid, comments};
+    //const para: any = {unid, comments};
+    const para = {
+      "tempid": this.templatid,
+      "action": "approve",
+      comments,
+      "docId": this.formID,
+      "fields": this.fields
+    }
     this.commonCtrl.processShow('Processing...');
     this.storage.get('loginDetails').then(logindata => {
-      this.getforms.doApprove(logindata, para).pipe(first()).subscribe(data => {
+      this.getforms.doAction(logindata, para).pipe(first()).subscribe(data => {
         data = JSON.parse(data.data);
         this.commonCtrl.processHide();
         if (data.returnResponse == "offline") {
@@ -3147,6 +3172,7 @@ export class NewFormPage implements OnInit {
           })
           
         }else{
+          console.log('approve..data:',data.status)
           if (data.status == 'success') {
             this.router.navigateByUrl(this.lasturl);
           } else {
@@ -3158,10 +3184,15 @@ export class NewFormPage implements OnInit {
     })
   }
   reject(comments: string){
-    let unid: string = this.formID;
-    const para: any = {unid, comments};
+    const para = {
+      "tempid": this.templatid,
+      "action": "reject",
+      comments,
+      "docId": this.formID,
+      "fields": this.fields
+    }
     this.storage.get('loginDetails').then(logindata => {
-      this.getforms.doReject(logindata, para).pipe(first()).subscribe(data => {
+      this.getforms.doAction(logindata, para).pipe(first()).subscribe(data => {
         data = JSON.parse(data.data);
         if (data.returnResponse == "offline") {
           this.storage.get('offlinemuitldata').then( d => {
@@ -3212,10 +3243,15 @@ export class NewFormPage implements OnInit {
     })
   }
   reopen(comments: string){
-    let unid: string = this.formID;
-    const para: any = {unid, comments};
+    const para = {
+      "tempid": this.templatid,
+      "action": "reopen",
+      comments,
+      "docId": this.formID,
+      "fields": this.fields
+    }
     this.storage.get('loginDetails').then(logindata => {
-      this.getforms.doReopen(logindata, para).pipe(first()).subscribe(data => {
+      this.getforms.doAction(logindata, para).pipe(first()).subscribe(data => {
         data = JSON.parse(data.data);
         // console.log('reopen:',data)
         if (data.returnResponse == "offline") {

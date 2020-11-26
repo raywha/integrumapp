@@ -517,4 +517,29 @@ export class GetallformsService {
       if(e.status==-6) return {data:"{\"returnResponse\":\"offline\"}"};
     }));
   }
+  doAction(logindetail:any,para:any ):Observable<any>{
+    let  data=para;
+    console.log("------before decode---",data);
+    data = {"data":escape(JSON.stringify(data))};
+    console.log("------after decode---",data);
+    this.httpnative.setDataSerializer("json");
+    const url = `${logindetail.server}/${logindetail.folder}/integrumws.nsf/xp_App.xsp/invokeServerFunctions`;
+    if(logindetail.username && logindetail.password){
+      let auth='Basic '+btoa(logindetail.username+':'+logindetail.password);
+
+      const options = {
+          "Content-Type":"application/json; charset=utf-8",
+          "Authorization":auth
+      };
+      return from(this.httpnative.post(url,data,options).catch(e=>{
+        console.log('doAction error:',e);
+        if(e.status==-6) return {data:"{\"returnResponse\":\"offline\"}"};
+      }));
+    }
+    return from(this.httpnative.post(url,data,'').catch(e=>{
+      console.log('doAction error:',e);
+      if(e.status==-6) return {data:"{\"returnResponse\":\"offline\"}"};
+    }));
+  
+  }
 }
