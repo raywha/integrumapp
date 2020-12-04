@@ -79,7 +79,6 @@ export class Tab1Page {
             if(localStorage.getItem('lan')!=lan){
               this.processShow('loading...');
               localStorage.setItem('lan',lan); 
-              localStorage.setItem('newlan',lan);
               this.auth.setUserLan(this.loginDetails,lan).pipe(first()).subscribe(
                 data => {
                   console.log('set user lan:',data)
