@@ -673,6 +673,9 @@ export class AuthemailPage implements OnInit {
       {text:btnNo, handler:()=>{}},
       {text:btnYes,handler:()=>{
         //console.log('prompt of update///');
+        this.storage.clear();
+        localStorage.clear();
+        this.router.navigate(['authemail'])
         Plugins.Browser.open({url});
       }}
     ]);

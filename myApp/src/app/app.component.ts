@@ -40,7 +40,8 @@ export class AppComponent {
   }
   initTranslate(){
     //设置默认语言，一般在无法匹配的时候使用
-    this.translate.setDefaultLang('en');
+    const lan = localStorage.getItem('lan') || 'en';
+    this.translate.setDefaultLang(lan);
     //获取当前浏览器的语言
     // let broswerLang=this.translate.getBrowserLang();
     // if (this.translate.getBrowserLang() !==undefined){

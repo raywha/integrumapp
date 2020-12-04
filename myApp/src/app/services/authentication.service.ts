@@ -119,4 +119,14 @@ export class AuthenticationService {
       if(e.status==-6) return {data:"{\"returnResponse\":\"offline\"}"};
     }));
   }
+  setUserLan(logindetail:any,lan: any):Observable<any>{
+    const { email } = logindetail;
+   
+    const url = `${AppConfig.domain}/${AppConfig.folder}/appmgt.nsf/xp_ws.xsp/setUserLan?&email=${encodeURIComponent(email)}&lan=${encodeURIComponent(lan)}`;
+    return from(this.httpnative.get(url,'',"").catch(e=>{
+      console.log('setUserLan error....',e)
+      if(e.status==-6) return {data:"{\"returnResponse\":\"offline\"}"};
+    }));
+    
+  }
 }
